@@ -16,9 +16,6 @@ SRC = main.c
 OBJS = $(SRC:.c=.o)
 
 
-ORANGE = \033[38;5;214m
-GREEN = \033[38;5;82m
-RESET = \033[0m
 
 #----------------------------------------------------------------------
 #			   MALLOC
@@ -26,22 +23,18 @@ RESET = \033[0m
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	@echo "$(ORANGE)Linking...$(RESET)"
-	@$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME) 
-	@echo "$(GREEN)Executable built: $(NAME)$(RESET)"
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME) 
 
 %.o: %.c
-	@echo "$(ORANGE)Compiling $<...$(RESET)"
-	@$(CC) $(CFLAGS) -c $< -o $@
+	echo "$(ORANGE)Compiling $<...$(RESET)"
+	$(CC) $(CFLAGS) -c $< -o $@
 
 
 clean:
-	@$(RM) $(OBJS)
-	@echo "$(GREEN)All object files removed.$(RESET)"
+	$(RM) $(OBJS)
 
 fclean: clean
-	@$(RM) $(NAME)
-	@echo "$(GREEN)Executable removed.$(RESET)"
+	$(RM) $(NAME)
 
 re: fclean all
 #----------------------------------------------------------------------
@@ -50,17 +43,13 @@ re: fclean all
 libft: $(LIBFT)
 
 $(LIBFT):
-	@echo "$(ORANGE)Building libft...$(RESET)"
-	@make $(NO_PRINT) -C $(LIBFT_DIR)
-	@echo "$(GREEN)Executable built: libft.a$(RESET)"
+	make $(NO_PRINT) -C $(LIBFT_DIR)
 
 clean_libft:
-	@make $(NO_PRINT) -C $(LIBFT_DIR) clean
-	@echo "$(GREEN)Libft cleaned.$(RESET)"
+	make $(NO_PRINT) -C $(LIBFT_DIR) clean
 
 fclean_libft:
-	@make $(NO_PRINT) -C $(LIBFT_DIR) fclean
-	@echo "$(GREEN)libft.a executable removed.$(RESET)"
+	make $(NO_PRINT) -C $(LIBFT_DIR) fclean
 
 
 .PHONY: all clean fclean libft clean_libft fclean_libft

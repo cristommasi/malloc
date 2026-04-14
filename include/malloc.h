@@ -57,6 +57,9 @@
  // 131072 - fits 128 small allocs
 #define SMALL_BLOCK_SIZE (32 * PAGE_SIZE)
 
+ // BLOCK ALLIGNMENT MULTIPLES OF 16
+#define ALIGNMENT 16
+size_t align(size_t size);
 
  // Heap group size
 typedef enum s_head_group { TINY, SMALL, LARGE } t_head_group;
@@ -78,12 +81,13 @@ typedef struct s_heap {
 extern t_heap *heap_start;
 
 // HEAP FUNCTIONS
+t_heap          *heap_find(size_t size);
 t_head_group    heap_group(size_t size);
 size_t          heap_size(size_t size);
 t_heap          *heap_next(void);
 t_heap          *heap_prev(void);
 t_heap          *heap_new(size_t size);
-t_heap          *heap_init(size_t size);
+
 
 
 // Metadata for a single allocated block
@@ -92,14 +96,20 @@ typedef struct s_block {
     struct s_block  *prev;
     struct s_block  *next;
     size_t          data_size;
-    bool            freed;
+    bool            available;
 
 }               t_block;
 
 
  // BLOCK FUNCTIONS
-t_block *heap_to_block(t_heap *heap);
+t_block *block_find(t_heap *heap, size_t size);
+void	block_split(t_block *block, size_t size);
+void *block_shift(t_block *block_addr);
 void    *block_to_data(t_block *block);
+t_block *heap_to_block(t_heap *heap);
+
+
+
 
 // void ft_free(void *ptr);
 // void *ft_malloc(size_t size);

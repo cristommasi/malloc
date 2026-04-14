@@ -16,7 +16,7 @@ t_heap    *heap_new(size_t size) {
     }
     new_heap->group         = (t_head_group)heap_group(size);
     new_heap->prev          = heap_prev();
-    new_heap->next          = heap_next();
+    new_heap->next          = NULL;
     new_heap->total_size    = zone_size;
     new_heap->free_size     = zone_size;
     new_heap->block_count   = 1;
@@ -24,7 +24,7 @@ t_heap    *heap_new(size_t size) {
     first_block = heap_to_block(new_heap);
     first_block->prev = NULL;
 	first_block->next = NULL;
-	first_block->data_size = size - sizeof(t_block);
+	first_block->data_size = zone_size - sizeof(t_block);
 	first_block->available = true;
 
 
@@ -39,12 +39,12 @@ t_heap  *heap_find(size_t size) {
 
     while (cur_heap != NULL) {
 
-        if (cur_heap->group == group_to_find && size <= (cur_heap->free_size - sizeof(t_block))) {
+        if (cur_heap->group == group_to_find) {
             return (cur_heap);
         }
         cur_heap = cur_heap->next;
     }
-    return (cur_heap);
+    return (NULL);
 
 }
 

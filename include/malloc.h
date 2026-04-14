@@ -59,6 +59,7 @@
 
  // BLOCK ALLIGNMENT MULTIPLES OF 16
 #define ALIGNMENT 16
+
 size_t align(size_t size);
 
  // Heap group size
@@ -103,8 +104,9 @@ typedef struct s_block {
 
  // BLOCK FUNCTIONS
 t_block *block_find(t_heap *heap, size_t size);
+void    block_merge(t_block *block, t_heap *heap);
 void	block_split(t_block *block, size_t size);
-void *block_shift(t_block *block_addr);
+void    *block_shift(t_block *block_addr);
 void    *block_to_data(t_block *block);
 t_block *heap_to_block(t_heap *heap);
 

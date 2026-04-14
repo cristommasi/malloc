@@ -2,31 +2,38 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-NAME = libft_malloc_$(HOSTTYPE).so
+NAME_REAL   = libft_malloc_$(HOSTTYPE).so
+NAME		= malloc
+SYMLINK     = libft_malloc.so
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror -I./libft
-RM = rm -f
-NO_PRINT = --no-print-directory
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror -fPIC -I./libft
+LDFLAGS		= -shared
+RM			= rm -f
 
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
+LIBFT_DIR	= ./include/libft
+LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC = main.c
-OBJS = $(SRC:.c=.o)
+SRC			= src/main.c
+OBJS		= $(SRC:.c=.o)
 
 
 
 #----------------------------------------------------------------------
 #			   MALLOC
 #----------------------------------------------------------------------
-all: $(NAME)
+all: $(LIBFT) $(NAME) #$(SYMLINK)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME) 
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
+	
+#$(LDFLAGS)
+
+# $(SYMLINK): $(NAME)
+#     ln -sf $(NAME) $(SYMLINK)
+
 
 %.o: %.c
-	echo "$(ORANGE)Compiling $<...$(RESET)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 
@@ -34,7 +41,8 @@ clean:
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) 
+#$(SYMLINK)
 
 re: fclean all
 #----------------------------------------------------------------------
@@ -43,13 +51,13 @@ re: fclean all
 libft: $(LIBFT)
 
 $(LIBFT):
-	make $(NO_PRINT) -C $(LIBFT_DIR)
+	make -C $(LIBFT_DIR)
 
 clean_libft:
-	make $(NO_PRINT) -C $(LIBFT_DIR) clean
+	make -C $(LIBFT_DIR) clean
 
 fclean_libft:
-	make $(NO_PRINT) -C $(LIBFT_DIR) fclean
+	make -C $(LIBFT_DIR) fclean
 
 
 .PHONY: all clean fclean libft clean_libft fclean_libft

@@ -55,12 +55,13 @@
 #define TINY_BLOCK_SIZE (4 * PAGE_SIZE)
 
  // 131072 - fits 128 small allocs
-#define SMALL_BLOCK_SIZE (32 * PAGE_SIZE)
+#define SMALL_BLOCK_SIZE (16 * PAGE_SIZE)
 
  // BLOCK ALLIGNMENT MULTIPLES OF 16
 #define ALIGNMENT 16
 
-size_t align(size_t size);
+ // UTILS
+size_t alignSize(size_t size);
 
 
 // Metadata for a single allocated block
@@ -99,7 +100,7 @@ t_heap          *heap_new(t_heap *prev, size_t size);
 size_t          heap_size(size_t size);
 t_block         *heap_to_block(t_heap *heap);
 
-
+void printALL(void);
 
 
 

@@ -40,11 +40,9 @@ t_heap  *heap_find(size_t size) {
     t_heap          *cur_heap    = heap_start;
     t_heap          *prev_heap   = NULL;
     size_t          size_to_find = size + sizeof(t_block);
-    bool            NO_HEAP = true;
 
     while (cur_heap != NULL) {
 
-        NO_HEAP = false;
         printf("free = %zu - sizetofind = %zu\n", cur_heap->free_size, size_to_find);
         if (cur_heap->free_size >= size_to_find) {
             printf("Found heap with size req.\n");
@@ -52,11 +50,6 @@ t_heap  *heap_find(size_t size) {
         }
         prev_heap = cur_heap;
         cur_heap = cur_heap->next;
-    }
-    if (NO_HEAP) {
-        printf("Initialized heap\n");
-        heap_start = heap_new(NULL, size);
-        return heap_start;
     }
     printf("Created new heap\n");
     return (heap_new(prev_heap, size));
@@ -68,13 +61,13 @@ t_heap  *heap_find(size_t size) {
 size_t  heap_size(size_t size) {
 
     if (size <= TINY_MAX) {
-        return (256);
+        return (TINY_BLOCK_SIZE);
     }
     else if (size <= SMALL_MAX) {
         return (SMALL_BLOCK_SIZE); 
     }
     else {
-        return (size);
+        return (size + sizeof(t_block));
     }
 }
 

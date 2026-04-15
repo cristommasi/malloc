@@ -3,62 +3,59 @@
 
 t_block *block_find(t_heap *heap, size_t size) {
 
-	t_block *cur_block = heap_to_block(heap);
+	t_block *cur_block = heap->free_blocks;
+	t_block *prev_block = NULL;
 
 	while (cur_block != NULL) {
 
-		if (cur_block->available == true && cur_block->data_size >= size) {
+		// if requirements met, dettach and relink prev & next
+		if (cur_block->data_size >= size) {
+
+			size_t remaining = cur_block->data_size - size;
+
+
+			// if there isnt a matching size, split block and create new one
+			if (remaining > sizeof(t_block)) {
+
+				printf("Slitting block of size: %zu to (%zu)-(%zu)\n", cur_block->data_size, size, remaining - sizeof(t_block));
+				t_block *new_block = (t_block *)((char*)cur_block + size + sizeof(t_block));
+
+				new_block->data_size = remaining - sizeof(t_block);
+				new_block->available = true;
+				new_block->next = cur_block->next;
+				new_block->prev = prev_block;
+				if (prev_block)
+					prev_block->next = new_block;
+				else
+					heap->free_blocks = new_block;
+				if (cur_block->next != NULL)
+					cur_block->next->prev = prev_block;
+				
+			}
+			else {
+
+				if (prev_block)
+					prev_block->next = cur_block->next;
+				else
+					heap->free_blocks = cur_block->next;
+				if (cur_block->next != NULL)
+					cur_block->next->prev = prev_block;
+			}
+
+			cur_block->data_size = size;
+			cur_block->available = false;
+			cur_block->next = NULL;
+			cur_block->prev = NULL;
+			heap->free_size -= (size + sizeof(t_block));
+			heap->block_count += 1;
 
 			return (cur_block);
 		}
-		else if (cur_block->available == true && cur_block->data_size < size) {
-
-			block_merge(cur_block, heap);
-			if (cur_block->data_size >= size) {
-				return (cur_block);
-			}
-		}
+		prev_block = cur_block;
 		cur_block = cur_block->next;
 	}
+	printf("Couldn't find single block that meets size\n");
 	return (NULL);
-}
-
-void	block_merge(t_block *block, t_heap *heap) {
-
-	t_block *next_block = block->next;
-
-
-	while (next_block != NULL && next_block->available == true) {
-
-		next_block->prev->next = NULL;
-		block->data_size += next_block->data_size + sizeof(t_block);
-		next_block->data_size = 0;
-		next_block->prev = NULL;
-		next_block = next_block->next;
-
-
-		heap->block_count -= 1;
-		heap->free_size += block->data_size;
-	}
-	block->next = next_block;
-}
-
-void	block_split(t_block *block, size_t size) {
-	
-	t_block *new_block;
-
-	if (block->data_size <= size + sizeof(t_block))
-		return ;
-	
-	new_block = (t_block *)(block_to_data(block) + size);
-	new_block->prev = block;
-	new_block->next = NULL;
-	new_block->data_size = block->data_size - sizeof(t_block) - size;
-	new_block->available = true;
-
-	block->next = new_block;
-	block->data_size = size;
-	block->available = false;
 }
 
 void    *block_to_data(t_block *block_addr) {
@@ -66,9 +63,6 @@ void    *block_to_data(t_block *block_addr) {
 	return ((void *)(block_addr + 1));
 }
 
-void	*block_shift(t_block *block_addr) {
 
-	return ((void *)(block_addr + sizeof(*block_addr)));
-}
 
 

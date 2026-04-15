@@ -62,16 +62,22 @@
 
 size_t align(size_t size);
 
- // Heap group size
-typedef enum s_head_group { TINY, SMALL, LARGE } t_head_group;
 
+// Metadata for a single allocated block
+typedef struct s_block {
+
+    size_t          data_size;
+    bool available;
+    struct s_block  *prev;
+    struct s_block  *next;
+}               t_block;
 
 //  Metadata for a whole mmap'd region
 typedef struct s_heap {
 
     struct s_heap   *prev;
     struct s_heap   *next;
-    t_head_group    group;
+    t_block         *free_blocks;
     size_t          total_size;
     size_t          free_size;
     size_t          block_count;
@@ -81,34 +87,19 @@ typedef struct s_heap {
 // HEAP START GLOBAL VAR
 extern t_heap *heap_start;
 
-// HEAP FUNCTIONS
-t_heap          *heap_find(size_t size);
-t_head_group    heap_group(size_t size);
-size_t          heap_size(size_t size);
-t_heap          *heap_next(void);
-t_heap          *heap_prev(void);
-t_heap          *heap_new(size_t size);
-
-
-
-// Metadata for a single allocated block
-typedef struct s_block {
-
-    struct s_block  *prev;
-    struct s_block  *next;
-    size_t          data_size;
-    bool            available;
-
-}               t_block;
-
 
  // BLOCK FUNCTIONS
 t_block *block_find(t_heap *heap, size_t size);
-void    block_merge(t_block *block, t_heap *heap);
-void	block_split(t_block *block, size_t size);
-void    *block_shift(t_block *block_addr);
 void    *block_to_data(t_block *block);
-t_block *heap_to_block(t_heap *heap);
+
+
+// HEAP FUNCTIONS
+t_heap          *heap_find(size_t size);
+t_heap          *heap_new(t_heap *prev, size_t size);
+size_t          heap_size(size_t size);
+t_block         *heap_to_block(t_heap *heap);
+
+
 
 
 

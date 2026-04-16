@@ -1,81 +1,147 @@
 #include "../include/malloc.h"
 
-t_heap *heap_start = NULL;
+/*
+typedef struct s_heap {
 
-t_heap    *heap_new(t_heap *prev, size_t size) {
+    size_t          total_size;
+    size_t          free_size;
+    struct s_heap   *prev;
+    struct s_heap   *next;
 
-    size_t  zone_size;
-    t_heap  *new_heap = NULL;
-    t_block *new_block = NULL;
+}               t_heap;
+*/
 
-    zone_size  = heap_size(size);
-    new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
+t_heap *heap_new_and_append(size_t size) {
+
+    size_t  zone_size = heap_size(size);
+    t_heap *new_heap  = heap_new(zone_size);
+    
     if (new_heap == MAP_FAILED) {
-        printf("mmap() FAILED\n\n");
-        return (NULL);
+        return (MAP_FAILED);
     }
-    new_heap->prev          = prev;
-    new_heap->next          = NULL;
-    new_heap->total_size    = zone_size;
-    new_heap->free_size     = zone_size;
-    new_heap->block_count   = 0;
+    if (zone_size == TINY_HEAP_SIZE) {
 
+        heap_append(&g_arena.TINY, new_heap);
+    }
+    else if (zone_size == TINY_HEAP_SIZE) {
 
-    new_block = heap_to_block(new_heap);
-    new_block->prev         = NULL;
-	new_block->next         = NULL;
-	new_block->data_size    = zone_size - sizeof(t_block);
-    new_block->available    = true;
-
-    new_heap->free_blocks  = new_block;
-    if (prev)
-        prev->next = new_heap;
-
+        heap_append(&g_arena.SMALL, new_heap);
+    }
+    else {
+        heap_append(&g_arena.LARGE, new_heap);
+    }
     return (new_heap);
 }
 
+t_heap    *heap_new(size_t zone_size) {
 
-t_heap  *heap_find(size_t size) {
 
-    t_heap          *cur_heap    = heap_start;
-    t_heap          *prev_heap   = NULL;
-    size_t          size_to_find = size + sizeof(t_block);
+    t_heap  *new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
+    
+    if (new_heap == MAP_FAILED) {
 
-    while (cur_heap != NULL) {
-
-        printf("free = %zu - sizetofind = %zu\n", cur_heap->free_size, size_to_find);
-        if (cur_heap->free_size >= size_to_find) {
-            printf("Found heap with size req.\n");
-            return (cur_heap);
-        }
-        prev_heap = cur_heap;
-        cur_heap = cur_heap->next;
+        printf("%s - mmap() FAILED\n", __func__);
+        return (MAP_FAILED);
     }
-    printf("Created new heap\n");
-    return (heap_new(prev_heap, size));
 
+    new_heap->total_size    = zone_size;
+    new_heap->free_start    = heap_to_chunk(new_heap);
+    new_heap->prev          = NULL;
+    new_heap->next          = NULL;
+    printf("%s - Allocated new heap\n", __func__);
+    return (new_heap);
+}
+
+void    heap_append(t_heap *HEAP_TYPE, t_heap *new_heap) {
+
+    t_heap *cur = HEAP_TYPE;
+    t_heap *prev = NULL;
+
+    printf("%s - Appended new heap\n", __func__);
+    if (HEAP_TYPE == NULL) {
+        HEAP_TYPE = new_heap;
+        return ;
+    }
+    while (cur != NULL) {
+
+        prev = cur;
+        cur = cur->next;
+    }
+    prev->next = new_heap;
+    cur->prev = prev;
+}
+
+t_heap  *heap_find_cis_mem(size_t size) {
+
+    t_heap      *cur         = arena_heap_group(size);
+
+
+    while (cur != NULL) {
+
+        if (heap_check_remaining_cis(cur, size)) {
+            printf("%s - %s heap with size req.\n", __func__, ((heap_type(size) == TINY_HEAP) ? "TINY" : "SMALL"));
+            return (cur);
+        }
+        cur = cur->next;
+    }
+    printf("%s - found no heap with size large enough\n", __func__);
+    return (NULL);
+
+}
+
+
+t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
+
+	t_chunk *new_use_chunk = heap->free_start;
+
+	new_use_chunk->size = size;
+	new_use_chunk->next = NULL;
+	new_use_chunk->prev = NULL;
+
+	heap->free_start = heap->free_start + sizeof(t_chunk) + size;
+	printf("%s - Split mem success.\n", __func__);
+	return (new_use_chunk);
+	
 }
 
 
 
 size_t  heap_size(size_t size) {
 
-    if (size <= TINY_MAX) {
-        return (TINY_BLOCK_SIZE);
+    if (size <= TINY_CHUNK_MAX) {
+        return (TINY_HEAP_SIZE);
     }
-    else if (size <= SMALL_MAX) {
-        return (SMALL_BLOCK_SIZE); 
+    else if (size <= SMALL_CHUNK_MAX) {
+        return (SMALL_HEAP_SIZE); 
     }
     else {
-        return (size + sizeof(t_block));
+        return (size + sizeof(t_chunk));
     }
 }
 
+t_heap_type  heap_type(size_t size) {
 
-
-t_block *heap_to_block(t_heap *heap_addr) {
-
-	return ((t_block *)(heap_addr + 1));
+    if (size <= TINY_CHUNK_MAX) {
+        return (TINY_HEAP);
+    }
+    else if (size <= SMALL_CHUNK_MAX) {
+        return (SMALL_HEAP); 
+    }
+    else {
+        return (LARGE_HEAP);
+    }
 }
+
+int		heap_check_remaining_cis(t_heap *heap, size_t size) {
+
+	return (((char*)heap->free_start + size + sizeof(t_chunk)) > (char *)heap_to_chunk(heap) + heap->total_size);
+}
+
+t_chunk *heap_to_chunk(t_heap *heap_addr) {
+
+	return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
+}
+
+
 
 

@@ -1,9 +1,5 @@
 #include "../include/malloc.h"
 
-size_t alignSize(size_t size)
-{
-    return ((size + (ALIGNMENT - 1)) & ~(ALIGNMENT - 1));
-}
 
 
 #define BBLACK    "\033[30;1m"
@@ -37,7 +33,7 @@ void printALL(void) {
 
 
         printf("-----------------------------------------------\n");
-        t_block *cur_block = heap_to_block(cur_heap);
+        t_chunk *cur_block = heap_to_chunk(cur_heap);
         void *heap_end = (void *)((char *)cur_heap + sizeof(t_heap) + cur_heap->total_size);
         char block_name = 'a';
         while ((void *)cur_block < heap_end) {
@@ -45,12 +41,12 @@ void printALL(void) {
             if (cur_block->available)  {
                 printf(GREEN "FREE-BLOCK              : %c (%p)\n", block_name, cur_block);
                 printf(GREEN"free_size               : %ld\n", cur_block->data_size);
-                printf(GREEN"f_s + sizeof(t_block)   : %ld\n"BRESET, cur_block->data_size + sizeof(t_block));
+                printf(GREEN"f_s + sizeof(t_chunk)   : %ld\n"BRESET, cur_block->data_size + sizeof(t_chunk));
             }
             else {
                 printf(YELLOW "USED-BLOCK              : %c (%p)\n", block_name, cur_block);
                 printf("data_size               : %ld\n", cur_block->data_size);
-                printf("d_s + sizeof(t_block)   : %ld\n", cur_block->data_size + sizeof(t_block));
+                printf("d_s + sizeof(t_chunk)   : %ld\n", cur_block->data_size + sizeof(t_chunk));
                 char *data = block_to_data(cur_block);
                 printf("data                    : \"");
                 size_t i = 0;
@@ -68,7 +64,7 @@ void printALL(void) {
             printf("-----------------------------------------------\n");
 
             block_name += 1;
-            cur_block = (void *)((char *)cur_block + sizeof(t_block) + cur_block->data_size);       
+            cur_block = (void *)((char *)cur_block + sizeof(t_chunk) + cur_block->data_size);       
         }
         heap_name += 1;
         cur_heap = cur_heap->next;

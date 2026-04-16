@@ -1,42 +1,51 @@
 #include "../include/malloc.h"
 
+t_arena g_arena = {0};
+
+
 void    *ft_malloc(size_t size) {
 
-    t_heap  *heap  = NULL;
-    t_block *block = NULL;
+    t_heap  *heap;
+    t_chunk *chunk;
 
-
-    printf("ft_mallloc called\n");
-
-    if (size == 0)
-        return (NULL);
-    size = alignSize(size);
-
-    // Initialize heap
-    if (!heap_start) {
-        if ((heap_start = heap_new(NULL, size)) == NULL)
-            return (NULL);
-    }
-
-    // Find heap that has enough free size
-    if ((heap = heap_find(size)) == NULL) {
-
+    printf("%s - Called\n", __func__);
+    if (size == 0) {
+        printf("%s - Size is 0\n", __func__);
         return (NULL);
     }
-    // If enough free size but fragmented, create new heap
-    if ((block = block_find(heap, size)) == NULL) {
+    size = ALIGN(size);
 
-         // SHOULDNT FAIL UNLESS mmap() fails
-        if ((heap = heap_new(heap, size)) == NULL)
+    if (!arena_heap_initialized(size)) {
+
+        if ((heap = heap_new_and_append(size)) == MAP_FAILED)
             return (NULL);
-        if ((block = block_find(heap, size)) == NULL)
+
+        if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
             return (NULL);
+ 
+        return (chunk_to_data(chunk));
     }
-    printf("Returning block of data\n");
-    return (block_to_data(block));
+    else {
+
+        chunk = arena_bin_find(size);
+        if (!chunk) {
+    
+            chunk = heap_find_cis_mem(size);
+            if (!heap) {
+                
+                if ((heap = heap_new_and_append(size)) == MAP_FAILED)
+                    return (NULL);
+            }
+            chunk = heap_split_cis_mem(heap, size);
+        }
+    }
+    printf("%s - Returning block of data\n", __func__);
+    return (chunk_to_data(chunk));
 }
 
-
+void    ft_free(void *ptr) {
+    (void)ptr;
+}
 
 int main(void) {
 

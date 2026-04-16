@@ -46,63 +46,89 @@
 #define NO_OFFSET 0
 
  // max bytes for a tiny request
-#define TINY_MAX 128
-
- // max bytes for a small request
-#define SMALL_MAX 1024
+#define TINY_CHUNK_MAX 128
 
  // 16384 - fits 128 tiny allocs
-#define TINY_BLOCK_SIZE (4 * PAGE_SIZE)
+#define TINY_HEAP_SIZE (4 * PAGE_SIZE)
+
+ // max bytes for a small request
+#define SMALL_CHUNK_MAX 1024
 
  // 131072 - fits 128 small allocs
-#define SMALL_BLOCK_SIZE (16 * PAGE_SIZE)
+#define SMALL_HEAP_SIZE (16 * PAGE_SIZE)
+
+typedef enum {TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
 
  // BLOCK ALLIGNMENT MULTIPLES OF 16
-#define ALIGNMENT 16
+#define ALIGNMENT (sizeof(size_t) * 2)
 
- // UTILS
-size_t alignSize(size_t size);
+ // MACRO FN TO ALIGN
+#define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
 
+#define FASTBIN_MIN_CHUNK   32
+
+#define FASTBIN_COUNT       8
 
 // Metadata for a single allocated block
-typedef struct s_block {
+typedef struct s_chunk {
 
-    size_t          data_size;
-    bool available;
-    struct s_block  *prev;
-    struct s_block  *next;
-}               t_block;
+    size_t          size;
+    struct s_chunk  *prev;
+    struct s_chunk  *next;
+}                   t_chunk;
 
 //  Metadata for a whole mmap'd region
 typedef struct s_heap {
 
+    size_t          total_size;
     struct s_heap   *prev;
     struct s_heap   *next;
-    t_block         *free_blocks;
-    size_t          total_size;
-    size_t          free_size;
-    size_t          block_count;
+    t_chunk         *free_start;
 
 }               t_heap;
 
-// HEAP START GLOBAL VAR
-extern t_heap *heap_start;
+
+typedef struct s_arena {
+
+    t_heap  *TINY;
+    t_heap  *SMALL;
+    t_heap  *LARGE;
+
+    t_chunk *fastbin[8]; // array of s-linked-list of sizes 32, 48, 64, 80, 96, 112, 128 (LIFO)
+    t_chunk *smallbin;  // circular d-linked list ordered by size (FIFO)
+
+}               t_arena;
+
+
+extern t_arena g_arena;
 
 
  // BLOCK FUNCTIONS
-t_block *block_find(t_heap *heap, size_t size);
-void    *block_to_data(t_block *block);
+t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
+void        *chunk_to_data(t_chunk *block_addr);
 
 
 // HEAP FUNCTIONS
-t_heap          *heap_find(size_t size);
-t_heap          *heap_new(t_heap *prev, size_t size);
-size_t          heap_size(size_t size);
-t_block         *heap_to_block(t_heap *heap);
+t_heap      *heap_new_and_append(size_t size);
+t_heap      *heap_new(size_t zone_size);
+void        heap_append(t_heap *HEAP_TYPE, t_heap *new_heap);
+t_heap      *heap_find_cis_mem(size_t size);
+int         heap_check_remaining_cis(t_heap *heap, size_t size);
+size_t      heap_size(size_t size);
+t_heap_type heap_type(size_t size); 
+t_chunk     *heap_to_chunk(t_heap *heap_addr);
+
+
+ // ARENA FUNCTIONS
+t_chunk     *arena_smallbin_find(size_t size);
+t_chunk     *arena_fastbin_find(size_t size);
+t_heap      *arena_heap_group(size_t size);
+t_chunk     *arena_bin_find(size_t size);
+bool        arena_heap_initialized(size_t size);
+
+
 
 void printALL(void);
-
-
 
 
 // void ft_free(void *ptr);

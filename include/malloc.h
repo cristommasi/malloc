@@ -111,9 +111,9 @@ void        *chunk_to_data(t_chunk *block_addr);
 // HEAP FUNCTIONS
 t_heap      *heap_new_and_append(size_t size);
 t_heap      *heap_new(size_t zone_size);
-void        heap_append(t_heap *HEAP_TYPE, t_heap *new_heap);
+void        heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
 t_heap      *heap_find_cis_mem(size_t size);
-int         heap_check_remaining_cis(t_heap *heap, size_t size);
+int         heap_has_remaining_cis(t_heap *heap, size_t size);
 size_t      heap_size(size_t size);
 t_heap_type heap_type(size_t size); 
 t_chunk     *heap_to_chunk(t_heap *heap_addr);
@@ -128,6 +128,7 @@ bool        arena_heap_initialized(size_t size);
 
 
 
+void printall(t_heap *heap_type);
 void printALL(void);
 
 

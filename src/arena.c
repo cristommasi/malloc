@@ -29,7 +29,6 @@ t_chunk     *arena_bin_find(size_t size) {
 
 	t_heap_type HEAP_TYPE    = heap_type(heap_size(size));
 	size_t		size_to_find = size + sizeof(t_chunk);
-	t_chunk	    *chunk		 = NULL;
 
 	if (HEAP_TYPE == TINY_HEAP) {
 
@@ -45,8 +44,7 @@ t_chunk     *arena_bin_find(size_t size) {
 
 t_chunk     *arena_fastbin_find(size_t size) {
 
-    size_t  size_to_find = size + sizeof(t_chunk);
-    int     index        = ((size_to_find - FASTBIN_MIN_CHUNK) / ALIGNMENT);
+    int     index        = ((size - FASTBIN_MIN_CHUNK) / ALIGNMENT);
     t_chunk *chunk       = g_arena.fastbin[index];
 
     if (!chunk)
@@ -60,19 +58,22 @@ t_chunk     *arena_fastbin_find(size_t size) {
 
 t_chunk     *arena_smallbin_find(size_t size) {
 
-    size_t  size_to_find = size + sizeof(t_chunk);
     t_chunk *cur = g_arena.smallbin;
     
+    if (cur == NULL)
+        return (NULL);
     while (cur != NULL) {
 
-        if (cur->size == size_to_find)
+        if (cur->size == size)
             break;
         cur = cur->next;
         if (cur == g_arena.smallbin)
             break;
     }
+
     cur->next->prev = cur->prev;
-    cur->prev->next = cur->next;
+    if (cur->prev)
+        cur->prev->next = cur->next;
     cur->next = NULL;
     cur->prev = NULL;
     return (cur);
@@ -84,14 +85,14 @@ t_heap      *arena_heap_group(size_t size) {
 
     if (zone_size == TINY_HEAP_SIZE) {
 
-        return (&g_arena.TINY);
+        return (g_arena.TINY);
     }
-    else if (zone_size == TINY_HEAP_SIZE) {
+    else if (zone_size == SMALL_HEAP_SIZE) {
 
-        return (&g_arena.SMALL);
+        return (g_arena.SMALL);
     }
     else {
-        return (&g_arena.LARGE);
+        return (g_arena.LARGE);
     }
     
 }

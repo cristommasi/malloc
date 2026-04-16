@@ -8,7 +8,7 @@ void    *ft_malloc(size_t size) {
     t_heap  *heap;
     t_chunk *chunk;
 
-    printf("%s - Called\n", __func__);
+    printf("\n%s - Called----------------------\n", __func__);
     if (size == 0) {
         printf("%s - Size is 0\n", __func__);
         return (NULL);
@@ -30,7 +30,7 @@ void    *ft_malloc(size_t size) {
         chunk = arena_bin_find(size);
         if (!chunk) {
     
-            chunk = heap_find_cis_mem(size);
+            heap = heap_find_cis_mem(size);
             if (!heap) {
                 
                 if ((heap = heap_new_and_append(size)) == MAP_FAILED)
@@ -39,7 +39,7 @@ void    *ft_malloc(size_t size) {
             chunk = heap_split_cis_mem(heap, size);
         }
     }
-    printf("%s - Returning block of data\n", __func__);
+    printf("%s - Returning block of data\n\n", __func__);
     return (chunk_to_data(chunk));
 }
 
@@ -51,7 +51,7 @@ int main(void) {
 
 
 
-    char *str = (char *)ft_malloc(6);
+    char *str = (char *)ft_malloc(12);
     ft_strlcpy(str, "Hello", 6);
 
     //printALL();
@@ -72,7 +72,7 @@ int main(void) {
     ft_strlcpy(str4, "abcdefghijklmnopqrstuvwxyz", 27);
 
 
-    printALL();
+    // printALL();
 
 
 

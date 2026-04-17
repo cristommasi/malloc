@@ -15,7 +15,7 @@ void    *ft_malloc(size_t size) {
     }
     size = ALIGN(size);
 
-    if (!arena_heap_initialized(size)) {
+    if (arena_heap_uninitialized_or_large(size)) {
 
         if ((heap = heap_new_and_append(size)) == MAP_FAILED)
             return (NULL);
@@ -27,7 +27,7 @@ void    *ft_malloc(size_t size) {
     }
     else {
 
-        chunk = arena_bin_find(size);
+        chunk = arena_fastbin_get(size);
         if (!chunk) {
     
             heap = heap_find_cis_mem(size);
@@ -44,32 +44,45 @@ void    *ft_malloc(size_t size) {
 }
 
 void    ft_free(void *ptr) {
-    (void)ptr;
+    
+    t_chunk *chunk = (t_chunk*)ptr;
+
+    if (!chunk)
+        return (NULL);
+    t_heap_type  TYPE = heap_type(heap_size(chunk->size));
+
+    if (TYPE == )
+
 }
+
 
 int main(void) {
 
+    for (size_t i = 0; i < 64; i++) {
+
+        printf("[%zu] = %zu\n", i , ((i + 1) * 16));
+
+    }
+
+    // char *str = (char *)ft_malloc(12);
+    // ft_strlcpy(str, "Hello", 6);
+
+    // //printALL();
+
+    // char *str2 = (char *)ft_malloc(7);
+    // ft_strlcpy(str2, " World", 7);
 
 
-    char *str = (char *)ft_malloc(12);
-    ft_strlcpy(str, "Hello", 6);
+    // //printALL();
 
-    //printALL();
-
-    char *str2 = (char *)ft_malloc(7);
-    ft_strlcpy(str2, " World", 7);
+    // char *str3 = (char *)ft_malloc(129);
+    // ft_strlcpy(str3, " GHIIIIIIIIIIIIII", 18);
 
 
-    //printALL();
+    // //printALL();
 
-    char *str3 = (char *)ft_malloc(129);
-    ft_strlcpy(str3, " GHIIIIIIIIIIIIII", 18);
-
-
-    //printALL();
-
-    char *str4 = (char *)ft_malloc(1234567);
-    ft_strlcpy(str4, "abcdefghijklmnopqrstuvwxyz", 27);
+    // char *str4 = (char *)ft_malloc(1234567);
+    // ft_strlcpy(str4, "abcdefghijklmnopqrstuvwxyz", 27);
 
 
     // printALL();

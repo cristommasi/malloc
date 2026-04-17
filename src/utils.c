@@ -20,7 +20,7 @@
 void printALL(void) {
 
 
-    t_heap *HEAPS[3] = {g_arena.TINY, g_arena.SMALL, g_arena.LARGE};
+    t_heap *HEAPS[3] = {g_arena.tiny, g_arena.small, g_arena.large};
 
     for (int i = 0; i < 3; i++) {
 
@@ -39,7 +39,7 @@ void printALL(void) {
             char block_name = 'a';
             while ((void *)cur_block < heap_end) {
 
-                if (!(cur_block->next == NULL && cur_block->prev == NULL)) {
+                if (cur_block->next == NULL) {
                     cur_block = (void *)((char *)cur_block + sizeof(t_chunk) + cur_block->size);    
                     continue;
                 }

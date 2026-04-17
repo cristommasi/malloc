@@ -11,73 +11,43 @@ typedef struct s_arena {
 }               t_arena;
 */
 
-bool        arena_heap_initialized(size_t size) {
+bool        arena_heap_uninitialized_or_large(size_t size) {
 
     t_heap_type TYPE = heap_type(size);
 
 
-    if ((TYPE == LARGE_HEAP) || (!g_arena.TINY && TYPE == TINY_HEAP) || (!g_arena.SMALL && TYPE == SMALL_HEAP)) {
+    if ((TYPE == LARGE_HEAP) || (!g_arena.tiny && TYPE == TINY_HEAP) || (!g_arena.small && TYPE == SMALL_HEAP)) {
         printf("%s - No heaps found initially or request heap is large\n", __func__);
-        return (false);
+        return (true);
     }
 
     printf("%s - Heaps found initially\n", __func__);
-    return (true);
+    return (false);
 }
 
-t_chunk     *arena_bin_find(size_t size) {
 
-	t_heap_type HEAP_TYPE    = heap_type(heap_size(size));
-	size_t		size_to_find = size + sizeof(t_chunk);
 
-	if (HEAP_TYPE == TINY_HEAP) {
+t_chunk     *arena_fastbin_get(size_t size) {
 
-		return (arena_fastbin_find(size_to_find));
-	}
-	else if (HEAP_TYPE == SMALL_HEAP) {
-
-		return (arena_smallbin_find(size_to_find));
-
-	}
-	return (NULL);
-}
-
-t_chunk     *arena_fastbin_find(size_t size) {
-
-    int     index        = ((size - FASTBIN_MIN_CHUNK) / ALIGNMENT);
+    size_t  index        = BIN_IDX(size + sizeof(t_chunk));
     t_chunk *chunk       = g_arena.fastbin[index];
 
     if (!chunk)
         return (NULL);
     g_arena.fastbin[index] = chunk->next;
     chunk->next = NULL;
-    chunk->prev = NULL;
-    return (chunk);
+	return (chunk);
+}
+
+void    arena_fastbin_set(t_chunk *freed_chunk) {
+
+	size_t	index = BIN_IDX(freed_chunk->size + sizeof(t_chunk));
+
+	freed_chunk->next = g_arena.fastbin[index];
+	g_arena.fastbin[index] = freed_chunk;
 }
 
 
-t_chunk     *arena_smallbin_find(size_t size) {
-
-    t_chunk *cur = g_arena.smallbin;
-    
-    if (cur == NULL)
-        return (NULL);
-    while (cur != NULL) {
-
-        if (cur->size == size)
-            break;
-        cur = cur->next;
-        if (cur == g_arena.smallbin)
-            break;
-    }
-
-    cur->next->prev = cur->prev;
-    if (cur->prev)
-        cur->prev->next = cur->next;
-    cur->next = NULL;
-    cur->prev = NULL;
-    return (cur);
-}
 
 t_heap      *arena_heap_group(size_t size) {
 
@@ -85,14 +55,14 @@ t_heap      *arena_heap_group(size_t size) {
 
     if (zone_size == TINY_HEAP_SIZE) {
 
-        return (g_arena.TINY);
+        return (g_arena.tiny);
     }
     else if (zone_size == SMALL_HEAP_SIZE) {
 
-        return (g_arena.SMALL);
+        return (g_arena.small);
     }
     else {
-        return (g_arena.LARGE);
+        return (g_arena.large);
     }
     
 }

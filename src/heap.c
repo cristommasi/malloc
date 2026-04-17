@@ -22,14 +22,14 @@ t_heap *heap_new_and_append(size_t size) {
     printf("%s - Allocated new %s heap\n", __func__, ((heap_type(size) == TINY_HEAP) ? "TINY" : ((heap_type(size) == SMALL_HEAP) ? "SMALL" : "LARGE")));
     if (zone_size == TINY_HEAP_SIZE) {
 
-        heap_append(&g_arena.TINY, new_heap);
+        heap_append(&g_arena.tiny, new_heap);
     }
     else if (zone_size == SMALL_HEAP_SIZE) {
 
-        heap_append(&g_arena.SMALL, new_heap);
+        heap_append(&g_arena.small, new_heap);
     }
     else {
-        heap_append(&g_arena.LARGE, new_heap);
+        heap_append(&g_arena.large, new_heap);
     }
     return (new_heap);
 }
@@ -47,7 +47,6 @@ t_heap    *heap_new(size_t zone_size) {
 
     new_heap->total_size    = zone_size;
     new_heap->free_start    = heap_to_chunk(new_heap);
-    new_heap->prev          = NULL;
     new_heap->next          = NULL;
     return (new_heap);
 }
@@ -68,7 +67,6 @@ void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap) {
         cur = cur->next;
     }
     prev->next = new_heap;
-    new_heap->prev  = prev;
 }
 
 t_heap  *heap_find_cis_mem(size_t size) {
@@ -96,12 +94,10 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
 	new_use_chunk->size = size;
 	new_use_chunk->next = NULL;
-	new_use_chunk->prev = NULL;
 
     heap->free_start = (t_chunk *)((char *)heap->free_start + sizeof(t_chunk) + size);
 	printf("%s - Split mem success.\n", __func__);
 	return (new_use_chunk);
-	
 }
 
 

@@ -45,35 +45,42 @@
 // NO OFFSET FLAG
 #define NO_OFFSET 0
 
- // max bytes for a tiny request
-#define TINY_CHUNK_MAX 128
-
- // 16384 - fits 128 tiny allocs
-#define TINY_HEAP_SIZE (4 * PAGE_SIZE)
-
- // max bytes for a small request
-#define SMALL_CHUNK_MAX 1024
-
- // 131072 - fits 128 small allocs
-#define SMALL_HEAP_SIZE (16 * PAGE_SIZE)
-
-typedef enum {TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
-
  // BLOCK ALLIGNMENT MULTIPLES OF 16
-#define ALIGNMENT (sizeof(size_t) * 2)
+#define ALIGNMENT (sizeof(size_t))
 
  // MACRO FN TO ALIGN
 #define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
 
-#define FASTBIN_MIN_CHUNK   32
+ // max bytes for a tiny request
+#define TINY_CHUNK_MAX 128
 
-#define FASTBIN_COUNT       8
+ // max bytes for a small request
+#define SMALL_CHUNK_MAX 1024
+
+ // 16384 - fits 128 tiny allocs
+#define TINY_HEAP_SIZE (4 * PAGE_SIZE)
+
+ // 131072 - fits 128 small allocs
+#define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
+
+ // 16, 32, 48, 64, 80, 96, 112, 128
+#define FASTBIN_MIN_CHUNK 16
+
+ // 0, 1, 2, 3, 4, 5, 6, 7
+#define FASTBIN_COUNT 64
+
+#define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
+
+#define BIN_LAST 0
+
+typedef enum {TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
+
+
 
 // Metadata for a single allocated block
 typedef struct s_chunk {
 
     size_t          size;
-    struct s_chunk  *prev;
     struct s_chunk  *next;
 }                   t_chunk;
 
@@ -81,7 +88,6 @@ typedef struct s_chunk {
 typedef struct s_heap {
 
     size_t          total_size;
-    struct s_heap   *prev;
     struct s_heap   *next;
     t_chunk         *free_start;
 
@@ -90,13 +96,11 @@ typedef struct s_heap {
 
 typedef struct s_arena {
 
-    t_heap  *TINY;
-    t_heap  *SMALL;
-    t_heap  *LARGE;
+    t_heap  *tiny;
+    t_heap  *small;
+    t_heap  *large;
 
-    t_chunk *fastbin[8]; // array of s-linked-list of sizes 32, 48, 64, 80, 96, 112, 128 (LIFO)
-    t_chunk *smallbin;  // circular d-linked list ordered by size (FIFO)
-
+    t_chunk *fastbin[FASTBIN_COUNT]; // array of s-linked-list of sizes 16, 32, 48, 64, 80, 96, 112, 128 (LIFO)
 }               t_arena;
 
 
@@ -120,11 +124,9 @@ t_chunk     *heap_to_chunk(t_heap *heap_addr);
 
 
  // ARENA FUNCTIONS
-t_chunk     *arena_smallbin_find(size_t size);
 t_chunk     *arena_fastbin_find(size_t size);
 t_heap      *arena_heap_group(size_t size);
-t_chunk     *arena_bin_find(size_t size);
-bool        arena_heap_initialized(size_t size);
+bool         arena_heap_uninitialized_or_large(size_t size);
 
 
 

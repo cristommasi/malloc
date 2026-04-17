@@ -133,7 +133,7 @@ t_chunk     *arena_fastbin_get(size_t size);
 void        arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void        arena_fastbin_drain(t_heap *heap);
 t_heap      **arena_heap_group(size_t size);
-t_heap      *arena_heap_find(t_chunk *chunk);
+t_heap      *arena_heap_find_by_size(t_chunk *chunk, size_t size);
 bool        arena_owner_of_heap(t_heap *heap, t_chunk *chunk);
 int         arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 

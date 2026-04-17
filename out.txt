@@ -1,0 +1,1597 @@
+═══ [1] fill one entire tiny heap (112 bytes x128) ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=128                   ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea49020   size=112    data="full-000"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea49120   size=112    data="full-002"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea49220   size=112    data="full-004"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea49320   size=112    data="full-006"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea49420   size=112    data="full-008"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea49520   size=112    data="full-010"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea49620   size=112    data="full-012"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea49720   size=112    data="full-014"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [35;1mUSED [0maddr=0x7e0d2ea49820   size=112    data="full-016"
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [35;1mUSED [0maddr=0x7e0d2ea49920   size=112    data="full-018"
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [35;1mUSED [0maddr=0x7e0d2ea49a20   size=112    data="full-020"
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [35;1mUSED [0maddr=0x7e0d2ea49b20   size=112    data="full-022"
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [35;1mUSED [0maddr=0x7e0d2ea49c20   size=112    data="full-024"
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [35;1mUSED [0maddr=0x7e0d2ea49d20   size=112    data="full-026"
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [35;1mUSED [0maddr=0x7e0d2ea49e20   size=112    data="full-028"
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [35;1mUSED [0maddr=0x7e0d2ea49f20   size=112    data="full-030"
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [35;1mUSED [0maddr=0x7e0d2ea4a020   size=112    data="full-032"
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [35;1mUSED [0maddr=0x7e0d2ea4a120   size=112    data="full-034"
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [35;1mUSED [0maddr=0x7e0d2ea4a220   size=112    data="full-036"
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [35;1mUSED [0maddr=0x7e0d2ea4a320   size=112    data="full-038"
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [35;1mUSED [0maddr=0x7e0d2ea4a420   size=112    data="full-040"
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [35;1mUSED [0maddr=0x7e0d2ea4a520   size=112    data="full-042"
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [35;1mUSED [0maddr=0x7e0d2ea4a620   size=112    data="full-044"
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [35;1mUSED [0maddr=0x7e0d2ea4a720   size=112    data="full-046"
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [35;1mUSED [0maddr=0x7e0d2ea4a820   size=112    data="full-048"
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [35;1mUSED [0maddr=0x7e0d2ea4a920   size=112    data="full-050"
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [35;1mUSED [0maddr=0x7e0d2ea4aa20   size=112    data="full-052"
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [35;1mUSED [0maddr=0x7e0d2ea4ab20   size=112    data="full-054"
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [35;1mUSED [0maddr=0x7e0d2ea4ac20   size=112    data="full-056"
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [35;1mUSED [0maddr=0x7e0d2ea4ad20   size=112    data="full-058"
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [35;1mUSED [0maddr=0x7e0d2ea4ae20   size=112    data="full-060"
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [35;1mUSED [0maddr=0x7e0d2ea4af20   size=112    data="full-062"
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea4b020   size=112    data="full-064"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea4b120   size=112    data="full-066"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea4b220   size=112    data="full-068"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea4b320   size=112    data="full-070"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea4b420   size=112    data="full-072"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea4b520   size=112    data="full-074"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea4b620   size=112    data="full-076"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea4b720   size=112    data="full-078"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [35;1mUSED [0maddr=0x7e0d2ea4b820   size=112    data="full-080"
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [35;1mUSED [0maddr=0x7e0d2ea4b920   size=112    data="full-082"
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [35;1mUSED [0maddr=0x7e0d2ea4ba20   size=112    data="full-084"
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [35;1mUSED [0maddr=0x7e0d2ea4bb20   size=112    data="full-086"
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [35;1mUSED [0maddr=0x7e0d2ea4bc20   size=112    data="full-088"
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [35;1mUSED [0maddr=0x7e0d2ea4bd20   size=112    data="full-090"
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [35;1mUSED [0maddr=0x7e0d2ea4be20   size=112    data="full-092"
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [35;1mUSED [0maddr=0x7e0d2ea4bf20   size=112    data="full-094"
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [35;1mUSED [0maddr=0x7e0d2ea4c020   size=112    data="full-096"
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [35;1mUSED [0maddr=0x7e0d2ea4c120   size=112    data="full-098"
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [35;1mUSED [0maddr=0x7e0d2ea4c220   size=112    data="full-100"
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [35;1mUSED [0maddr=0x7e0d2ea4c320   size=112    data="full-102"
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [35;1mUSED [0maddr=0x7e0d2ea4c420   size=112    data="full-104"
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [35;1mUSED [0maddr=0x7e0d2ea4c520   size=112    data="full-106"
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [35;1mUSED [0maddr=0x7e0d2ea4c620   size=112    data="full-108"
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [35;1mUSED [0maddr=0x7e0d2ea4c720   size=112    data="full-110"
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [35;1mUSED [0maddr=0x7e0d2ea4c820   size=112    data="full-112"
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [35;1mUSED [0maddr=0x7e0d2ea4c920   size=112    data="full-114"
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [35;1mUSED [0maddr=0x7e0d2ea4ca20   size=112    data="full-116"
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [35;1mUSED [0maddr=0x7e0d2ea4cb20   size=112    data="full-118"
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [35;1mUSED [0maddr=0x7e0d2ea4cc20   size=112    data="full-120"
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [35;1mUSED [0maddr=0x7e0d2ea4cd20   size=112    data="full-122"
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [35;1mUSED [0maddr=0x7e0d2ea4ce20   size=112    data="full-124"
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [35;1mUSED [0maddr=0x7e0d2ea4cf20   size=112    data="full-126"
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m  (empty)
+
+
+═══ [2] alloc 8 bytes → expect chunk size 16 (padding) ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=128                   ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea49020   size=112    data="full-000"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea49120   size=112    data="full-002"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea49220   size=112    data="full-004"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea49320   size=112    data="full-006"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea49420   size=112    data="full-008"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea49520   size=112    data="full-010"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea49620   size=112    data="full-012"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea49720   size=112    data="full-014"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [35;1mUSED [0maddr=0x7e0d2ea49820   size=112    data="full-016"
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [35;1mUSED [0maddr=0x7e0d2ea49920   size=112    data="full-018"
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [35;1mUSED [0maddr=0x7e0d2ea49a20   size=112    data="full-020"
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [35;1mUSED [0maddr=0x7e0d2ea49b20   size=112    data="full-022"
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [35;1mUSED [0maddr=0x7e0d2ea49c20   size=112    data="full-024"
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [35;1mUSED [0maddr=0x7e0d2ea49d20   size=112    data="full-026"
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [35;1mUSED [0maddr=0x7e0d2ea49e20   size=112    data="full-028"
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [35;1mUSED [0maddr=0x7e0d2ea49f20   size=112    data="full-030"
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [35;1mUSED [0maddr=0x7e0d2ea4a020   size=112    data="full-032"
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [35;1mUSED [0maddr=0x7e0d2ea4a120   size=112    data="full-034"
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [35;1mUSED [0maddr=0x7e0d2ea4a220   size=112    data="full-036"
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [35;1mUSED [0maddr=0x7e0d2ea4a320   size=112    data="full-038"
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [35;1mUSED [0maddr=0x7e0d2ea4a420   size=112    data="full-040"
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [35;1mUSED [0maddr=0x7e0d2ea4a520   size=112    data="full-042"
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [35;1mUSED [0maddr=0x7e0d2ea4a620   size=112    data="full-044"
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [35;1mUSED [0maddr=0x7e0d2ea4a720   size=112    data="full-046"
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [35;1mUSED [0maddr=0x7e0d2ea4a820   size=112    data="full-048"
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [35;1mUSED [0maddr=0x7e0d2ea4a920   size=112    data="full-050"
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [35;1mUSED [0maddr=0x7e0d2ea4aa20   size=112    data="full-052"
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [35;1mUSED [0maddr=0x7e0d2ea4ab20   size=112    data="full-054"
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [35;1mUSED [0maddr=0x7e0d2ea4ac20   size=112    data="full-056"
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [35;1mUSED [0maddr=0x7e0d2ea4ad20   size=112    data="full-058"
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [35;1mUSED [0maddr=0x7e0d2ea4ae20   size=112    data="full-060"
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [35;1mUSED [0maddr=0x7e0d2ea4af20   size=112    data="full-062"
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea4b020   size=112    data="full-064"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea4b120   size=112    data="full-066"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea4b220   size=112    data="full-068"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea4b320   size=112    data="full-070"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea4b420   size=112    data="full-072"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea4b520   size=112    data="full-074"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea4b620   size=112    data="full-076"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea4b720   size=112    data="full-078"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [35;1mUSED [0maddr=0x7e0d2ea4b820   size=112    data="full-080"
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [35;1mUSED [0maddr=0x7e0d2ea4b920   size=112    data="full-082"
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [35;1mUSED [0maddr=0x7e0d2ea4ba20   size=112    data="full-084"
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [35;1mUSED [0maddr=0x7e0d2ea4bb20   size=112    data="full-086"
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [35;1mUSED [0maddr=0x7e0d2ea4bc20   size=112    data="full-088"
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [35;1mUSED [0maddr=0x7e0d2ea4bd20   size=112    data="full-090"
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [35;1mUSED [0maddr=0x7e0d2ea4be20   size=112    data="full-092"
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [35;1mUSED [0maddr=0x7e0d2ea4bf20   size=112    data="full-094"
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [35;1mUSED [0maddr=0x7e0d2ea4c020   size=112    data="full-096"
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [35;1mUSED [0maddr=0x7e0d2ea4c120   size=112    data="full-098"
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [35;1mUSED [0maddr=0x7e0d2ea4c220   size=112    data="full-100"
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [35;1mUSED [0maddr=0x7e0d2ea4c320   size=112    data="full-102"
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [35;1mUSED [0maddr=0x7e0d2ea4c420   size=112    data="full-104"
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [35;1mUSED [0maddr=0x7e0d2ea4c520   size=112    data="full-106"
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [35;1mUSED [0maddr=0x7e0d2ea4c620   size=112    data="full-108"
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [35;1mUSED [0maddr=0x7e0d2ea4c720   size=112    data="full-110"
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [35;1mUSED [0maddr=0x7e0d2ea4c820   size=112    data="full-112"
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [35;1mUSED [0maddr=0x7e0d2ea4c920   size=112    data="full-114"
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [35;1mUSED [0maddr=0x7e0d2ea4ca20   size=112    data="full-116"
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [35;1mUSED [0maddr=0x7e0d2ea4cb20   size=112    data="full-118"
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [35;1mUSED [0maddr=0x7e0d2ea4cc20   size=112    data="full-120"
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [35;1mUSED [0maddr=0x7e0d2ea4cd20   size=112    data="full-122"
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [35;1mUSED [0maddr=0x7e0d2ea4ce20   size=112    data="full-124"
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [35;1mUSED [0maddr=0x7e0d2ea4cf20   size=112    data="full-126"
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [1]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=16                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m  (empty)
+
+
+═══ [3] force a second tiny heap (alloc 64 more x48) ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=128                   ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea49020   size=112    data="full-000"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea49120   size=112    data="full-002"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea49220   size=112    data="full-004"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea49320   size=112    data="full-006"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea49420   size=112    data="full-008"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea49520   size=112    data="full-010"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea49620   size=112    data="full-012"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea49720   size=112    data="full-014"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [35;1mUSED [0maddr=0x7e0d2ea49820   size=112    data="full-016"
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [35;1mUSED [0maddr=0x7e0d2ea49920   size=112    data="full-018"
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [35;1mUSED [0maddr=0x7e0d2ea49a20   size=112    data="full-020"
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [35;1mUSED [0maddr=0x7e0d2ea49b20   size=112    data="full-022"
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [35;1mUSED [0maddr=0x7e0d2ea49c20   size=112    data="full-024"
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [35;1mUSED [0maddr=0x7e0d2ea49d20   size=112    data="full-026"
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [35;1mUSED [0maddr=0x7e0d2ea49e20   size=112    data="full-028"
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [35;1mUSED [0maddr=0x7e0d2ea49f20   size=112    data="full-030"
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [35;1mUSED [0maddr=0x7e0d2ea4a020   size=112    data="full-032"
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [35;1mUSED [0maddr=0x7e0d2ea4a120   size=112    data="full-034"
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [35;1mUSED [0maddr=0x7e0d2ea4a220   size=112    data="full-036"
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [35;1mUSED [0maddr=0x7e0d2ea4a320   size=112    data="full-038"
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [35;1mUSED [0maddr=0x7e0d2ea4a420   size=112    data="full-040"
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [35;1mUSED [0maddr=0x7e0d2ea4a520   size=112    data="full-042"
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [35;1mUSED [0maddr=0x7e0d2ea4a620   size=112    data="full-044"
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [35;1mUSED [0maddr=0x7e0d2ea4a720   size=112    data="full-046"
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [35;1mUSED [0maddr=0x7e0d2ea4a820   size=112    data="full-048"
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [35;1mUSED [0maddr=0x7e0d2ea4a920   size=112    data="full-050"
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [35;1mUSED [0maddr=0x7e0d2ea4aa20   size=112    data="full-052"
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [35;1mUSED [0maddr=0x7e0d2ea4ab20   size=112    data="full-054"
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [35;1mUSED [0maddr=0x7e0d2ea4ac20   size=112    data="full-056"
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [35;1mUSED [0maddr=0x7e0d2ea4ad20   size=112    data="full-058"
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [35;1mUSED [0maddr=0x7e0d2ea4ae20   size=112    data="full-060"
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [35;1mUSED [0maddr=0x7e0d2ea4af20   size=112    data="full-062"
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea4b020   size=112    data="full-064"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea4b120   size=112    data="full-066"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea4b220   size=112    data="full-068"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea4b320   size=112    data="full-070"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea4b420   size=112    data="full-072"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea4b520   size=112    data="full-074"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea4b620   size=112    data="full-076"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea4b720   size=112    data="full-078"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [35;1mUSED [0maddr=0x7e0d2ea4b820   size=112    data="full-080"
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [35;1mUSED [0maddr=0x7e0d2ea4b920   size=112    data="full-082"
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [35;1mUSED [0maddr=0x7e0d2ea4ba20   size=112    data="full-084"
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [35;1mUSED [0maddr=0x7e0d2ea4bb20   size=112    data="full-086"
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [35;1mUSED [0maddr=0x7e0d2ea4bc20   size=112    data="full-088"
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [35;1mUSED [0maddr=0x7e0d2ea4bd20   size=112    data="full-090"
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [35;1mUSED [0maddr=0x7e0d2ea4be20   size=112    data="full-092"
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [35;1mUSED [0maddr=0x7e0d2ea4bf20   size=112    data="full-094"
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [35;1mUSED [0maddr=0x7e0d2ea4c020   size=112    data="full-096"
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [35;1mUSED [0maddr=0x7e0d2ea4c120   size=112    data="full-098"
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [35;1mUSED [0maddr=0x7e0d2ea4c220   size=112    data="full-100"
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [35;1mUSED [0maddr=0x7e0d2ea4c320   size=112    data="full-102"
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [35;1mUSED [0maddr=0x7e0d2ea4c420   size=112    data="full-104"
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [35;1mUSED [0maddr=0x7e0d2ea4c520   size=112    data="full-106"
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [35;1mUSED [0maddr=0x7e0d2ea4c620   size=112    data="full-108"
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [35;1mUSED [0maddr=0x7e0d2ea4c720   size=112    data="full-110"
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [35;1mUSED [0maddr=0x7e0d2ea4c820   size=112    data="full-112"
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [35;1mUSED [0maddr=0x7e0d2ea4c920   size=112    data="full-114"
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [35;1mUSED [0maddr=0x7e0d2ea4ca20   size=112    data="full-116"
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [35;1mUSED [0maddr=0x7e0d2ea4cb20   size=112    data="full-118"
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [35;1mUSED [0maddr=0x7e0d2ea4cc20   size=112    data="full-120"
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [35;1mUSED [0maddr=0x7e0d2ea4cd20   size=112    data="full-122"
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [35;1mUSED [0maddr=0x7e0d2ea4ce20   size=112    data="full-124"
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [35;1mUSED [0maddr=0x7e0d2ea4cf20   size=112    data="full-126"
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [1]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=80                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+    [16] [35;1mUSED [0maddr=0x7e0d2ea441a0   size=48     data="mid-000"
+    [17] [35;1mUSED [0maddr=0x7e0d2ea441e0   size=48     data="mid-001"
+    [18] [35;1mUSED [0maddr=0x7e0d2ea44220   size=48     data="mid-002"
+    [19] [35;1mUSED [0maddr=0x7e0d2ea44260   size=48     data="mid-003"
+    [20] [35;1mUSED [0maddr=0x7e0d2ea442a0   size=48     data="mid-004"
+    [21] [35;1mUSED [0maddr=0x7e0d2ea442e0   size=48     data="mid-005"
+    [22] [35;1mUSED [0maddr=0x7e0d2ea44320   size=48     data="mid-006"
+    [23] [35;1mUSED [0maddr=0x7e0d2ea44360   size=48     data="mid-007"
+    [24] [35;1mUSED [0maddr=0x7e0d2ea443a0   size=48     data="mid-008"
+    [25] [35;1mUSED [0maddr=0x7e0d2ea443e0   size=48     data="mid-009"
+    [26] [35;1mUSED [0maddr=0x7e0d2ea44420   size=48     data="mid-010"
+    [27] [35;1mUSED [0maddr=0x7e0d2ea44460   size=48     data="mid-011"
+    [28] [35;1mUSED [0maddr=0x7e0d2ea444a0   size=48     data="mid-012"
+    [29] [35;1mUSED [0maddr=0x7e0d2ea444e0   size=48     data="mid-013"
+    [30] [35;1mUSED [0maddr=0x7e0d2ea44520   size=48     data="mid-014"
+    [31] [35;1mUSED [0maddr=0x7e0d2ea44560   size=48     data="mid-015"
+    [32] [35;1mUSED [0maddr=0x7e0d2ea445a0   size=48     data="mid-016"
+    [33] [35;1mUSED [0maddr=0x7e0d2ea445e0   size=48     data="mid-017"
+    [34] [35;1mUSED [0maddr=0x7e0d2ea44620   size=48     data="mid-018"
+    [35] [35;1mUSED [0maddr=0x7e0d2ea44660   size=48     data="mid-019"
+    [36] [35;1mUSED [0maddr=0x7e0d2ea446a0   size=48     data="mid-020"
+    [37] [35;1mUSED [0maddr=0x7e0d2ea446e0   size=48     data="mid-021"
+    [38] [35;1mUSED [0maddr=0x7e0d2ea44720   size=48     data="mid-022"
+    [39] [35;1mUSED [0maddr=0x7e0d2ea44760   size=48     data="mid-023"
+    [40] [35;1mUSED [0maddr=0x7e0d2ea447a0   size=48     data="mid-024"
+    [41] [35;1mUSED [0maddr=0x7e0d2ea447e0   size=48     data="mid-025"
+    [42] [35;1mUSED [0maddr=0x7e0d2ea44820   size=48     data="mid-026"
+    [43] [35;1mUSED [0maddr=0x7e0d2ea44860   size=48     data="mid-027"
+    [44] [35;1mUSED [0maddr=0x7e0d2ea448a0   size=48     data="mid-028"
+    [45] [35;1mUSED [0maddr=0x7e0d2ea448e0   size=48     data="mid-029"
+    [46] [35;1mUSED [0maddr=0x7e0d2ea44920   size=48     data="mid-030"
+    [47] [35;1mUSED [0maddr=0x7e0d2ea44960   size=48     data="mid-031"
+    [48] [35;1mUSED [0maddr=0x7e0d2ea449a0   size=48     data="mid-032"
+    [49] [35;1mUSED [0maddr=0x7e0d2ea449e0   size=48     data="mid-033"
+    [50] [35;1mUSED [0maddr=0x7e0d2ea44a20   size=48     data="mid-034"
+    [51] [35;1mUSED [0maddr=0x7e0d2ea44a60   size=48     data="mid-035"
+    [52] [35;1mUSED [0maddr=0x7e0d2ea44aa0   size=48     data="mid-036"
+    [53] [35;1mUSED [0maddr=0x7e0d2ea44ae0   size=48     data="mid-037"
+    [54] [35;1mUSED [0maddr=0x7e0d2ea44b20   size=48     data="mid-038"
+    [55] [35;1mUSED [0maddr=0x7e0d2ea44b60   size=48     data="mid-039"
+    [56] [35;1mUSED [0maddr=0x7e0d2ea44ba0   size=48     data="mid-040"
+    [57] [35;1mUSED [0maddr=0x7e0d2ea44be0   size=48     data="mid-041"
+    [58] [35;1mUSED [0maddr=0x7e0d2ea44c20   size=48     data="mid-042"
+    [59] [35;1mUSED [0maddr=0x7e0d2ea44c60   size=48     data="mid-043"
+    [60] [35;1mUSED [0maddr=0x7e0d2ea44ca0   size=48     data="mid-044"
+    [61] [35;1mUSED [0maddr=0x7e0d2ea44ce0   size=48     data="mid-045"
+    [62] [35;1mUSED [0maddr=0x7e0d2ea44d20   size=48     data="mid-046"
+    [63] [35;1mUSED [0maddr=0x7e0d2ea44d60   size=48     data="mid-047"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea44da0   size=48     data="mid-048"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea44de0   size=48     data="mid-049"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea44e20   size=48     data="mid-050"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea44e60   size=48     data="mid-051"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea44ea0   size=48     data="mid-052"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea44ee0   size=48     data="mid-053"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea44f20   size=48     data="mid-054"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea44f60   size=48     data="mid-055"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea44fa0   size=48     data="mid-056"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea44fe0   size=48     data="mid-057"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea45020   size=48     data="mid-058"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea45060   size=48     data="mid-059"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea450a0   size=48     data="mid-060"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea450e0   size=48     data="mid-061"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea45120   size=48     data="mid-062"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea45160   size=48     data="mid-063"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m  (empty)
+
+
+═══ [4] free every other full chunk → fill fastbin[112] ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=64                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [33mFREE [0maddr=0x7e0d2ea49020   size=112
+
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [33mFREE [0maddr=0x7e0d2ea49120   size=112
+
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [33mFREE [0maddr=0x7e0d2ea49220   size=112
+
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [33mFREE [0maddr=0x7e0d2ea49320   size=112
+
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [33mFREE [0maddr=0x7e0d2ea49420   size=112
+
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [33mFREE [0maddr=0x7e0d2ea49520   size=112
+
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [33mFREE [0maddr=0x7e0d2ea49620   size=112
+
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [33mFREE [0maddr=0x7e0d2ea49720   size=112
+
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [33mFREE [0maddr=0x7e0d2ea49820   size=112
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [33mFREE [0maddr=0x7e0d2ea49920   size=112
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [33mFREE [0maddr=0x7e0d2ea49a20   size=112
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [33mFREE [0maddr=0x7e0d2ea49b20   size=112
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [33mFREE [0maddr=0x7e0d2ea49c20   size=112
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [33mFREE [0maddr=0x7e0d2ea49d20   size=112
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [33mFREE [0maddr=0x7e0d2ea49e20   size=112
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [33mFREE [0maddr=0x7e0d2ea49f20   size=112
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [33mFREE [0maddr=0x7e0d2ea4a020   size=112
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [33mFREE [0maddr=0x7e0d2ea4a120   size=112
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [33mFREE [0maddr=0x7e0d2ea4a220   size=112
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [33mFREE [0maddr=0x7e0d2ea4a320   size=112
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [33mFREE [0maddr=0x7e0d2ea4a420   size=112
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [33mFREE [0maddr=0x7e0d2ea4a520   size=112
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [33mFREE [0maddr=0x7e0d2ea4a620   size=112
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [33mFREE [0maddr=0x7e0d2ea4a720   size=112
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [33mFREE [0maddr=0x7e0d2ea4a820   size=112
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [33mFREE [0maddr=0x7e0d2ea4a920   size=112
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [33mFREE [0maddr=0x7e0d2ea4aa20   size=112
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [33mFREE [0maddr=0x7e0d2ea4ab20   size=112
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [33mFREE [0maddr=0x7e0d2ea4ac20   size=112
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [33mFREE [0maddr=0x7e0d2ea4ad20   size=112
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [33mFREE [0maddr=0x7e0d2ea4ae20   size=112
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [33mFREE [0maddr=0x7e0d2ea4af20   size=112
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [33mFREE [0maddr=0x7e0d2ea4b020   size=112
+
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [33mFREE [0maddr=0x7e0d2ea4b120   size=112
+
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [33mFREE [0maddr=0x7e0d2ea4b220   size=112
+
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [33mFREE [0maddr=0x7e0d2ea4b320   size=112
+
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [33mFREE [0maddr=0x7e0d2ea4b420   size=112
+
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [33mFREE [0maddr=0x7e0d2ea4b520   size=112
+
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [33mFREE [0maddr=0x7e0d2ea4b620   size=112
+
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [33mFREE [0maddr=0x7e0d2ea4b720   size=112
+
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [33mFREE [0maddr=0x7e0d2ea4b820   size=112
+
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [33mFREE [0maddr=0x7e0d2ea4b920   size=112
+
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [33mFREE [0maddr=0x7e0d2ea4ba20   size=112
+
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [33mFREE [0maddr=0x7e0d2ea4bb20   size=112
+
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [33mFREE [0maddr=0x7e0d2ea4bc20   size=112
+
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [33mFREE [0maddr=0x7e0d2ea4bd20   size=112
+
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [33mFREE [0maddr=0x7e0d2ea4be20   size=112
+
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [33mFREE [0maddr=0x7e0d2ea4bf20   size=112
+
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [33mFREE [0maddr=0x7e0d2ea4c020   size=112
+
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [33mFREE [0maddr=0x7e0d2ea4c120   size=112
+
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [33mFREE [0maddr=0x7e0d2ea4c220   size=112
+
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [33mFREE [0maddr=0x7e0d2ea4c320   size=112
+
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [33mFREE [0maddr=0x7e0d2ea4c420   size=112
+
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [33mFREE [0maddr=0x7e0d2ea4c520   size=112
+
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [33mFREE [0maddr=0x7e0d2ea4c620   size=112
+
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [33mFREE [0maddr=0x7e0d2ea4c720   size=112
+
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [33mFREE [0maddr=0x7e0d2ea4c820   size=112
+
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [33mFREE [0maddr=0x7e0d2ea4c920   size=112
+
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [33mFREE [0maddr=0x7e0d2ea4ca20   size=112
+
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [33mFREE [0maddr=0x7e0d2ea4cb20   size=112
+
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [33mFREE [0maddr=0x7e0d2ea4cc20   size=112
+
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [33mFREE [0maddr=0x7e0d2ea4cd20   size=112
+
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [33mFREE [0maddr=0x7e0d2ea4ce20   size=112
+
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [33mFREE [0maddr=0x7e0d2ea4cf20   size=112
+
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [1]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=80                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+    [16] [35;1mUSED [0maddr=0x7e0d2ea441a0   size=48     data="mid-000"
+    [17] [35;1mUSED [0maddr=0x7e0d2ea441e0   size=48     data="mid-001"
+    [18] [35;1mUSED [0maddr=0x7e0d2ea44220   size=48     data="mid-002"
+    [19] [35;1mUSED [0maddr=0x7e0d2ea44260   size=48     data="mid-003"
+    [20] [35;1mUSED [0maddr=0x7e0d2ea442a0   size=48     data="mid-004"
+    [21] [35;1mUSED [0maddr=0x7e0d2ea442e0   size=48     data="mid-005"
+    [22] [35;1mUSED [0maddr=0x7e0d2ea44320   size=48     data="mid-006"
+    [23] [35;1mUSED [0maddr=0x7e0d2ea44360   size=48     data="mid-007"
+    [24] [35;1mUSED [0maddr=0x7e0d2ea443a0   size=48     data="mid-008"
+    [25] [35;1mUSED [0maddr=0x7e0d2ea443e0   size=48     data="mid-009"
+    [26] [35;1mUSED [0maddr=0x7e0d2ea44420   size=48     data="mid-010"
+    [27] [35;1mUSED [0maddr=0x7e0d2ea44460   size=48     data="mid-011"
+    [28] [35;1mUSED [0maddr=0x7e0d2ea444a0   size=48     data="mid-012"
+    [29] [35;1mUSED [0maddr=0x7e0d2ea444e0   size=48     data="mid-013"
+    [30] [35;1mUSED [0maddr=0x7e0d2ea44520   size=48     data="mid-014"
+    [31] [35;1mUSED [0maddr=0x7e0d2ea44560   size=48     data="mid-015"
+    [32] [35;1mUSED [0maddr=0x7e0d2ea445a0   size=48     data="mid-016"
+    [33] [35;1mUSED [0maddr=0x7e0d2ea445e0   size=48     data="mid-017"
+    [34] [35;1mUSED [0maddr=0x7e0d2ea44620   size=48     data="mid-018"
+    [35] [35;1mUSED [0maddr=0x7e0d2ea44660   size=48     data="mid-019"
+    [36] [35;1mUSED [0maddr=0x7e0d2ea446a0   size=48     data="mid-020"
+    [37] [35;1mUSED [0maddr=0x7e0d2ea446e0   size=48     data="mid-021"
+    [38] [35;1mUSED [0maddr=0x7e0d2ea44720   size=48     data="mid-022"
+    [39] [35;1mUSED [0maddr=0x7e0d2ea44760   size=48     data="mid-023"
+    [40] [35;1mUSED [0maddr=0x7e0d2ea447a0   size=48     data="mid-024"
+    [41] [35;1mUSED [0maddr=0x7e0d2ea447e0   size=48     data="mid-025"
+    [42] [35;1mUSED [0maddr=0x7e0d2ea44820   size=48     data="mid-026"
+    [43] [35;1mUSED [0maddr=0x7e0d2ea44860   size=48     data="mid-027"
+    [44] [35;1mUSED [0maddr=0x7e0d2ea448a0   size=48     data="mid-028"
+    [45] [35;1mUSED [0maddr=0x7e0d2ea448e0   size=48     data="mid-029"
+    [46] [35;1mUSED [0maddr=0x7e0d2ea44920   size=48     data="mid-030"
+    [47] [35;1mUSED [0maddr=0x7e0d2ea44960   size=48     data="mid-031"
+    [48] [35;1mUSED [0maddr=0x7e0d2ea449a0   size=48     data="mid-032"
+    [49] [35;1mUSED [0maddr=0x7e0d2ea449e0   size=48     data="mid-033"
+    [50] [35;1mUSED [0maddr=0x7e0d2ea44a20   size=48     data="mid-034"
+    [51] [35;1mUSED [0maddr=0x7e0d2ea44a60   size=48     data="mid-035"
+    [52] [35;1mUSED [0maddr=0x7e0d2ea44aa0   size=48     data="mid-036"
+    [53] [35;1mUSED [0maddr=0x7e0d2ea44ae0   size=48     data="mid-037"
+    [54] [35;1mUSED [0maddr=0x7e0d2ea44b20   size=48     data="mid-038"
+    [55] [35;1mUSED [0maddr=0x7e0d2ea44b60   size=48     data="mid-039"
+    [56] [35;1mUSED [0maddr=0x7e0d2ea44ba0   size=48     data="mid-040"
+    [57] [35;1mUSED [0maddr=0x7e0d2ea44be0   size=48     data="mid-041"
+    [58] [35;1mUSED [0maddr=0x7e0d2ea44c20   size=48     data="mid-042"
+    [59] [35;1mUSED [0maddr=0x7e0d2ea44c60   size=48     data="mid-043"
+    [60] [35;1mUSED [0maddr=0x7e0d2ea44ca0   size=48     data="mid-044"
+    [61] [35;1mUSED [0maddr=0x7e0d2ea44ce0   size=48     data="mid-045"
+    [62] [35;1mUSED [0maddr=0x7e0d2ea44d20   size=48     data="mid-046"
+    [63] [35;1mUSED [0maddr=0x7e0d2ea44d60   size=48     data="mid-047"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea44da0   size=48     data="mid-048"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea44de0   size=48     data="mid-049"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea44e20   size=48     data="mid-050"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea44e60   size=48     data="mid-051"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea44ea0   size=48     data="mid-052"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea44ee0   size=48     data="mid-053"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea44f20   size=48     data="mid-054"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea44f60   size=48     data="mid-055"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea44fa0   size=48     data="mid-056"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea44fe0   size=48     data="mid-057"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea45020   size=48     data="mid-058"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea45060   size=48     data="mid-059"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea450a0   size=48     data="mid-060"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea450e0   size=48     data="mid-061"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea45120   size=48     data="mid-062"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea45160   size=48     data="mid-063"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m[33;1m  [128 bytes] [0m(0x7e0d2ea4cf20) -> (0x7e0d2ea4ce20) -> (0x7e0d2ea4cd20) -> (0x7e0d2ea4cc20) -> (0x7e0d2ea4cb20) -> (0x7e0d2ea4ca20) -> (0x7e0d2ea4c920) -> (0x7e0d2ea4c820) -> (0x7e0d2ea4c720) -> (0x7e0d2ea4c620) -> (0x7e0d2ea4c520) -> (0x7e0d2ea4c420) -> (0x7e0d2ea4c320) -> (0x7e0d2ea4c220) -> (0x7e0d2ea4c120) -> (0x7e0d2ea4c020) -> (0x7e0d2ea4bf20) -> (0x7e0d2ea4be20) -> (0x7e0d2ea4bd20) -> (0x7e0d2ea4bc20) -> (0x7e0d2ea4bb20) -> (0x7e0d2ea4ba20) -> (0x7e0d2ea4b920) -> (0x7e0d2ea4b820) -> (0x7e0d2ea4b720) -> (0x7e0d2ea4b620) -> (0x7e0d2ea4b520) -> (0x7e0d2ea4b420) -> (0x7e0d2ea4b320) -> (0x7e0d2ea4b220) -> (0x7e0d2ea4b120) -> (0x7e0d2ea4b020) -> (0x7e0d2ea4af20) -> (0x7e0d2ea4ae20) -> (0x7e0d2ea4ad20) -> (0x7e0d2ea4ac20) -> (0x7e0d2ea4ab20) -> (0x7e0d2ea4aa20) -> (0x7e0d2ea4a920) -> (0x7e0d2ea4a820) -> (0x7e0d2ea4a720) -> (0x7e0d2ea4a620) -> (0x7e0d2ea4a520) -> (0x7e0d2ea4a420) -> (0x7e0d2ea4a320) -> (0x7e0d2ea4a220) -> (0x7e0d2ea4a120) -> (0x7e0d2ea4a020) -> (0x7e0d2ea49f20) -> (0x7e0d2ea49e20) -> (0x7e0d2ea49d20) -> (0x7e0d2ea49c20) -> (0x7e0d2ea49b20) -> (0x7e0d2ea49a20) -> (0x7e0d2ea49920) -> (0x7e0d2ea49820) -> (0x7e0d2ea49720) -> (0x7e0d2ea49620) -> (0x7e0d2ea49520) -> (0x7e0d2ea49420) -> (0x7e0d2ea49320) -> (0x7e0d2ea49220) -> (0x7e0d2ea49120) -> (0x7e0d2ea49020)[35m -> NULL
+[0m
+
+═══ [5] free every other mid chunk → fill fastbin[48] ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=64                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [33mFREE [0maddr=0x7e0d2ea49020   size=112
+
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [33mFREE [0maddr=0x7e0d2ea49120   size=112
+
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [33mFREE [0maddr=0x7e0d2ea49220   size=112
+
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [33mFREE [0maddr=0x7e0d2ea49320   size=112
+
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [33mFREE [0maddr=0x7e0d2ea49420   size=112
+
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [33mFREE [0maddr=0x7e0d2ea49520   size=112
+
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [33mFREE [0maddr=0x7e0d2ea49620   size=112
+
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [33mFREE [0maddr=0x7e0d2ea49720   size=112
+
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [33mFREE [0maddr=0x7e0d2ea49820   size=112
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [33mFREE [0maddr=0x7e0d2ea49920   size=112
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [33mFREE [0maddr=0x7e0d2ea49a20   size=112
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [33mFREE [0maddr=0x7e0d2ea49b20   size=112
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [33mFREE [0maddr=0x7e0d2ea49c20   size=112
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [33mFREE [0maddr=0x7e0d2ea49d20   size=112
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [33mFREE [0maddr=0x7e0d2ea49e20   size=112
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [33mFREE [0maddr=0x7e0d2ea49f20   size=112
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [33mFREE [0maddr=0x7e0d2ea4a020   size=112
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [33mFREE [0maddr=0x7e0d2ea4a120   size=112
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [33mFREE [0maddr=0x7e0d2ea4a220   size=112
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [33mFREE [0maddr=0x7e0d2ea4a320   size=112
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [33mFREE [0maddr=0x7e0d2ea4a420   size=112
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [33mFREE [0maddr=0x7e0d2ea4a520   size=112
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [33mFREE [0maddr=0x7e0d2ea4a620   size=112
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [33mFREE [0maddr=0x7e0d2ea4a720   size=112
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [33mFREE [0maddr=0x7e0d2ea4a820   size=112
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [33mFREE [0maddr=0x7e0d2ea4a920   size=112
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [33mFREE [0maddr=0x7e0d2ea4aa20   size=112
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [33mFREE [0maddr=0x7e0d2ea4ab20   size=112
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [33mFREE [0maddr=0x7e0d2ea4ac20   size=112
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [33mFREE [0maddr=0x7e0d2ea4ad20   size=112
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [33mFREE [0maddr=0x7e0d2ea4ae20   size=112
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [33mFREE [0maddr=0x7e0d2ea4af20   size=112
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [33mFREE [0maddr=0x7e0d2ea4b020   size=112
+
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [33mFREE [0maddr=0x7e0d2ea4b120   size=112
+
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [33mFREE [0maddr=0x7e0d2ea4b220   size=112
+
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [33mFREE [0maddr=0x7e0d2ea4b320   size=112
+
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [33mFREE [0maddr=0x7e0d2ea4b420   size=112
+
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [33mFREE [0maddr=0x7e0d2ea4b520   size=112
+
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [33mFREE [0maddr=0x7e0d2ea4b620   size=112
+
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [33mFREE [0maddr=0x7e0d2ea4b720   size=112
+
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [33mFREE [0maddr=0x7e0d2ea4b820   size=112
+
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [33mFREE [0maddr=0x7e0d2ea4b920   size=112
+
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [33mFREE [0maddr=0x7e0d2ea4ba20   size=112
+
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [33mFREE [0maddr=0x7e0d2ea4bb20   size=112
+
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [33mFREE [0maddr=0x7e0d2ea4bc20   size=112
+
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [33mFREE [0maddr=0x7e0d2ea4bd20   size=112
+
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [33mFREE [0maddr=0x7e0d2ea4be20   size=112
+
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [33mFREE [0maddr=0x7e0d2ea4bf20   size=112
+
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [33mFREE [0maddr=0x7e0d2ea4c020   size=112
+
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [33mFREE [0maddr=0x7e0d2ea4c120   size=112
+
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [33mFREE [0maddr=0x7e0d2ea4c220   size=112
+
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [33mFREE [0maddr=0x7e0d2ea4c320   size=112
+
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [33mFREE [0maddr=0x7e0d2ea4c420   size=112
+
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [33mFREE [0maddr=0x7e0d2ea4c520   size=112
+
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [33mFREE [0maddr=0x7e0d2ea4c620   size=112
+
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [33mFREE [0maddr=0x7e0d2ea4c720   size=112
+
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [33mFREE [0maddr=0x7e0d2ea4c820   size=112
+
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [33mFREE [0maddr=0x7e0d2ea4c920   size=112
+
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [33mFREE [0maddr=0x7e0d2ea4ca20   size=112
+
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [33mFREE [0maddr=0x7e0d2ea4cb20   size=112
+
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [33mFREE [0maddr=0x7e0d2ea4cc20   size=112
+
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [33mFREE [0maddr=0x7e0d2ea4cd20   size=112
+
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [33mFREE [0maddr=0x7e0d2ea4ce20   size=112
+
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [33mFREE [0maddr=0x7e0d2ea4cf20   size=112
+
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [1]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=48                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+    [16] [33mFREE [0maddr=0x7e0d2ea441a0   size=48
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea441e0   size=48     data="mid-001"
+    [18] [33mFREE [0maddr=0x7e0d2ea44220   size=48
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea44260   size=48     data="mid-003"
+    [20] [33mFREE [0maddr=0x7e0d2ea442a0   size=48
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea442e0   size=48     data="mid-005"
+    [22] [33mFREE [0maddr=0x7e0d2ea44320   size=48
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea44360   size=48     data="mid-007"
+    [24] [33mFREE [0maddr=0x7e0d2ea443a0   size=48
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea443e0   size=48     data="mid-009"
+    [26] [33mFREE [0maddr=0x7e0d2ea44420   size=48
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea44460   size=48     data="mid-011"
+    [28] [33mFREE [0maddr=0x7e0d2ea444a0   size=48
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea444e0   size=48     data="mid-013"
+    [30] [33mFREE [0maddr=0x7e0d2ea44520   size=48
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea44560   size=48     data="mid-015"
+    [32] [33mFREE [0maddr=0x7e0d2ea445a0   size=48
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea445e0   size=48     data="mid-017"
+    [34] [33mFREE [0maddr=0x7e0d2ea44620   size=48
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea44660   size=48     data="mid-019"
+    [36] [33mFREE [0maddr=0x7e0d2ea446a0   size=48
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea446e0   size=48     data="mid-021"
+    [38] [33mFREE [0maddr=0x7e0d2ea44720   size=48
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea44760   size=48     data="mid-023"
+    [40] [33mFREE [0maddr=0x7e0d2ea447a0   size=48
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea447e0   size=48     data="mid-025"
+    [42] [33mFREE [0maddr=0x7e0d2ea44820   size=48
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea44860   size=48     data="mid-027"
+    [44] [33mFREE [0maddr=0x7e0d2ea448a0   size=48
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea448e0   size=48     data="mid-029"
+    [46] [33mFREE [0maddr=0x7e0d2ea44920   size=48
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea44960   size=48     data="mid-031"
+    [48] [33mFREE [0maddr=0x7e0d2ea449a0   size=48
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea449e0   size=48     data="mid-033"
+    [50] [33mFREE [0maddr=0x7e0d2ea44a20   size=48
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea44a60   size=48     data="mid-035"
+    [52] [33mFREE [0maddr=0x7e0d2ea44aa0   size=48
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea44ae0   size=48     data="mid-037"
+    [54] [33mFREE [0maddr=0x7e0d2ea44b20   size=48
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea44b60   size=48     data="mid-039"
+    [56] [33mFREE [0maddr=0x7e0d2ea44ba0   size=48
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea44be0   size=48     data="mid-041"
+    [58] [33mFREE [0maddr=0x7e0d2ea44c20   size=48
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea44c60   size=48     data="mid-043"
+    [60] [33mFREE [0maddr=0x7e0d2ea44ca0   size=48
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea44ce0   size=48     data="mid-045"
+    [62] [33mFREE [0maddr=0x7e0d2ea44d20   size=48
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea44d60   size=48     data="mid-047"
+    [64] [33mFREE [0maddr=0x7e0d2ea44da0   size=48
+
+    [65] [35;1mUSED [0maddr=0x7e0d2ea44de0   size=48     data="mid-049"
+    [66] [33mFREE [0maddr=0x7e0d2ea44e20   size=48
+
+    [67] [35;1mUSED [0maddr=0x7e0d2ea44e60   size=48     data="mid-051"
+    [68] [33mFREE [0maddr=0x7e0d2ea44ea0   size=48
+
+    [69] [35;1mUSED [0maddr=0x7e0d2ea44ee0   size=48     data="mid-053"
+    [70] [33mFREE [0maddr=0x7e0d2ea44f20   size=48
+
+    [71] [35;1mUSED [0maddr=0x7e0d2ea44f60   size=48     data="mid-055"
+    [72] [33mFREE [0maddr=0x7e0d2ea44fa0   size=48
+
+    [73] [35;1mUSED [0maddr=0x7e0d2ea44fe0   size=48     data="mid-057"
+    [74] [33mFREE [0maddr=0x7e0d2ea45020   size=48
+
+    [75] [35;1mUSED [0maddr=0x7e0d2ea45060   size=48     data="mid-059"
+    [76] [33mFREE [0maddr=0x7e0d2ea450a0   size=48
+
+    [77] [35;1mUSED [0maddr=0x7e0d2ea450e0   size=48     data="mid-061"
+    [78] [33mFREE [0maddr=0x7e0d2ea45120   size=48
+
+    [79] [35;1mUSED [0maddr=0x7e0d2ea45160   size=48     data="mid-063"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m[33;1m  [ 64 bytes] [0m(0x7e0d2ea45120) -> (0x7e0d2ea450a0) -> (0x7e0d2ea45020) -> (0x7e0d2ea44fa0) -> (0x7e0d2ea44f20) -> (0x7e0d2ea44ea0) -> (0x7e0d2ea44e20) -> (0x7e0d2ea44da0) -> (0x7e0d2ea44d20) -> (0x7e0d2ea44ca0) -> (0x7e0d2ea44c20) -> (0x7e0d2ea44ba0) -> (0x7e0d2ea44b20) -> (0x7e0d2ea44aa0) -> (0x7e0d2ea44a20) -> (0x7e0d2ea449a0) -> (0x7e0d2ea44920) -> (0x7e0d2ea448a0) -> (0x7e0d2ea44820) -> (0x7e0d2ea447a0) -> (0x7e0d2ea44720) -> (0x7e0d2ea446a0) -> (0x7e0d2ea44620) -> (0x7e0d2ea445a0) -> (0x7e0d2ea44520) -> (0x7e0d2ea444a0) -> (0x7e0d2ea44420) -> (0x7e0d2ea443a0) -> (0x7e0d2ea44320) -> (0x7e0d2ea442a0) -> (0x7e0d2ea44220) -> (0x7e0d2ea441a0)[35m -> NULL
+[0m[33;1m  [128 bytes] [0m(0x7e0d2ea4cf20) -> (0x7e0d2ea4ce20) -> (0x7e0d2ea4cd20) -> (0x7e0d2ea4cc20) -> (0x7e0d2ea4cb20) -> (0x7e0d2ea4ca20) -> (0x7e0d2ea4c920) -> (0x7e0d2ea4c820) -> (0x7e0d2ea4c720) -> (0x7e0d2ea4c620) -> (0x7e0d2ea4c520) -> (0x7e0d2ea4c420) -> (0x7e0d2ea4c320) -> (0x7e0d2ea4c220) -> (0x7e0d2ea4c120) -> (0x7e0d2ea4c020) -> (0x7e0d2ea4bf20) -> (0x7e0d2ea4be20) -> (0x7e0d2ea4bd20) -> (0x7e0d2ea4bc20) -> (0x7e0d2ea4bb20) -> (0x7e0d2ea4ba20) -> (0x7e0d2ea4b920) -> (0x7e0d2ea4b820) -> (0x7e0d2ea4b720) -> (0x7e0d2ea4b620) -> (0x7e0d2ea4b520) -> (0x7e0d2ea4b420) -> (0x7e0d2ea4b320) -> (0x7e0d2ea4b220) -> (0x7e0d2ea4b120) -> (0x7e0d2ea4b020) -> (0x7e0d2ea4af20) -> (0x7e0d2ea4ae20) -> (0x7e0d2ea4ad20) -> (0x7e0d2ea4ac20) -> (0x7e0d2ea4ab20) -> (0x7e0d2ea4aa20) -> (0x7e0d2ea4a920) -> (0x7e0d2ea4a820) -> (0x7e0d2ea4a720) -> (0x7e0d2ea4a620) -> (0x7e0d2ea4a520) -> (0x7e0d2ea4a420) -> (0x7e0d2ea4a320) -> (0x7e0d2ea4a220) -> (0x7e0d2ea4a120) -> (0x7e0d2ea4a020) -> (0x7e0d2ea49f20) -> (0x7e0d2ea49e20) -> (0x7e0d2ea49d20) -> (0x7e0d2ea49c20) -> (0x7e0d2ea49b20) -> (0x7e0d2ea49a20) -> (0x7e0d2ea49920) -> (0x7e0d2ea49820) -> (0x7e0d2ea49720) -> (0x7e0d2ea49620) -> (0x7e0d2ea49520) -> (0x7e0d2ea49420) -> (0x7e0d2ea49320) -> (0x7e0d2ea49220) -> (0x7e0d2ea49120) -> (0x7e0d2ea49020)[35m -> NULL
+[0m
+
+═══ [6] reallocate from fastbin (should reuse, no new heaps) ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea49000             ║
+  ║  total_size=16384   blocks=96                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [33mFREE [0maddr=0x7e0d2ea49020   size=112
+
+    [1] [35;1mUSED [0maddr=0x7e0d2ea490a0   size=112    data="full-001"
+    [2] [33mFREE [0maddr=0x7e0d2ea49120   size=112
+
+    [3] [35;1mUSED [0maddr=0x7e0d2ea491a0   size=112    data="full-003"
+    [4] [33mFREE [0maddr=0x7e0d2ea49220   size=112
+
+    [5] [35;1mUSED [0maddr=0x7e0d2ea492a0   size=112    data="full-005"
+    [6] [33mFREE [0maddr=0x7e0d2ea49320   size=112
+
+    [7] [35;1mUSED [0maddr=0x7e0d2ea493a0   size=112    data="full-007"
+    [8] [33mFREE [0maddr=0x7e0d2ea49420   size=112
+
+    [9] [35;1mUSED [0maddr=0x7e0d2ea494a0   size=112    data="full-009"
+    [10] [33mFREE [0maddr=0x7e0d2ea49520   size=112
+
+    [11] [35;1mUSED [0maddr=0x7e0d2ea495a0   size=112    data="full-011"
+    [12] [33mFREE [0maddr=0x7e0d2ea49620   size=112
+
+    [13] [35;1mUSED [0maddr=0x7e0d2ea496a0   size=112    data="full-013"
+    [14] [33mFREE [0maddr=0x7e0d2ea49720   size=112
+
+    [15] [35;1mUSED [0maddr=0x7e0d2ea497a0   size=112    data="full-015"
+    [16] [33mFREE [0maddr=0x7e0d2ea49820   size=112
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea498a0   size=112    data="full-017"
+    [18] [33mFREE [0maddr=0x7e0d2ea49920   size=112
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea499a0   size=112    data="full-019"
+    [20] [33mFREE [0maddr=0x7e0d2ea49a20   size=112
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea49aa0   size=112    data="full-021"
+    [22] [33mFREE [0maddr=0x7e0d2ea49b20   size=112
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea49ba0   size=112    data="full-023"
+    [24] [33mFREE [0maddr=0x7e0d2ea49c20   size=112
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea49ca0   size=112    data="full-025"
+    [26] [33mFREE [0maddr=0x7e0d2ea49d20   size=112
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea49da0   size=112    data="full-027"
+    [28] [33mFREE [0maddr=0x7e0d2ea49e20   size=112
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea49ea0   size=112    data="full-029"
+    [30] [33mFREE [0maddr=0x7e0d2ea49f20   size=112
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea49fa0   size=112    data="full-031"
+    [32] [33mFREE [0maddr=0x7e0d2ea4a020   size=112
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea4a0a0   size=112    data="full-033"
+    [34] [33mFREE [0maddr=0x7e0d2ea4a120   size=112
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea4a1a0   size=112    data="full-035"
+    [36] [33mFREE [0maddr=0x7e0d2ea4a220   size=112
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea4a2a0   size=112    data="full-037"
+    [38] [33mFREE [0maddr=0x7e0d2ea4a320   size=112
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea4a3a0   size=112    data="full-039"
+    [40] [33mFREE [0maddr=0x7e0d2ea4a420   size=112
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea4a4a0   size=112    data="full-041"
+    [42] [33mFREE [0maddr=0x7e0d2ea4a520   size=112
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea4a5a0   size=112    data="full-043"
+    [44] [33mFREE [0maddr=0x7e0d2ea4a620   size=112
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea4a6a0   size=112    data="full-045"
+    [46] [33mFREE [0maddr=0x7e0d2ea4a720   size=112
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea4a7a0   size=112    data="full-047"
+    [48] [33mFREE [0maddr=0x7e0d2ea4a820   size=112
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea4a8a0   size=112    data="full-049"
+    [50] [33mFREE [0maddr=0x7e0d2ea4a920   size=112
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea4a9a0   size=112    data="full-051"
+    [52] [33mFREE [0maddr=0x7e0d2ea4aa20   size=112
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea4aaa0   size=112    data="full-053"
+    [54] [33mFREE [0maddr=0x7e0d2ea4ab20   size=112
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea4aba0   size=112    data="full-055"
+    [56] [33mFREE [0maddr=0x7e0d2ea4ac20   size=112
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea4aca0   size=112    data="full-057"
+    [58] [33mFREE [0maddr=0x7e0d2ea4ad20   size=112
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea4ada0   size=112    data="full-059"
+    [60] [33mFREE [0maddr=0x7e0d2ea4ae20   size=112
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea4aea0   size=112    data="full-061"
+    [62] [33mFREE [0maddr=0x7e0d2ea4af20   size=112
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea4afa0   size=112    data="full-063"
+    [64] [35;1mUSED [0maddr=0x7e0d2ea4b020   size=112    data="recycled"
+    [65] [35;1mUSED [0maddr=0x7e0d2ea4b0a0   size=112    data="full-065"
+    [66] [35;1mUSED [0maddr=0x7e0d2ea4b120   size=112    data="recycled"
+    [67] [35;1mUSED [0maddr=0x7e0d2ea4b1a0   size=112    data="full-067"
+    [68] [35;1mUSED [0maddr=0x7e0d2ea4b220   size=112    data="recycled"
+    [69] [35;1mUSED [0maddr=0x7e0d2ea4b2a0   size=112    data="full-069"
+    [70] [35;1mUSED [0maddr=0x7e0d2ea4b320   size=112    data="recycled"
+    [71] [35;1mUSED [0maddr=0x7e0d2ea4b3a0   size=112    data="full-071"
+    [72] [35;1mUSED [0maddr=0x7e0d2ea4b420   size=112    data="recycled"
+    [73] [35;1mUSED [0maddr=0x7e0d2ea4b4a0   size=112    data="full-073"
+    [74] [35;1mUSED [0maddr=0x7e0d2ea4b520   size=112    data="recycled"
+    [75] [35;1mUSED [0maddr=0x7e0d2ea4b5a0   size=112    data="full-075"
+    [76] [35;1mUSED [0maddr=0x7e0d2ea4b620   size=112    data="recycled"
+    [77] [35;1mUSED [0maddr=0x7e0d2ea4b6a0   size=112    data="full-077"
+    [78] [35;1mUSED [0maddr=0x7e0d2ea4b720   size=112    data="recycled"
+    [79] [35;1mUSED [0maddr=0x7e0d2ea4b7a0   size=112    data="full-079"
+    [80] [35;1mUSED [0maddr=0x7e0d2ea4b820   size=112    data="recycled"
+    [81] [35;1mUSED [0maddr=0x7e0d2ea4b8a0   size=112    data="full-081"
+    [82] [35;1mUSED [0maddr=0x7e0d2ea4b920   size=112    data="recycled"
+    [83] [35;1mUSED [0maddr=0x7e0d2ea4b9a0   size=112    data="full-083"
+    [84] [35;1mUSED [0maddr=0x7e0d2ea4ba20   size=112    data="recycled"
+    [85] [35;1mUSED [0maddr=0x7e0d2ea4baa0   size=112    data="full-085"
+    [86] [35;1mUSED [0maddr=0x7e0d2ea4bb20   size=112    data="recycled"
+    [87] [35;1mUSED [0maddr=0x7e0d2ea4bba0   size=112    data="full-087"
+    [88] [35;1mUSED [0maddr=0x7e0d2ea4bc20   size=112    data="recycled"
+    [89] [35;1mUSED [0maddr=0x7e0d2ea4bca0   size=112    data="full-089"
+    [90] [35;1mUSED [0maddr=0x7e0d2ea4bd20   size=112    data="recycled"
+    [91] [35;1mUSED [0maddr=0x7e0d2ea4bda0   size=112    data="full-091"
+    [92] [35;1mUSED [0maddr=0x7e0d2ea4be20   size=112    data="recycled"
+    [93] [35;1mUSED [0maddr=0x7e0d2ea4bea0   size=112    data="full-093"
+    [94] [35;1mUSED [0maddr=0x7e0d2ea4bf20   size=112    data="recycled"
+    [95] [35;1mUSED [0maddr=0x7e0d2ea4bfa0   size=112    data="full-095"
+    [96] [35;1mUSED [0maddr=0x7e0d2ea4c020   size=112    data="recycled"
+    [97] [35;1mUSED [0maddr=0x7e0d2ea4c0a0   size=112    data="full-097"
+    [98] [35;1mUSED [0maddr=0x7e0d2ea4c120   size=112    data="recycled"
+    [99] [35;1mUSED [0maddr=0x7e0d2ea4c1a0   size=112    data="full-099"
+    [100] [35;1mUSED [0maddr=0x7e0d2ea4c220   size=112    data="recycled"
+    [101] [35;1mUSED [0maddr=0x7e0d2ea4c2a0   size=112    data="full-101"
+    [102] [35;1mUSED [0maddr=0x7e0d2ea4c320   size=112    data="recycled"
+    [103] [35;1mUSED [0maddr=0x7e0d2ea4c3a0   size=112    data="full-103"
+    [104] [35;1mUSED [0maddr=0x7e0d2ea4c420   size=112    data="recycled"
+    [105] [35;1mUSED [0maddr=0x7e0d2ea4c4a0   size=112    data="full-105"
+    [106] [35;1mUSED [0maddr=0x7e0d2ea4c520   size=112    data="recycled"
+    [107] [35;1mUSED [0maddr=0x7e0d2ea4c5a0   size=112    data="full-107"
+    [108] [35;1mUSED [0maddr=0x7e0d2ea4c620   size=112    data="recycled"
+    [109] [35;1mUSED [0maddr=0x7e0d2ea4c6a0   size=112    data="full-109"
+    [110] [35;1mUSED [0maddr=0x7e0d2ea4c720   size=112    data="recycled"
+    [111] [35;1mUSED [0maddr=0x7e0d2ea4c7a0   size=112    data="full-111"
+    [112] [35;1mUSED [0maddr=0x7e0d2ea4c820   size=112    data="recycled"
+    [113] [35;1mUSED [0maddr=0x7e0d2ea4c8a0   size=112    data="full-113"
+    [114] [35;1mUSED [0maddr=0x7e0d2ea4c920   size=112    data="recycled"
+    [115] [35;1mUSED [0maddr=0x7e0d2ea4c9a0   size=112    data="full-115"
+    [116] [35;1mUSED [0maddr=0x7e0d2ea4ca20   size=112    data="recycled"
+    [117] [35;1mUSED [0maddr=0x7e0d2ea4caa0   size=112    data="full-117"
+    [118] [35;1mUSED [0maddr=0x7e0d2ea4cb20   size=112    data="recycled"
+    [119] [35;1mUSED [0maddr=0x7e0d2ea4cba0   size=112    data="full-119"
+    [120] [35;1mUSED [0maddr=0x7e0d2ea4cc20   size=112    data="recycled"
+    [121] [35;1mUSED [0maddr=0x7e0d2ea4cca0   size=112    data="full-121"
+    [122] [35;1mUSED [0maddr=0x7e0d2ea4cd20   size=112    data="recycled"
+    [123] [35;1mUSED [0maddr=0x7e0d2ea4cda0   size=112    data="full-123"
+    [124] [35;1mUSED [0maddr=0x7e0d2ea4ce20   size=112    data="recycled"
+    [125] [35;1mUSED [0maddr=0x7e0d2ea4cea0   size=112    data="full-125"
+    [126] [35;1mUSED [0maddr=0x7e0d2ea4cf20   size=112    data="recycled"
+    [127] [35;1mUSED [0maddr=0x7e0d2ea4cfa0   size=112    data="full-127"
+[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [1]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=48                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+    [16] [33mFREE [0maddr=0x7e0d2ea441a0   size=48
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea441e0   size=48     data="mid-001"
+    [18] [33mFREE [0maddr=0x7e0d2ea44220   size=48
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea44260   size=48     data="mid-003"
+    [20] [33mFREE [0maddr=0x7e0d2ea442a0   size=48
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea442e0   size=48     data="mid-005"
+    [22] [33mFREE [0maddr=0x7e0d2ea44320   size=48
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea44360   size=48     data="mid-007"
+    [24] [33mFREE [0maddr=0x7e0d2ea443a0   size=48
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea443e0   size=48     data="mid-009"
+    [26] [33mFREE [0maddr=0x7e0d2ea44420   size=48
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea44460   size=48     data="mid-011"
+    [28] [33mFREE [0maddr=0x7e0d2ea444a0   size=48
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea444e0   size=48     data="mid-013"
+    [30] [33mFREE [0maddr=0x7e0d2ea44520   size=48
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea44560   size=48     data="mid-015"
+    [32] [33mFREE [0maddr=0x7e0d2ea445a0   size=48
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea445e0   size=48     data="mid-017"
+    [34] [33mFREE [0maddr=0x7e0d2ea44620   size=48
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea44660   size=48     data="mid-019"
+    [36] [33mFREE [0maddr=0x7e0d2ea446a0   size=48
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea446e0   size=48     data="mid-021"
+    [38] [33mFREE [0maddr=0x7e0d2ea44720   size=48
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea44760   size=48     data="mid-023"
+    [40] [33mFREE [0maddr=0x7e0d2ea447a0   size=48
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea447e0   size=48     data="mid-025"
+    [42] [33mFREE [0maddr=0x7e0d2ea44820   size=48
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea44860   size=48     data="mid-027"
+    [44] [33mFREE [0maddr=0x7e0d2ea448a0   size=48
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea448e0   size=48     data="mid-029"
+    [46] [33mFREE [0maddr=0x7e0d2ea44920   size=48
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea44960   size=48     data="mid-031"
+    [48] [33mFREE [0maddr=0x7e0d2ea449a0   size=48
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea449e0   size=48     data="mid-033"
+    [50] [33mFREE [0maddr=0x7e0d2ea44a20   size=48
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea44a60   size=48     data="mid-035"
+    [52] [33mFREE [0maddr=0x7e0d2ea44aa0   size=48
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea44ae0   size=48     data="mid-037"
+    [54] [33mFREE [0maddr=0x7e0d2ea44b20   size=48
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea44b60   size=48     data="mid-039"
+    [56] [33mFREE [0maddr=0x7e0d2ea44ba0   size=48
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea44be0   size=48     data="mid-041"
+    [58] [33mFREE [0maddr=0x7e0d2ea44c20   size=48
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea44c60   size=48     data="mid-043"
+    [60] [33mFREE [0maddr=0x7e0d2ea44ca0   size=48
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea44ce0   size=48     data="mid-045"
+    [62] [33mFREE [0maddr=0x7e0d2ea44d20   size=48
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea44d60   size=48     data="mid-047"
+    [64] [33mFREE [0maddr=0x7e0d2ea44da0   size=48
+
+    [65] [35;1mUSED [0maddr=0x7e0d2ea44de0   size=48     data="mid-049"
+    [66] [33mFREE [0maddr=0x7e0d2ea44e20   size=48
+
+    [67] [35;1mUSED [0maddr=0x7e0d2ea44e60   size=48     data="mid-051"
+    [68] [33mFREE [0maddr=0x7e0d2ea44ea0   size=48
+
+    [69] [35;1mUSED [0maddr=0x7e0d2ea44ee0   size=48     data="mid-053"
+    [70] [33mFREE [0maddr=0x7e0d2ea44f20   size=48
+
+    [71] [35;1mUSED [0maddr=0x7e0d2ea44f60   size=48     data="mid-055"
+    [72] [33mFREE [0maddr=0x7e0d2ea44fa0   size=48
+
+    [73] [35;1mUSED [0maddr=0x7e0d2ea44fe0   size=48     data="mid-057"
+    [74] [33mFREE [0maddr=0x7e0d2ea45020   size=48
+
+    [75] [35;1mUSED [0maddr=0x7e0d2ea45060   size=48     data="mid-059"
+    [76] [33mFREE [0maddr=0x7e0d2ea450a0   size=48
+
+    [77] [35;1mUSED [0maddr=0x7e0d2ea450e0   size=48     data="mid-061"
+    [78] [33mFREE [0maddr=0x7e0d2ea45120   size=48
+
+    [79] [35;1mUSED [0maddr=0x7e0d2ea45160   size=48     data="mid-063"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m[33;1m  [ 64 bytes] [0m(0x7e0d2ea45120) -> (0x7e0d2ea450a0) -> (0x7e0d2ea45020) -> (0x7e0d2ea44fa0) -> (0x7e0d2ea44f20) -> (0x7e0d2ea44ea0) -> (0x7e0d2ea44e20) -> (0x7e0d2ea44da0) -> (0x7e0d2ea44d20) -> (0x7e0d2ea44ca0) -> (0x7e0d2ea44c20) -> (0x7e0d2ea44ba0) -> (0x7e0d2ea44b20) -> (0x7e0d2ea44aa0) -> (0x7e0d2ea44a20) -> (0x7e0d2ea449a0) -> (0x7e0d2ea44920) -> (0x7e0d2ea448a0) -> (0x7e0d2ea44820) -> (0x7e0d2ea447a0) -> (0x7e0d2ea44720) -> (0x7e0d2ea446a0) -> (0x7e0d2ea44620) -> (0x7e0d2ea445a0) -> (0x7e0d2ea44520) -> (0x7e0d2ea444a0) -> (0x7e0d2ea44420) -> (0x7e0d2ea443a0) -> (0x7e0d2ea44320) -> (0x7e0d2ea442a0) -> (0x7e0d2ea44220) -> (0x7e0d2ea441a0)[35m -> NULL
+[0m[33;1m  [128 bytes] [0m(0x7e0d2ea4af20) -> (0x7e0d2ea4ae20) -> (0x7e0d2ea4ad20) -> (0x7e0d2ea4ac20) -> (0x7e0d2ea4ab20) -> (0x7e0d2ea4aa20) -> (0x7e0d2ea4a920) -> (0x7e0d2ea4a820) -> (0x7e0d2ea4a720) -> (0x7e0d2ea4a620) -> (0x7e0d2ea4a520) -> (0x7e0d2ea4a420) -> (0x7e0d2ea4a320) -> (0x7e0d2ea4a220) -> (0x7e0d2ea4a120) -> (0x7e0d2ea4a020) -> (0x7e0d2ea49f20) -> (0x7e0d2ea49e20) -> (0x7e0d2ea49d20) -> (0x7e0d2ea49c20) -> (0x7e0d2ea49b20) -> (0x7e0d2ea49a20) -> (0x7e0d2ea49920) -> (0x7e0d2ea49820) -> (0x7e0d2ea49720) -> (0x7e0d2ea49620) -> (0x7e0d2ea49520) -> (0x7e0d2ea49420) -> (0x7e0d2ea49320) -> (0x7e0d2ea49220) -> (0x7e0d2ea49120) -> (0x7e0d2ea49020)[35m -> NULL
+[0m
+
+═══ [7] free remaining full + reused → heap[0] should munmap ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[35;1m
+  ╔══════════════════════════════════════════════════╗
+  ║  TINY  HEAP [0]  addr=0x7e0d2ea44000             ║
+  ║  total_size=16384   blocks=48                    ║
+  ╚══════════════════════════════════════════════════╝
+[0m    [0] [35;1mUSED [0maddr=0x7e0d2ea44020   size=8      data="pad"
+    [1] [35;1mUSED [0maddr=0x7e0d2ea44038   size=8      data="pad"
+    [2] [35;1mUSED [0maddr=0x7e0d2ea44050   size=8      data="pad"
+    [3] [35;1mUSED [0maddr=0x7e0d2ea44068   size=8      data="pad"
+    [4] [35;1mUSED [0maddr=0x7e0d2ea44080   size=8      data="pad"
+    [5] [35;1mUSED [0maddr=0x7e0d2ea44098   size=8      data="pad"
+    [6] [35;1mUSED [0maddr=0x7e0d2ea440b0   size=8      data="pad"
+    [7] [35;1mUSED [0maddr=0x7e0d2ea440c8   size=8      data="pad"
+    [8] [35;1mUSED [0maddr=0x7e0d2ea440e0   size=8      data="pad"
+    [9] [35;1mUSED [0maddr=0x7e0d2ea440f8   size=8      data="pad"
+    [10] [35;1mUSED [0maddr=0x7e0d2ea44110   size=8      data="pad"
+    [11] [35;1mUSED [0maddr=0x7e0d2ea44128   size=8      data="pad"
+    [12] [35;1mUSED [0maddr=0x7e0d2ea44140   size=8      data="pad"
+    [13] [35;1mUSED [0maddr=0x7e0d2ea44158   size=8      data="pad"
+    [14] [35;1mUSED [0maddr=0x7e0d2ea44170   size=8      data="pad"
+    [15] [35;1mUSED [0maddr=0x7e0d2ea44188   size=8      data="pad"
+    [16] [33mFREE [0maddr=0x7e0d2ea441a0   size=48
+
+    [17] [35;1mUSED [0maddr=0x7e0d2ea441e0   size=48     data="mid-001"
+    [18] [33mFREE [0maddr=0x7e0d2ea44220   size=48
+
+    [19] [35;1mUSED [0maddr=0x7e0d2ea44260   size=48     data="mid-003"
+    [20] [33mFREE [0maddr=0x7e0d2ea442a0   size=48
+
+    [21] [35;1mUSED [0maddr=0x7e0d2ea442e0   size=48     data="mid-005"
+    [22] [33mFREE [0maddr=0x7e0d2ea44320   size=48
+
+    [23] [35;1mUSED [0maddr=0x7e0d2ea44360   size=48     data="mid-007"
+    [24] [33mFREE [0maddr=0x7e0d2ea443a0   size=48
+
+    [25] [35;1mUSED [0maddr=0x7e0d2ea443e0   size=48     data="mid-009"
+    [26] [33mFREE [0maddr=0x7e0d2ea44420   size=48
+
+    [27] [35;1mUSED [0maddr=0x7e0d2ea44460   size=48     data="mid-011"
+    [28] [33mFREE [0maddr=0x7e0d2ea444a0   size=48
+
+    [29] [35;1mUSED [0maddr=0x7e0d2ea444e0   size=48     data="mid-013"
+    [30] [33mFREE [0maddr=0x7e0d2ea44520   size=48
+
+    [31] [35;1mUSED [0maddr=0x7e0d2ea44560   size=48     data="mid-015"
+    [32] [33mFREE [0maddr=0x7e0d2ea445a0   size=48
+
+    [33] [35;1mUSED [0maddr=0x7e0d2ea445e0   size=48     data="mid-017"
+    [34] [33mFREE [0maddr=0x7e0d2ea44620   size=48
+
+    [35] [35;1mUSED [0maddr=0x7e0d2ea44660   size=48     data="mid-019"
+    [36] [33mFREE [0maddr=0x7e0d2ea446a0   size=48
+
+    [37] [35;1mUSED [0maddr=0x7e0d2ea446e0   size=48     data="mid-021"
+    [38] [33mFREE [0maddr=0x7e0d2ea44720   size=48
+
+    [39] [35;1mUSED [0maddr=0x7e0d2ea44760   size=48     data="mid-023"
+    [40] [33mFREE [0maddr=0x7e0d2ea447a0   size=48
+
+    [41] [35;1mUSED [0maddr=0x7e0d2ea447e0   size=48     data="mid-025"
+    [42] [33mFREE [0maddr=0x7e0d2ea44820   size=48
+
+    [43] [35;1mUSED [0maddr=0x7e0d2ea44860   size=48     data="mid-027"
+    [44] [33mFREE [0maddr=0x7e0d2ea448a0   size=48
+
+    [45] [35;1mUSED [0maddr=0x7e0d2ea448e0   size=48     data="mid-029"
+    [46] [33mFREE [0maddr=0x7e0d2ea44920   size=48
+
+    [47] [35;1mUSED [0maddr=0x7e0d2ea44960   size=48     data="mid-031"
+    [48] [33mFREE [0maddr=0x7e0d2ea449a0   size=48
+
+    [49] [35;1mUSED [0maddr=0x7e0d2ea449e0   size=48     data="mid-033"
+    [50] [33mFREE [0maddr=0x7e0d2ea44a20   size=48
+
+    [51] [35;1mUSED [0maddr=0x7e0d2ea44a60   size=48     data="mid-035"
+    [52] [33mFREE [0maddr=0x7e0d2ea44aa0   size=48
+
+    [53] [35;1mUSED [0maddr=0x7e0d2ea44ae0   size=48     data="mid-037"
+    [54] [33mFREE [0maddr=0x7e0d2ea44b20   size=48
+
+    [55] [35;1mUSED [0maddr=0x7e0d2ea44b60   size=48     data="mid-039"
+    [56] [33mFREE [0maddr=0x7e0d2ea44ba0   size=48
+
+    [57] [35;1mUSED [0maddr=0x7e0d2ea44be0   size=48     data="mid-041"
+    [58] [33mFREE [0maddr=0x7e0d2ea44c20   size=48
+
+    [59] [35;1mUSED [0maddr=0x7e0d2ea44c60   size=48     data="mid-043"
+    [60] [33mFREE [0maddr=0x7e0d2ea44ca0   size=48
+
+    [61] [35;1mUSED [0maddr=0x7e0d2ea44ce0   size=48     data="mid-045"
+    [62] [33mFREE [0maddr=0x7e0d2ea44d20   size=48
+
+    [63] [35;1mUSED [0maddr=0x7e0d2ea44d60   size=48     data="mid-047"
+    [64] [33mFREE [0maddr=0x7e0d2ea44da0   size=48
+
+    [65] [35;1mUSED [0maddr=0x7e0d2ea44de0   size=48     data="mid-049"
+    [66] [33mFREE [0maddr=0x7e0d2ea44e20   size=48
+
+    [67] [35;1mUSED [0maddr=0x7e0d2ea44e60   size=48     data="mid-051"
+    [68] [33mFREE [0maddr=0x7e0d2ea44ea0   size=48
+
+    [69] [35;1mUSED [0maddr=0x7e0d2ea44ee0   size=48     data="mid-053"
+    [70] [33mFREE [0maddr=0x7e0d2ea44f20   size=48
+
+    [71] [35;1mUSED [0maddr=0x7e0d2ea44f60   size=48     data="mid-055"
+    [72] [33mFREE [0maddr=0x7e0d2ea44fa0   size=48
+
+    [73] [35;1mUSED [0maddr=0x7e0d2ea44fe0   size=48     data="mid-057"
+    [74] [33mFREE [0maddr=0x7e0d2ea45020   size=48
+
+    [75] [35;1mUSED [0maddr=0x7e0d2ea45060   size=48     data="mid-059"
+    [76] [33mFREE [0maddr=0x7e0d2ea450a0   size=48
+
+    [77] [35;1mUSED [0maddr=0x7e0d2ea450e0   size=48     data="mid-061"
+    [78] [33mFREE [0maddr=0x7e0d2ea45120   size=48
+
+    [79] [35;1mUSED [0maddr=0x7e0d2ea45160   size=48     data="mid-063"
+[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m[33;1m  [ 64 bytes] [0m(0x7e0d2ea45120) -> (0x7e0d2ea450a0) -> (0x7e0d2ea45020) -> (0x7e0d2ea44fa0) -> (0x7e0d2ea44f20) -> (0x7e0d2ea44ea0) -> (0x7e0d2ea44e20) -> (0x7e0d2ea44da0) -> (0x7e0d2ea44d20) -> (0x7e0d2ea44ca0) -> (0x7e0d2ea44c20) -> (0x7e0d2ea44ba0) -> (0x7e0d2ea44b20) -> (0x7e0d2ea44aa0) -> (0x7e0d2ea44a20) -> (0x7e0d2ea449a0) -> (0x7e0d2ea44920) -> (0x7e0d2ea448a0) -> (0x7e0d2ea44820) -> (0x7e0d2ea447a0) -> (0x7e0d2ea44720) -> (0x7e0d2ea446a0) -> (0x7e0d2ea44620) -> (0x7e0d2ea445a0) -> (0x7e0d2ea44520) -> (0x7e0d2ea444a0) -> (0x7e0d2ea44420) -> (0x7e0d2ea443a0) -> (0x7e0d2ea44320) -> (0x7e0d2ea442a0) -> (0x7e0d2ea44220) -> (0x7e0d2ea441a0)[35m -> NULL
+[0m
+
+═══ [8] free all pad + mid → all heaps should munmap ═══
+[32m
+╔══════════════════════════════════════════════════════╗
+║                      ARENA STATE                     ║
+╚══════════════════════════════════════════════════════╝
+[0m[33;1m
+╔══════════════════════════════════════════════════╗
+║                    FASTBIN                       ║
+╚══════════════════════════════════════════════════╝
+[0m  (empty)
+

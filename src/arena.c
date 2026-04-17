@@ -22,8 +22,7 @@ bool        arena_heap_uninitialized_or_large(size_t size) {
 
 t_chunk     *arena_fastbin_get(size_t size) {
 
-	size_t sizeA = ALIGN(size);
-	size_t  index        = BIN_IDX(sizeA + sizeof(t_chunk));
+	size_t  index        = BIN_IDX(size + sizeof(t_chunk));
 	t_chunk *chunk       = g_arena.fastbin[index];
 	t_heap *heap         = NULL;
 
@@ -31,14 +30,12 @@ t_chunk     *arena_fastbin_get(size_t size) {
 		//printf("%s - Didnt find any free chunks in fastbin\n", __func__);
 		return (NULL);
 	}
-	if ((heap = arena_heap_find(chunk)) == NULL)
+	heap = arena_heap_find_by_size(chunk, chunk->size);
+	if (!heap)
 		return (NULL);
 	heap->blocks += 1;
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
-	void *ptr = chunk_to_data(chunk);
-    VALGRIND_MALLOCLIKE_BLOCK(ptr, size, 0, 0);
-    VALGRIND_MAKE_MEM_UNDEFINED(ptr, size);
 	//printf("%s - Found free chunk in fastbin\n", __func__);
 	return (chunk);
 }
@@ -75,7 +72,7 @@ bool    arena_owner_of_heap(t_heap *heap, t_chunk *chunk) {
 	char *start = (char*)(heap + 1);
 	char *end = start + heap->total_size;
 
-	return ((char *)chunk >= start && (char *)chunk->size < end);
+	return ((char *)chunk >= start && (char *)chunk < end);
 }
 
 int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
@@ -108,9 +105,9 @@ t_heap      **arena_heap_group(size_t size) {
 	
 }
 
-t_heap  *arena_heap_find(t_chunk *chunk) {
+t_heap  *arena_heap_find_by_size(t_chunk *chunk, size_t size) {
 
-   t_heap  **heap = arena_heap_group(chunk->size);
+   t_heap  **heap = arena_heap_group(size);
 
    while (*heap != NULL) {
 

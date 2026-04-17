@@ -14,7 +14,7 @@ RM			= rm -f
 LIBFT_DIR	= ./include/libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC			= src/main.c src/chunk.c src/heap.c src/utils.c src/arena.c
+SRC			= src/main.c src/heap.c src/utils.c src/arena.c
 OBJS		= $(SRC:.c=.o)
 
 

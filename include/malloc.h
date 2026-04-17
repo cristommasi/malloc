@@ -45,7 +45,7 @@
 // NO OFFSET FLAG
 #define NO_OFFSET 0
 
- // BLOCK ALLIGNMENT MULTIPLES OF 16
+ // BLOCK ALLIGNMENT MULTIPLES OF 8
 #define ALIGNMENT (sizeof(size_t))
 
  // MACRO FN TO ALIGN
@@ -88,8 +88,9 @@ typedef struct s_chunk {
 typedef struct s_heap {
 
     size_t          total_size;
+    size_t          blocks;
     struct s_heap   *next;
-    t_chunk         *free_start;
+    t_chunk         *free_cis_start;
 
 }               t_heap;
 
@@ -118,21 +119,24 @@ int         heap_has_remaining_cis(t_heap *heap, size_t size);
 t_chunk     *heap_to_chunk(t_heap *heap_addr);
 void        *chunk_to_data(t_chunk *chunk_addr);
 t_chunk    *data_to_chunk(void *data_addr);
-size_t      heap_size(size_t size);
-t_heap_type heap_type(size_t size); 
-
+size_t      heap_page_size(size_t size);
+t_heap_type heap_type(size_t size);
+size_t      heap_cis_mem_size(t_heap *heap);
+size_t      heap_free_size(t_heap *heap);
+bool        chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk);
 
 
  // ARENA FUNCTIONS
 bool         arena_heap_uninitialized_or_large(size_t size);
 t_chunk     *arena_fastbin_get(size_t size);
-void        arena_fastbin_set(t_chunk *freed_chunk);
-t_heap      *arena_heap_group(size_t size);
+void        arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
+void        arena_fastbin_drain(t_heap *heap);
+t_heap      **arena_heap_group(size_t size);
+t_heap      *arena_heap_find(t_chunk *chunk);
+bool        arena_owner_of_heap(t_heap *heap, t_chunk *chunk);
+int         arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 
-
-
-void printall(t_heap *heap_type);
-void printALL(void);
+void printall(t_heap *heap_type);void printALL(void);
 
 
 // void ft_free(void *ptr);
@@ -141,3 +145,4 @@ void printALL(void);
 // void    show_alloc_mem(void);
 
 #endif
+

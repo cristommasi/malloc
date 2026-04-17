@@ -45,14 +45,40 @@ void    *ft_malloc(size_t size) {
 
 void    ft_free(void *ptr) {
     
-    t_chunk *chunk = (t_chunk*)ptr;
+    if (!ptr)
+        return ;
+
+    t_chunk *chunk = data_to_chunk(ptr);
 
     if (!chunk)
-        return (NULL);
-    t_heap_type  TYPE = heap_type(heap_size(chunk->size));
+        return ;
+    t_heap      **heap = arena_heap_group(chunk->size);
+    t_heap      *prev = NULL;
 
-    if (TYPE == )
 
+    while (*heap != NULL) {
+
+        if (chunk_in_arena_heap_range(*heap, chunk)) {
+
+            if (chunk_covers_entire_heap(*heap, chunk)) {
+
+                t_heap *to_free = *heap;
+                if (prev)
+                	prev->next = to_free->next;
+                else
+                	*heap = to_free->next;
+
+                munmap((void *)to_free, (size_t)(to_free->total_size + sizeof(t_heap)));
+            }
+            else {
+                arena_fastbin_set(chunk);
+            }
+            return ;
+
+        }
+        prev = *heap;
+        *heap = (*heap)->next;
+    }
 }
 
 

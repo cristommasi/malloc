@@ -107,26 +107,27 @@ typedef struct s_arena {
 extern t_arena g_arena;
 
 
- // BLOCK FUNCTIONS
-t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
-void        *chunk_to_data(t_chunk *block_addr);
-
-
-// HEAP FUNCTIONS
+ 
+ // HEAP FUNCTIONS
 t_heap      *heap_new_and_append(size_t size);
 t_heap      *heap_new(size_t zone_size);
 void        heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
 t_heap      *heap_find_cis_mem(size_t size);
+t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
 int         heap_has_remaining_cis(t_heap *heap, size_t size);
+t_chunk     *heap_to_chunk(t_heap *heap_addr);
+void        *chunk_to_data(t_chunk *chunk_addr);
+t_chunk    *data_to_chunk(void *data_addr);
 size_t      heap_size(size_t size);
 t_heap_type heap_type(size_t size); 
-t_chunk     *heap_to_chunk(t_heap *heap_addr);
+
 
 
  // ARENA FUNCTIONS
-t_chunk     *arena_fastbin_find(size_t size);
-t_heap      *arena_heap_group(size_t size);
 bool         arena_heap_uninitialized_or_large(size_t size);
+t_chunk     *arena_fastbin_get(size_t size);
+void        arena_fastbin_set(t_chunk *freed_chunk);
+t_heap      *arena_heap_group(size_t size);
 
 
 

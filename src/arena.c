@@ -48,7 +48,6 @@ void    arena_fastbin_set(t_chunk *freed_chunk) {
 }
 
 
-
 t_heap      *arena_heap_group(size_t size) {
 
     size_t zone_size = heap_size(size);

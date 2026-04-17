@@ -65,7 +65,7 @@ t_heap  *heap_find_cis_mem(size_t size) {
 	t_heap  **cur = arena_heap_group(size);
 
 
-	while (cur != NULL) {
+	while (*cur != NULL) {
 
 		if (heap_has_remaining_cis(*cur, size)) {
 			//printf("%s - %s heap with size req.\n", __func__, ((heap_type(size) == TINY_HEAP) ? "TINY" : "SMALL"));

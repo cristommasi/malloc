@@ -1,6 +1,7 @@
 #ifndef MALLOC_H
 #   define MALLOC_H
-
+#include <valgrind/valgrind.h>
+#include <valgrind/memcheck.h>
 // MAP_ANON & MAP_ANONYMOUS FLAGS
 #define _GNU_SOURCE
  // mmap(2)
@@ -139,8 +140,8 @@ int         arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 void printall(t_heap *heap_type);void printALL(void);
 
 
-// void ft_free(void *ptr);
-// void *ft_malloc(size_t size);
+void ft_free(void *ptr);
+void *ft_malloc(size_t size);
 // void *ft_realloc(void *ptr, size_t size);
 // void    show_alloc_mem(void);
 

@@ -34,11 +34,15 @@ t_heap    *heap_new(size_t zone_size) {
 		//printf("%s - mmap() FAILED\n", __func__);
 		return (MAP_FAILED);
 	}
-
 	new_heap->total_size     = zone_size;
 	new_heap->free_cis_start = heap_to_chunk(new_heap);
 	new_heap->next           = NULL;
 	new_heap->blocks         = 0;
+
+    t_chunk *new_chunk = new_heap->free_cis_start;
+    new_chunk->size = zone_size - sizeof(t_chunk);
+    new_chunk->next = NULL;
+
 	return (new_heap);
 }
 
@@ -62,7 +66,7 @@ void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap) {
 
 t_heap  *heap_find_cis_mem(size_t size) {
 
-	t_heap  **cur = arena_heap_group(size);
+	t_heap  **cur = arena_heap_group(REAL_SIZE(size));
 
 
 	while (*cur != NULL) {
@@ -78,17 +82,29 @@ t_heap  *heap_find_cis_mem(size_t size) {
 
 }
 
+
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
-	t_chunk *new_use_chunk = heap->free_cis_start;
+    t_chunk *new_free_chunk = heap->free_cis_start + size + sizeof(t_chunk);
+    t_chunk *old_free_chunk = heap->free_cis_start;
 
-	new_use_chunk->size = size;
-	new_use_chunk->next = NULL;
+    new_free_chunk->size = old_free_chunk->size - size;
+    new_free_chunk->next = NULL;
+
+    old_free_chunk->size = size;
+    old_free_chunk->next = NULL;
+
 
 	heap->blocks += 1;
 	heap->free_cis_start = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
-	//printf("%s - Split mem success.\n", __func__);
-	return (new_use_chunk);
+    SET_INUSE(old_free_chunk);
+	return (old_free_chunk);
+}
+
+
+t_chunk *heap_to_chunk(t_heap *heap_addr) {
+
+    return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
 }
 
 int		heap_has_remaining_cis(t_heap *heap, size_t size) {
@@ -96,10 +112,6 @@ int		heap_has_remaining_cis(t_heap *heap, size_t size) {
 	return (((char*)heap->free_cis_start + size + sizeof(t_chunk)) <= (char *)heap_to_chunk(heap) + heap->total_size);
 }
 
-t_chunk *heap_to_chunk(t_heap *heap_addr) {
-
-	return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
-}
 
 void    *chunk_to_data(t_chunk *chunk_addr) {
 
@@ -146,14 +158,51 @@ size_t heap_cis_mem_size(t_heap *heap) {
 	return ((size_t)(end - (char *)heap->free_cis_start));
 }
 
-size_t heap_free_size(t_heap *heap) {
-
-	
-	return ((size_t)(((char*)heap + 1 + heap->total_size) - (char*)heap->free_cis_start));
-
-}
 
 bool    chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk) {
 
-	return (heap->total_size == (chunk->size + sizeof(t_chunk) + heap_cis_mem_size(heap)));
+	return (heap->total_size == (REAL_SIZE(chunk->size) + sizeof(t_chunk) + heap_cis_mem_size(heap)));
+}
+
+
+bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
+
+	char *start = (char*)(heap + 1);
+	char *end = start + heap->total_size;
+
+	return ((char *)chunk >= start && (char *)chunk <= end);
+}
+
+bool	heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
+
+    return (heap_cis_mem_size(heap) >= to_add);
+}
+
+void    heap_split_cis_mem_append(t_heap *heap, t_chunk *chunk, size_t size) {
+
+    t_chunk *cur_free_chunk = heap->free_cis_start;
+
+    if (heap_cis_mem_size(heap) - size >= G_CHUNK_MIN_SIZE) {
+
+        t_chunk *new_free_chunk = (t_chunk*)((char*)cur_free_chunk + size);
+
+        new_free_chunk->size = (char*)cur_free_chunk->size - size;
+        new_free_chunk->next = NULL;
+        heap->free_cis_start = new_free_chunk;
+    }
+    else {
+
+        heap->free_cis_start = NULL;
+
+    }
+    chunk->size = REAL_SIZE(chunk->size) + size;
+}
+
+t_chunk *heap_find_adjacent_free_chunks(t_chunk *chunk) {
+
+    t_chunk *next_chunk = (char*)chunk + sizeof(t_chunk) + REAL_SIZE(chunk);
+
+    if (IN_BIN(next_chunk))
+
+
 }

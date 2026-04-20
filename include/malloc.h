@@ -74,7 +74,9 @@
 
 #define BIN_LAST 0
 
-typedef enum {TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
+typedef enum {NONE, TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
+
+#define G_CHUNK_MIN_SIZE 16
 
 
 
@@ -108,7 +110,23 @@ typedef struct s_arena {
 
 extern t_arena g_arena;
 
+#define IN_BIN_FLAG 0x1
 
+#define IN_USE_FLAG 0x2
+
+#define IN_BIN_FLAG 0x1
+#define IN_USE_FLAG 0x2
+
+#define IN_BIN(chunk)       ( ((t_chunk *)(chunk))->size &  IN_BIN_FLAG )
+#define IN_USE(chunk)       ( ((t_chunk *)(chunk))->size &  IN_USE_FLAG )
+
+#define SET_INUSE(chunk)    ( ((t_chunk *)(chunk))->size |= IN_USE_FLAG )
+#define UNSET_INUSE(chunk)  ( ((t_chunk *)(chunk))->size &= ~IN_USE_FLAG )
+
+#define SET_INBIN(chunk)    ( ((t_chunk *)(chunk))->size |= IN_BIN_FLAG )
+#define UNSET_INBIN(chunk)  ( ((t_chunk *)(chunk))->size &= ~IN_BIN_FLAG )
+
+#define REAL_SIZE(chunk)    ( ALIGN(((t_chunk *)(chunk))->size & ~0x3) )
  
  // HEAP FUNCTIONS
 t_heap      *heap_new_and_append(size_t size);
@@ -123,7 +141,6 @@ t_chunk    *data_to_chunk(void *data_addr);
 size_t      heap_page_size(size_t size);
 t_heap_type heap_type(size_t size);
 size_t      heap_cis_mem_size(t_heap *heap);
-size_t      heap_free_size(t_heap *heap);
 bool        chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk);
 
 
@@ -133,8 +150,8 @@ t_chunk     *arena_fastbin_get(size_t size);
 void        arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void        arena_fastbin_drain(t_heap *heap);
 t_heap      **arena_heap_group(size_t size);
-t_heap      *arena_heap_find_by_size(t_chunk *chunk, size_t size);
-bool        arena_owner_of_heap(t_heap *heap, t_chunk *chunk);
+t_heap      *arena_heap_find_by_chunk(t_chunk *chunk);
+bool        chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
 int         arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 
 void printall(t_heap *heap_type);void printALL(void);

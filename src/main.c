@@ -26,7 +26,7 @@ void    *ft_malloc(size_t size) {
 
 	}
 	else if ((chunk = arena_fastbin_get(sizeA)) == NULL) {
-
+        // IF COULNDNT FIND CHUNK, TRY TO MERGE ADJACENT BLOCKS - TODO
 		heap = heap_find_cis_mem(sizeA);
 		if (!heap) {
 			
@@ -62,13 +62,14 @@ void    ft_free(void *ptr) {
 
 	while (heap != NULL) {
 
-		if (arena_owner_of_heap(heap, chunk)) {
+		if (chunk_belongs_to_heap(heap, chunk)) {
 
 			if (chunk_covers_entire_heap(heap, chunk)) {
 				VALGRIND_FREELIKE_BLOCK(ptr, 0);
-				if (arena_heap_munmap(prev, heap, heap_head) == -1)
-					return ;//printf("%s - munmap failed\n", __func__);
-				//printf("%s - munmap success\n", __func__);
+
+                int ret = arena_heap_munmap(prev, heap, heap_head);
+				if (ret == -1)
+					printf("%s - munmap failed\n", __func__);
 				return ;
 			}
 			else {
@@ -77,9 +78,9 @@ void    ft_free(void *ptr) {
 				if (heap->blocks == 0) {
 
 					arena_fastbin_drain(heap);
-					if (arena_heap_munmap(prev, heap, heap_head) == -1)
-						return ;//printf("%s - munmap failed\n", __func__);
-					//printf("%s - munmap success\n", __func__);
+                    int ret = arena_heap_munmap(prev, heap, heap_head);
+					if (ret == -1)
+						printf("%s - munmap failed\n", __func__);
 				}
 				return ;
 			}
@@ -89,7 +90,49 @@ void    ft_free(void *ptr) {
 	}
 }
 
+void    *ft_realloc(void *ptr, size_t size) {
+    
+    void        *new_ptr     = NULL;
+    void        *data_copy   = NULL;
+    t_chunk     *chunk       = NULL;
+    t_heap      *heap        = NULL;
+    size_t      p_new_size   = ALIGN(size);
+    size_t      r_chunk_size = 0;
+    size_t      to_copy      = 0;
 
+
+
+    if (ptr == NULL)
+        return (ft_malloc(size));
+
+    if ((chunk = data_to_chunk(ptr)) == NULL)
+        return (NULL);
+
+    // if not owners of heap
+    if ((heap = arena_heap_find_by_chunk(chunk)) == NULL)
+        return (NULL);
+
+    if (size == 0)
+        return (ft_free(ptr), NULL);
+
+    r_chunk_size = REAL_SIZE(chunk);
+    to_copy = ((r_chunk_size <= p_new_size) ? r_chunk_size : p_new_size);
+
+    if (p_new_size == r_chunk_size) {
+        return (ptr);
+    }
+    
+    ft_strlcpy(data_copy, ptr, to_copy);
+    ft_free(ptr);
+    new_ptr = ft_malloc(p_new_size);
+    if (new_ptr == NULL) {
+        ft_free(ptr);
+        return (NULL);
+    }
+    ft_strlcpy(new_ptr, data_copy, to_copy);
+
+    return (new_ptr);
+}
 
 int main(void)
 {

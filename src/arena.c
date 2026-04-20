@@ -30,21 +30,25 @@ t_chunk     *arena_fastbin_get(size_t size) {
 		//printf("%s - Didnt find any free chunks in fastbin\n", __func__);
 		return (NULL);
 	}
-	heap = arena_heap_find_by_size(chunk, chunk->size);
+	heap = arena_heap_find_by_chunk(chunk);
 	if (!heap)
 		return (NULL);
 	heap->blocks += 1;
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
+	UNSET_INBIN(chunk);
+	SET_INUSE(chunk);
 	//printf("%s - Found free chunk in fastbin\n", __func__);
 	return (chunk);
 }
 
 void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	size_t	index = BIN_IDX(freed_chunk->size + sizeof(t_chunk));
+	size_t	index = BIN_IDX(REAL_SIZE(freed_chunk->size) + sizeof(t_chunk));
 
 	VALGRIND_FREELIKE_BLOCK(chunk_to_data(freed_chunk), 0);
+	UNSET_INUSE(freed_chunk);
+	SET_INBIN(freed_chunk);
 	freed_chunk->next = g_arena.fastbin[index];
 	g_arena.fastbin[index] = freed_chunk;
 	heap->blocks -= 1;
@@ -58,7 +62,7 @@ void	arena_fastbin_drain(t_heap *heap) {
 		t_chunk **node = &g_arena.fastbin[i];
 		while (*node != NULL) {
 
-			if (arena_owner_of_heap(heap, *node))
+			if (arena_chunk_in_bounds_of_heap(heap, *node))
 				*node = (*node)->next;
 			else
 				node = &(*node)->next;
@@ -67,13 +71,6 @@ void	arena_fastbin_drain(t_heap *heap) {
 	//printf("%s - Unlinked all chunks in fastbin\n", __func__);
 }
 
-bool    arena_owner_of_heap(t_heap *heap, t_chunk *chunk) {
-
-	char *start = (char*)(heap + 1);
-	char *end = start + heap->total_size;
-
-	return ((char *)chunk >= start && (char *)chunk < end);
-}
 
 int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
@@ -89,7 +86,7 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
 t_heap      **arena_heap_group(size_t size) {
 
-	size_t zone_size = heap_page_size(size);
+	size_t zone_size = heap_page_size(REAL_SIZE(size));
 
 	if (zone_size == TINY_HEAP_SIZE) {
 
@@ -105,15 +102,17 @@ t_heap      **arena_heap_group(size_t size) {
 	
 }
 
-t_heap  *arena_heap_find_by_size(t_chunk *chunk, size_t size) {
+t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
 
-   t_heap  **heap = arena_heap_group(size);
+   t_heap  **heap = arena_heap_group(REAL_SIZE(chunk->size));
 
    while (*heap != NULL) {
 
-		if (arena_owner_of_heap(*heap, chunk))
+		if (chunk_belongs_to_heap(*heap, chunk))
 			return (*heap);
 		heap = &(*heap)->next;
    }
    return (NULL);
 }
+
+

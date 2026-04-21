@@ -18,8 +18,11 @@
 #include "./libft/includes/libft.h"
  // bool type
 #include <stdbool.h>
+ // uint32
+#include <stdint.h>
  // printf
 #include <stdio.h> 
+
 
 
  // SYSTEM DEFAULT PAGE_SIZE (4096)
@@ -78,13 +81,14 @@ typedef enum {NONE, TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
 
 #define G_CHUNK_MIN_SIZE 16
 
-
+#define PREV_INUSE 0x80000000
 
 // Metadata for a single allocated block
 typedef struct s_chunk {
 
-    size_t          size;
-    struct s_chunk  *next;
+    uint32_t             prev_size;
+    uint32_t             size;
+    struct s_chunk        *next;
 }                   t_chunk;
 
 //  Metadata for a whole mmap'd region
@@ -110,24 +114,12 @@ typedef struct s_arena {
 
 extern t_arena g_arena;
 
-#define IN_BIN_FLAG 0x1
 
-#define IN_USE_FLAG 0x2
 
-#define IN_BIN_FLAG 0x1
-#define IN_USE_FLAG 0x2
 
-#define IN_BIN(chunk)       ( ((t_chunk *)(chunk))->size &  IN_BIN_FLAG )
-#define IN_USE(chunk)       ( ((t_chunk *)(chunk))->size &  IN_USE_FLAG )
 
-#define SET_INUSE(chunk)    ( ((t_chunk *)(chunk))->size |= IN_USE_FLAG )
-#define UNSET_INUSE(chunk)  ( ((t_chunk *)(chunk))->size &= ~IN_USE_FLAG )
 
-#define SET_INBIN(chunk)    ( ((t_chunk *)(chunk))->size |= IN_BIN_FLAG )
-#define UNSET_INBIN(chunk)  ( ((t_chunk *)(chunk))->size &= ~IN_BIN_FLAG )
 
-#define REAL_SIZE(chunk)    ( ALIGN(((t_chunk *)(chunk))->size & ~0x3) )
- 
  // HEAP FUNCTIONS
 t_heap      *heap_new_and_append(size_t size);
 t_heap      *heap_new(size_t zone_size);

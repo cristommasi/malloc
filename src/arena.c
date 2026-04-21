@@ -45,12 +45,15 @@ t_chunk     *arena_fastbin_get(size_t size) {
 
 void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	size_t	index = BIN_IDX(freed_chunk->size + sizeof(t_chunk));
+	size_t	index = BIN_IDX((size_t)freed_chunk->size + sizeof(t_chunk));
 
 
 	freed_chunk->next = g_arena.fastbin[index];
 	g_arena.fastbin[index] = freed_chunk;
 	heap->blocks -= 1;
+	t_chunk *next = next_chunk(freed_chunk);
+	if (next != NULL)
+		unset_prev_inuse(next);
 	// printf("%s - Set free chunk to fastbin\n", __func__);
 }
 

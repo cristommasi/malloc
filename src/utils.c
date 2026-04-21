@@ -36,11 +36,3 @@ bool	heap_is_large(size_t size) {
 
 }
 
-t_chunk *next_chunk(t_heap *heap, t_chunk *chunk) {
-
-	char *addr = ((char*)chunk + sizeof(t_chunk) + chunk->size);
-
-	if (addr > (char*)heap + sizeof(t_heap) + heap->total_size)
-		return (NULL);
-	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + chunk->size) )
-}

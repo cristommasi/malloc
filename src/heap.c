@@ -127,18 +127,6 @@ int		heap_has_remaining_cis(t_heap *heap, size_t size) {
 }
 
 
-void    *chunk_to_data(t_chunk *chunk_addr) {
-
-	return ((void *)(chunk_addr + 1));
-}
-
-
-t_chunk    *data_to_chunk(void *data_addr) {
-
-	return ((t_chunk *)data_addr - 1);
-}
-
-
 size_t  heap_page_size(size_t size) {
 
 	if (size <= TINY_CHUNK_MAX) {

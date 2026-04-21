@@ -21,7 +21,7 @@ t_chunk *next_chunk(t_heap *heap, t_chunk *chunk) {
 
 	if (addr > (char*)heap + sizeof(t_heap) + heap->total_size)
 		return (NULL);
-	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + chunk->size) )
+	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + chunk->size) );
 }
 
 void    *chunk_to_data(t_chunk *chunk_addr) {
@@ -34,3 +34,4 @@ t_chunk    *data_to_chunk(void *data_addr) {
 
 	return ((t_chunk *)data_addr - 1);
 }
+

@@ -115,17 +115,28 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	return (new_free_chunk);
 }
 
-
-t_chunk *heap_to_chunk(t_heap *heap_addr) {
-
-    return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
-}
-
 int		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
 	return (((char*)heap->free_cis_start + size + sizeof(t_chunk)) <= (char *)heap_to_chunk(heap) + heap->total_size);
 }
 
+size_t heap_cis_mem_size(t_heap *heap) {
+
+	char *end = (char *)(heap + 1) + heap->total_size;
+
+	return ((size_t)(end - (char *)heap->free_cis_start));
+}
+
+bool	heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
+
+    return (heap_cis_mem_size(heap) >= to_add);
+}
+
+
+t_chunk *heap_to_chunk(t_heap *heap_addr) {
+
+    return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
+}
 
 size_t  heap_page_size(size_t size) {
 
@@ -153,38 +164,61 @@ t_heap_type  heap_type(size_t size) {
 	}
 }
 
-size_t heap_cis_mem_size(t_heap *heap) {
+size_t	heap_chunk_size(size_t size) {
 
-	char *end = (char *)(heap + 1) + heap->total_size;
-
-	return ((size_t)(end - (char *)heap->free_cis_start));
+	if (size <= TINY_CHUNK_MAX) {
+		return (TINY_CHUNK_MAX);
+	}
+	else if (size <= SMALL_CHUNK_MAX) {
+		return (SMALL_CHUNK_MAX); 
+	}
+	else {
+		return (size);
+	}
 }
 
+bool	heap_is_large(size_t size) {
 
+	size_t	zone_size = heap_page_size(size);
 
+	return (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE);
 
-bool	heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
-
-    return (heap_cis_mem_size(heap) >= to_add);
 }
 
-void    heap_split_cis_mem_append(t_heap *heap, t_chunk *chunk, size_t size) {
+bool heap_is_different_type(size_t sizeA, size_t sizeB) {
 
-    t_chunk *cur_free_chunk = heap->free_cis_start;
+	return (heap_chunk_size(sizeA) != heap_chunk_size(sizeB));
 
-    if (heap_cis_mem_size(heap) - size >= G_CHUNK_MIN_SIZE) {
-
-        t_chunk *new_free_chunk = (t_chunk*)((char*)cur_free_chunk + size);
-
-        new_free_chunk->size = (char*)cur_free_chunk->size - size;
-        new_free_chunk->next = NULL;
-        heap->free_cis_start = new_free_chunk;
-    }
-    else {
-
-        heap->free_cis_start = NULL;
-
-    }
-    chunk->size = chunk->size + size;
 }
 
+t_chunk *	heap_split_free_chunk(t_heap *heap, t_chunk *chunk, size_t to_trim) {
+
+	t_chunk *new_free_chunk = (char*)chunk + sizeof(t_chunk) + (uint32_t)to_trim;
+
+	
+	new_free_chunk->size = chunk->size - (uint32_t)to_trim - sizeof(t_chunk);
+	new_free_chunk->prev_size = to_trim;
+	new_free_chunk->next = NULL;
+	
+	set_prev_inuse(new_free_chunk);
+	arena_fastbin_set(heap, new_free_chunk);
+
+	t_chunk *new_inuse_chunk = chunk;
+
+	new_inuse_chunk->prev_size = chunk->prev_size;
+	new_inuse_chunk->size = (uint32_t)to_trim;
+	new_inuse_chunk->next = NULL;
+	return (new_inuse_chunk);
+}
+
+t_chunk *heap_check_adjacent_chunks(t_heap *heap, t_chunk *chunk, size_t new_size) {
+
+	// CHECK NEXT CHUNK
+	// IF CIS MEM; SPLIT
+	// IF SO EXPAND
+
+	// ELSE CHECK PREV CHUNK
+
+	// IF PREV CHUNK IS ENOUGH; MOVE DATA TO PREV CHUNK
+
+}

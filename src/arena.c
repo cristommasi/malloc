@@ -86,6 +86,19 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 }
 
 
+t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
+
+   t_heap  **heap = arena_heap_group((size_t)chunk->size);
+
+   while (*heap != NULL) {
+
+		if (chunk_belongs_to_heap(*heap, chunk))
+			return (*heap);
+		heap = &(*heap)->next;
+   }
+   return (NULL);
+}
+
 t_heap      **arena_heap_group(size_t size) {
 
 	size_t zone_size = heap_page_size(size);
@@ -101,20 +114,16 @@ t_heap      **arena_heap_group(size_t size) {
 	else {
 		return (&g_arena.large);
 	}
-	
 }
 
-t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
+void *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size) {
 
-   t_heap  **heap = arena_heap_group((size_t)chunk->size);
+	void *new_ptr = ft_malloc(p_new_size);
 
-   while (*heap != NULL) {
-
-		if (chunk_belongs_to_heap(*heap, chunk))
-			return (*heap);
-		heap = &(*heap)->next;
-   }
-   return (NULL);
+    if (!new_ptr)
+        return (NULL);
+    ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
+    ft_free(ptr);
+    return (new_ptr);
 }
-
 

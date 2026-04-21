@@ -73,6 +73,9 @@
  // 0, 1, 2, 3, 4, 5, 6, 7
 #define FASTBIN_COUNT 64
 
+#define MIN_TRIM 48
+
+// index 0 doesnt exist
 #define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
 
 #define BIN_LAST 0

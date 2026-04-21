@@ -91,14 +91,12 @@ void    ft_free(void *ptr) {
 void    *ft_realloc(void *ptr, size_t size) {
     
     void        *new_ptr     = NULL;
-    void        *data_copy   = NULL;
     t_chunk     *chunk       = NULL;
     t_heap      *heap        = NULL;
     size_t      p_new_size   = ALIGN(size);
-    size_t      r_chunk_size = 0;
-    size_t      to_copy      = 0;
+    size_t      cur_size     = 0;
 
-
+    
 
     if (ptr == NULL)
         return (ft_malloc(size));
@@ -113,23 +111,32 @@ void    *ft_realloc(void *ptr, size_t size) {
     if (size == 0)
         return (ft_free(ptr), NULL);
 
-    r_chunk_size = chunk;
-    to_copy = ((r_chunk_size <= p_new_size) ? r_chunk_size : p_new_size);
-
-    if (p_new_size == r_chunk_size) {
+    cur_size = (size_t)chunk->size;
+    if (p_new_size == cur_size) {
         return (ptr);
     }
-    
-    ft_strlcpy(data_copy, ptr, to_copy);
-    ft_free(ptr);
-    new_ptr = ft_malloc(p_new_size);
-    if (new_ptr == NULL) {
-        ft_free(ptr);
-        return (NULL);
-    }
-    ft_strlcpy(new_ptr, data_copy, to_copy);
+    else if (p_new_size < cur_size && p_new_size >= MIN_TRIM) {
 
-    return (new_ptr);
+        if (heap_is_different_type(p_new_size, cur_size))
+            return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+        chunk = heap_split_free_chunk(heap, chunk, p_new_size);
+        return (chunk_to_data(chunk));
+    }
+    else if (p_new_size > cur_size) {
+
+        if (heap_is_different_type(p_new_size, cur_size))
+            return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+
+        chunk = heap_check_adjacent_chunks(chunk, p_new_size);
+        if (!chunk)
+            return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+        return (chunk_to_data(chunk));
+    }
+    else { // get new chunk
+
+        return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+    }
+    return (NULL);
 }
 
 int main(void)

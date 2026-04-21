@@ -28,11 +28,8 @@ void        unset_prev_inuse(t_chunk *chunk) {
     chunk->prev_size = chunk->prev_size &= 0xFFFF;
 }
 
-bool	heap_is_large(size_t size) {
+size_t		get_min(size_t a, size_t b) {
 
-	size_t	zone_size = heap_page_size(size);
-
-	return (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE);
-
+	return (((a <= b) ? a : b));
 }
 

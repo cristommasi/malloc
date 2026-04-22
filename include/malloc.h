@@ -84,27 +84,41 @@ typedef enum {NONE, TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
 
 #define G_CHUNK_MIN_SIZE 16
 
-#define PREV_INUSE 0b10000000000000000000000000000000
 
-#define NEXT_INUSE 0b01000000000000000000000000000000
+#define IN_USE 0b0000000000000001
 
-#define REAL_PREV_MASK 0x7FFFFFFF
+#define IS_CIS 0b0000000000000010
 
-#define FLAG_MASK  0b00111111111111111111111111111111
+#define IS_LARGE  0b0000000000000100
+
+
+typedef struct s_info
+{
+	uint16_t	prev_size;
+	uint16_t	next_size;
+	uint16_t	size;
+	uint16_t	flags;
+}	t_info;
+
+typedef union s_vars {
+
+	t_info	info;
+	size_t	L_size;	
+}	t_vars;
 
 // Metadata for a single allocated block
 typedef struct s_chunk {
 
-	uint32_t             prev_size;
-	uint32_t             size;
+	t_vars				*vars;
 	struct s_chunk        *next;
 }                   t_chunk;
 
 //  Metadata for a whole mmap'd region
 typedef struct s_heap {
 
+	uint32_t        blocks;
+	t_heap_type     TYPE;
 	size_t          total_size;
-	size_t          blocks;
 	struct s_heap   *next;
 	t_chunk         *free_cis_start;
 
@@ -175,4 +189,5 @@ void *ft_realloc(void *ptr, size_t size);
 // void    show_alloc_mem(void);
 
 #endif
+
 

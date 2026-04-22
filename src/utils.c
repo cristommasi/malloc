@@ -1,57 +1,70 @@
 #include "../include/malloc.h"
 
+void set_size(t_chunk *chunk, size_t size) {
 
-void	set_large_size(t_chunk *chunk, size_t zone_size) {
-
-	chunk->prev_size = (u_int32_t)((zone_size >> 16) << 16);
-    chunk->size = (u_int32_t)(((zone_size - sizeof(t_chunk)) << 16) >> 16);
-	chunk->next = NULL;
+	if (chunk->vars->info.flags & IS_LARGE) {
+		chunk->vars->L_size = size;
+		return ;
+	}
+	chunk->vars->info.size = (uint16_t)size;
 }
 
-size_t	get_large_size(t_chunk *chunk) {
+size_t get_size(t_chunk *chunk) {
 
-	return ((size_t)(chunk->size + (size_t)get_prev_size(chunk)));
+	if (chunk->vars->info.flags & IS_LARGE) {
+		return chunk->vars->L_size;
+	}
+	return (size_t)chunk->vars->info.size;
 }
 
-uint32_t		get_flags(t_chunk *chunk) {
+void set_prevsize(t_chunk *chunk, size_t size) {
 
-	return (chunk->prev_size & ~FLAG_MASK);
+	if (chunk->vars->info.flags & IS_LARGE) {
+		return ;
+	}
+	chunk->vars->info.prev_size = (uint16_t)size;
 }
 
-uint32_t		get_prev_size(t_chunk *chunk) {
+size_t get_prevsize(t_chunk *chunk) {
 
-	return (chunk->prev_size & FLAG_MASK);
+	if (chunk->vars->info.flags & IS_LARGE) {
+		return 0;
+	}
+	return (size_t)chunk->vars->info.prev_size;
 }
 
-uint32_t	prev_in_use(t_chunk *chunk) {
+void set_nextsize(t_chunk *chunk, size_t size) {
 
-	return (chunk->prev_size & PREV_INUSE);
+	if (chunk->vars->info.flags & IS_LARGE) {
+		return ;
+	}
+	chunk->vars->info.next_size = (uint16_t)size;
 }
 
-void        set_prev_in_use(t_chunk *chunk) {
+size_t get_nextsize(t_chunk *chunk) {
 
-    chunk->prev_size |= PREV_INUSE;
+	if (chunk->vars->info.flags & IS_LARGE) {
+		return 0;
+	}
+	return (size_t)chunk->vars->info.next_size;
 }
 
-void        unset_prev_in_use(t_chunk *chunk) {
+void set_flags(t_chunk *chunk, size_t flag) {
 
-    chunk->prev_size &= ~PREV_INUSE;
+	chunk->vars->info.flags |= (uint16_t)flag;
+} 
+
+void unset_flags(t_chunk *chunk, size_t flag) {
+
+	chunk->vars->info.flags ^= (uint16_t)flag;
+} 
+
+bool has_flags(t_chunk *chunk, size_t flag) {
+
+	return (chunk->vars->info.flags & flag);
 }
 
-uint32_t		in_use(t_chunk *chunk) {
 
-	return (chunk->prev_size & NEXT_INUSE);
-}
-
-void        set_in_use(t_chunk *chunk) {
-
-    chunk->prev_size |= NEXT_INUSE;
-}
-
-void        unset_in_use(t_chunk *chunk) {
-
-    chunk->prev_size &= ~NEXT_INUSE;
-}
 
 size_t		get_min(size_t a, size_t b) {
 

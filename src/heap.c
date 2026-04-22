@@ -4,7 +4,7 @@
 t_heap *heap_new_and_append(size_t size) {
 
 	size_t  zone_size = heap_page_size(size);
-	t_heap *new_heap  = heap_new(zone_size);
+	t_heap *new_heap  = heap_new(zone_size, size);
 	
 	if (new_heap == MAP_FAILED) {
 		return (MAP_FAILED);
@@ -24,7 +24,7 @@ t_heap *heap_new_and_append(size_t size) {
 	return (new_heap);
 }
 
-t_heap    *heap_new(size_t zone_size) {
+t_heap    *heap_new(size_t zone_size, size_t size) {
 
 
 	t_heap  *new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
@@ -34,20 +34,27 @@ t_heap    *heap_new(size_t zone_size) {
 		//printf("%s - mmap() FAILED\n", __func__);
 		return (MAP_FAILED);
 	}
+	new_heap->TYPE           = heap_type(size);
+	new_heap->blocks         = 0;
 	new_heap->total_size     = zone_size;
 	new_heap->free_cis_start = heap_to_chunk(new_heap);
 	new_heap->next           = NULL;
-	new_heap->blocks         = 0;
 
     t_chunk *new_chunk = new_heap->free_cis_start;
 
 	if (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) {
-		set_large_size(new_chunk, zone_size);
+		set_flags(new_chunk, IS_LARGE);
+		set_flags(new_chunk, IS_CIS);
+		set_size(new_chunk, zone_size - sizeof(t_chunk));
+    	new_chunk->next = NULL;
 	}
-	new_chunk->prev_size = 0;
-    new_chunk->size = zone_size - sizeof(t_chunk);
-    new_chunk->next = NULL;
-
+	else {
+		set_flags(new_chunk, IS_CIS);
+		set_size(new_chunk, zone_size - sizeof(t_chunk));
+		set_prevsize(new_chunk, 0);
+		set_nextsize(new_chunk, 0);
+    	new_chunk->next = NULL;
+	}
 	return (new_heap);
 }
 
@@ -92,23 +99,30 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
     t_chunk *new_inuse_chunk = heap->free_cis_start;
     
 
-	if (heap_is_large(size)) {
+	if (heap->TYPE == LARGE_HEAP) {
 
-		set_large_size(new_inuse_chunk, heap_page_size(size));
+		set_flags(new_inuse_chunk, IS_LARGE);
+		set_size(new_inuse_chunk, size);
 		heap->blocks += 1;
 		heap->free_cis_start = NULL;
 		return (new_inuse_chunk);
 	}
-	new_inuse_chunk->prev_size = 0;
-	new_inuse_chunk->size = (uint32_t)size;
-    new_inuse_chunk->next = NULL;
-	set_in_use(new_inuse_chunk);
+	size_t remaining = heap->total_size - size - sizeof(t_chunk);
+
+	set_prevsize(new_inuse_chunk, 0);
+	set_nextsize(new_inuse_chunk, remaining);
+	set_flags(new_inuse_chunk, IN_USE);
+	set_size(new_inuse_chunk, size);
+	new_inuse_chunk->next = NULL;
+
 
 	t_chunk *new_free_chunk = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
-	new_free_chunk->prev_size = (uint32_t)size;
-    new_free_chunk->size = new_inuse_chunk->size - size - (uint32_t)sizeof(t_chunk);
+
+	set_prevsize(new_free_chunk, size);
+	set_nextsize(new_free_chunk, 0);
+	set_flags(new_free_chunk, IS_CIS);
+	set_size(new_free_chunk, remaining);
     new_free_chunk->next = NULL;
-	set_prev_in_use(new_free_chunk);
 
 
 	heap->blocks += 1;

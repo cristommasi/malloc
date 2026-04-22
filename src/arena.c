@@ -19,6 +19,26 @@ bool        arena_heap_uninitialized_or_large(size_t size) {
 	return (false);
 }
 
+void	arena_fastbin_unlink(t_chunk *chunk) {
+
+	size_t  index        = BIN_IDX(chunk->size + sizeof(t_chunk));
+	t_chunk *cur		 = g_arena.fastbin[index];
+	t_chunk *prev        = NULL;
+
+	while (cur != NULL) {
+
+		if (cur == chunk) {
+			if (prev)
+				prev->next = cur->next;
+			else
+				g_arena.fastbin[index] = cur->next;
+			cur->next = NULL;
+			return ;
+		}
+		prev = cur;
+		cur = cur->next;
+	}
+}
 
 t_chunk     *arena_fastbin_get(size_t size) {
 
@@ -36,10 +56,11 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	heap->blocks += 1;
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
-	t_chunk *next = next_chunk(heap, chunk);
+	t_chunk *next = get_next_chunk(heap, chunk);
 	if (next != NULL)
-		set_prev_inuse(next);
+		set_prev_in_use(next);
 	//printf("%s - Found free chunk in fastbin\n", __func__);
+	set_in_use(chunk);
 	return (chunk);
 }
 
@@ -48,12 +69,13 @@ void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	size_t	index = BIN_IDX((size_t)freed_chunk->size + sizeof(t_chunk));
 
 
+	unset_in_use(freed_chunk);
 	freed_chunk->next = g_arena.fastbin[index];
 	g_arena.fastbin[index] = freed_chunk;
 	heap->blocks -= 1;
-	t_chunk *next = next_chunk(freed_chunk);
+	t_chunk *next = get_next_chunk(heap, freed_chunk);
 	if (next != NULL)
-		unset_prev_inuse(next);
+		unset_prev_in_use(next);
 	// printf("%s - Set free chunk to fastbin\n", __func__);
 }
 
@@ -64,7 +86,7 @@ void	arena_fastbin_drain(t_heap *heap) {
 		t_chunk **node = &g_arena.fastbin[i];
 		while (*node != NULL) {
 
-			if (arena_chunk_in_bounds_of_heap(heap, *node))
+			if (chunk_belongs_to_heap(heap, *node))
 				*node = (*node)->next;
 			else
 				node = &(*node)->next;

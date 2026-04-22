@@ -44,7 +44,7 @@ t_heap    *heap_new(size_t zone_size) {
 	if (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) {
 		set_large_size(new_chunk, zone_size);
 	}
-	new_chunk->prev_size = 0x0;
+	new_chunk->prev_size = 0;
     new_chunk->size = zone_size - sizeof(t_chunk);
     new_chunk->next = NULL;
 
@@ -94,7 +94,7 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
 	if (heap_is_large(size)) {
 
-		set_large_size(new_inuse_chunk);
+		set_large_size(new_inuse_chunk, heap_page_size(size));
 		heap->blocks += 1;
 		heap->free_cis_start = NULL;
 		return (new_inuse_chunk);
@@ -102,17 +102,18 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	new_inuse_chunk->prev_size = 0;
 	new_inuse_chunk->size = (uint32_t)size;
     new_inuse_chunk->next = NULL;
+	set_in_use(new_inuse_chunk);
 
 	t_chunk *new_free_chunk = heap->free_cis_start + size + sizeof(t_chunk);
 	new_free_chunk->prev_size = (uint32_t)size;
     new_free_chunk->size = new_inuse_chunk->size - size - (uint32_t)sizeof(t_chunk);
     new_free_chunk->next = NULL;
-	set_prev_inuse(new_free_chunk);
+	set_prev_in_use(new_free_chunk);
 
 
 	heap->blocks += 1;
 	heap->free_cis_start = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
-	return (new_free_chunk);
+	return (new_inuse_chunk);
 }
 
 int		heap_has_remaining_cis(t_heap *heap, size_t size) {
@@ -191,34 +192,88 @@ bool heap_is_different_type(size_t sizeA, size_t sizeB) {
 
 }
 
-t_chunk *	heap_split_free_chunk(t_heap *heap, t_chunk *chunk, size_t to_trim) {
+t_chunk *	heap_split_chunk(t_heap *heap, t_chunk *chunk, size_t size) {
 
-	t_chunk *new_free_chunk = (char*)chunk + sizeof(t_chunk) + (uint32_t)to_trim;
+	t_chunk *new_free_chunk = (t_chunk*)((char*)chunk + sizeof(t_chunk) + size);
 
-	
-	new_free_chunk->size = chunk->size - (uint32_t)to_trim - sizeof(t_chunk);
-	new_free_chunk->prev_size = to_trim;
+	new_free_chunk->size =  chunk->size - size - sizeof(t_chunk);
+	new_free_chunk->prev_size = size;
 	new_free_chunk->next = NULL;
 	
-	set_prev_inuse(new_free_chunk);
+	set_prev_in_use(new_free_chunk);
 	arena_fastbin_set(heap, new_free_chunk);
 
-	t_chunk *new_inuse_chunk = chunk;
-
-	new_inuse_chunk->prev_size = chunk->prev_size;
-	new_inuse_chunk->size = (uint32_t)to_trim;
-	new_inuse_chunk->next = NULL;
-	return (new_inuse_chunk);
+	return (new_free_chunk);
 }
 
-t_chunk *heap_check_adjacent_chunks(t_heap *heap, t_chunk *chunk, size_t new_size) {
+t_chunk *heap_check_next_chunk(t_heap *heap, t_chunk *chunk, size_t new_size) {
 
-	// CHECK NEXT CHUNK
-	// IF CIS MEM; SPLIT
-	// IF SO EXPAND
+	t_chunk *next_chunk = get_next_chunk(heap, chunk);
 
-	// ELSE CHECK PREV CHUNK
+	if (!next_chunk)
+		return (NULL);
 
-	// IF PREV CHUNK IS ENOUGH; MOVE DATA TO PREV CHUNK
+	if (in_use(next_chunk))
+		return (NULL);
+
+	uint32_t next_total = (next_chunk->size + sizeof(t_chunk));
+	uint32_t combined   = chunk->size + next_total;
+	t_chunk *nnc        = get_next_chunk(heap, next_chunk);
+
+	if (combined < (uint32_t)new_size)
+        return (NULL);
+
+    arena_fastbin_unlink(next_chunk);
+	
+	if (combined == (uint32_t)new_size) {
+
+		if (nnc) {
+			nnc->prev_size = (nnc->prev_size & NEXT_INUSE) + chunk->size;
+			set_prev_in_use(nnc);
+		}
+		chunk->size += next_total;
+	}
+	else if (next_total >= MIN_TRIM) {
+
+		t_chunk *new_free = heap_split_chunk(heap, chunk, new_size);
+		nnc->prev_size = (nnc->prev_size & NEXT_INUSE) + new_free->size;
+		chunk->size = new_size;
+	}
+	return (chunk);
+}
+
+t_chunk *heap_check_prev_chunk(t_heap *heap, t_chunk *chunk, size_t new_size) {
+
+	t_chunk *prev = get_prev_chunk(heap, chunk);
+
+	if (!prev)
+		return (NULL);
+
+	if (prev_in_use(chunk))
+		return (NULL);
+
+	uint32_t prev_total = (prev->size + sizeof(t_chunk));
+
+	if (prev_total < (uint32_t)new_size)
+		return (NULL);
+
+
+	arena_fastbin_unlink(prev);
+	t_chunk *new_chunk = prev;
+
+	new_chunk->prev_size = (prev->prev_size & PREV_INUSE) + (prev->prev_size & FLAG_MASK);
+	new_chunk->size = new_size;
+
+	ft_memmove(chunk_to_data(prev), chunk_to_data(chunk), new_size);
+	if (prev->size == (uint32_t)new_size) {
+
+		arena_fastbin_set(heap, chunk);
+	}
+	else if (prev_total >= new_size && prev_total >= MIN_TRIM) {
+
+		heap_split_chunk(heap, prev, new_size);
+
+	}
+	return (new_chunk);
 
 }

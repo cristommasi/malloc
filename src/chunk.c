@@ -15,13 +15,22 @@ bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 }
 
 
-t_chunk *next_chunk(t_heap *heap, t_chunk *chunk) {
+t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
 	char *addr = ((char*)chunk + sizeof(t_chunk) + chunk->size);
 
 	if (addr > (char*)heap + sizeof(t_heap) + heap->total_size)
 		return (NULL);
 	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + chunk->size) );
+}
+
+t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {
+
+	char *addr = ((char*)chunk - get_prev_size(chunk) - sizeof(t_chunk));
+
+	if (addr < (char*)heap + sizeof(t_heap))
+		return (NULL);
+	return ( (t_chunk *)(addr) );
 }
 
 void    *chunk_to_data(t_chunk *chunk_addr) {

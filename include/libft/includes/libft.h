@@ -6,7 +6,7 @@
 /*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:41:22 by ctommasi          #+#    #+#             */
-/*   Updated: 2026/04/14 13:22:50 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/04/22 19:36:27 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,8 +127,6 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 /// @brief Trims str by chars. No allocation.
 char	*ft_strdelchar(const char *str, const char *chars);
-/// @brief Changes the size of the memory block pointed to by ptr to size bytes.
-void	*ft_realloc(void *ptr, size_t cur_size, size_t new_size);
 /// @brief Trims str by chars. No allocation.
 void	ft_ptrdelchar(char *str, const char *chars);
 /// @brief  Add the 'new' element at the front of the list.

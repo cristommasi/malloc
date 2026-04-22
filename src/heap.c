@@ -104,7 +104,7 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
     new_inuse_chunk->next = NULL;
 	set_in_use(new_inuse_chunk);
 
-	t_chunk *new_free_chunk = heap->free_cis_start + size + sizeof(t_chunk);
+	t_chunk *new_free_chunk = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
 	new_free_chunk->prev_size = (uint32_t)size;
     new_free_chunk->size = new_inuse_chunk->size - size - (uint32_t)sizeof(t_chunk);
     new_free_chunk->next = NULL;

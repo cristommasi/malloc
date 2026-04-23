@@ -145,33 +145,28 @@ void    *ft_realloc(void *ptr, size_t size) {
 
 int main(void)
 {
-	t_chunk lol;
 
-	lol.next = NULL;
-	lol.TYPE = SMALL_HEAP;
-	lol.vars.info.size = 5;
+    
+    char *s1 = ft_malloc(64);
 
-	printf("su %zu\n", sizeof(t_chunk));
-    // char *s1 = ft_malloc(64);
+    char *s2 = ft_malloc(64);
 
-    // char *s2 = ft_malloc(64);
+    int i = 0;
+    for ( ; i < 64; i++) {
 
-    // int i = 0;
-    // for ( ; i < 64; i++) {
+        s1[i] = 'A' + (i % 25);
+    }
+    s1[i] = 0;
+    printf("str = %s\n", s1);
 
-    //     s1[i] = 'A' + (i % 26);
-    // }
-    // s1[i] = 0;
-    // printf("str = %s\n", s1);
+    ft_free(s2);
+    s1 = ft_realloc(s1, 128);
+    i = 64;
+    for ( ; i < 128; i++) {
 
-    // ft_free(s2);
-    // s1 = ft_realloc(s1, 128);
-    // i = 64;
-    // for ( ; i < 128; i++) {
-
-    //     s1[i] = 'a' + (i % 26);
-    // }
-    // s1[i] = 0;
-    // printf("str = %s\n", s1);
+        s1[i] = 'a' + (i % 25);
+    }
+    s1[i] = 0;
+    printf("str = %s\n", s1);
     return (0);
 }

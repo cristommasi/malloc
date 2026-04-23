@@ -2,6 +2,7 @@
 
 void set_size(t_chunk *chunk, size_t size) {
 
+	if (!chunk) return ;
 	if (is_large(chunk)) {
 
 		t_chunk copyLARGE = {
@@ -30,6 +31,7 @@ void set_size(t_chunk *chunk, size_t size) {
 
 size_t get_size(t_chunk *chunk) {
 
+	if (!chunk) return 0;
 	if (is_large(chunk)) {
 		return (chunk->large.size);
 	}
@@ -38,6 +40,7 @@ size_t get_size(t_chunk *chunk) {
 
 void set_prevsize(t_chunk *chunk, size_t size) {
 
+	if (!chunk) return ;
 	if (is_large(chunk)) {
 		return ;
 	}
@@ -46,6 +49,7 @@ void set_prevsize(t_chunk *chunk, size_t size) {
 
 size_t get_prevsize(t_chunk *chunk) {
 
+	if (!chunk) return 0;
 	if (is_large(chunk)) {
 		return 0;
 	}
@@ -54,6 +58,7 @@ size_t get_prevsize(t_chunk *chunk) {
 
 void set_nextsize(t_chunk *chunk, size_t size) {
 
+	if (!chunk) return ;
 	if (is_large(chunk)) {
 		return ;
 	}
@@ -62,6 +67,7 @@ void set_nextsize(t_chunk *chunk, size_t size) {
 
 size_t get_nextsize(t_chunk *chunk) {
 
+	if (!chunk) return 0;
 	if (is_large(chunk)) {
 		return 0;
 	}
@@ -70,6 +76,7 @@ size_t get_nextsize(t_chunk *chunk) {
 
 void set_flags(t_chunk *chunk, size_t flag) {
 
+	if (!chunk) return ;
 	if (is_large(chunk)) {
 		chunk->large.size |= flag;
 		return ;
@@ -79,6 +86,7 @@ void set_flags(t_chunk *chunk, size_t flag) {
 
 void unset_flags(t_chunk *chunk, size_t flag) {
 
+	if (!chunk) return ;
 	if (is_large(chunk)) {
 		chunk->large.size ^= (size_t)flag;
 		return ;
@@ -91,6 +99,7 @@ void unset_flags(t_chunk *chunk, size_t flag) {
 
 bool has_flags(t_chunk *chunk, size_t flag) {
 
+	if (!chunk) return false;
 	if (is_large(chunk)) {
 
 		return ((chunk->large.size & L_FLAG_MASK) & (size_t)flag);
@@ -100,6 +109,7 @@ bool has_flags(t_chunk *chunk, size_t flag) {
 
 bool is_large(t_chunk *chunk) {
 
+	if (!chunk) return false;
 	return (chunk->large.size & (size_t)IS_LARGE);
 
 }

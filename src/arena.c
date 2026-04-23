@@ -64,7 +64,7 @@ t_chunk     *arena_fastbin_get(size_t size) {
 void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	size_t  size = get_size(freed_chunk);
-	size_t	index = BIN_IDX(size+ sizeof(t_chunk));
+	size_t	index = BIN_IDX(size + sizeof(t_chunk));
 
 
 	unset_flags(freed_chunk, IN_USE);

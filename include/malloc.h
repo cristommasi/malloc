@@ -73,7 +73,7 @@
  // 0, 1, 2, 3, 4, 5, 6, 7
 #define FASTBIN_COUNT 64
 
-#define MIN_TRIM 48
+#define MIN_TRIM 32
 
 // index 0 doesnt exist
 #define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
@@ -158,7 +158,7 @@ t_heap  *arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap      **arena_heap_group(size_t size); 
 void *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size);
 t_heap *heap_new_and_append(size_t size);
-t_heap    *heap_new(size_t zone_size); 
+t_heap    *heap_new(size_t zone_size, size_t size); 
 void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
 t_heap  *heap_find_cis_mem(size_t size); 
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
@@ -180,16 +180,16 @@ t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk);
 t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk);
 void    *chunk_to_data(t_chunk *chunk_addr);
 t_chunk    *data_to_chunk(void *data_addr);
-void	set_large_size(t_chunk *chunk, size_t zone_size);
-size_t	get_large_size(t_chunk *chunk);
-uint32_t		get_flags(t_chunk *chunk);
-uint32_t		get_prev_size(t_chunk *chunk);
-uint32_t	prev_in_use(t_chunk *chunk);
-void        set_prev_in_use(t_chunk *chunk);
-void        unset_prev_in_use(t_chunk *chunk);
-uint32_t		in_use(t_chunk *chunk);
-void        set_in_use(t_chunk *chunk); 
-void        unset_in_use(t_chunk *chunk);
+void set_size(t_chunk *chunk, size_t size);
+size_t get_size(t_chunk *chunk);
+void set_prevsize(t_chunk *chunk, size_t size);
+size_t get_prevsize(t_chunk *chunk); 
+void set_nextsize(t_chunk *chunk, size_t size);
+size_t get_nextsize(t_chunk *chunk);
+void set_flags(t_chunk *chunk, size_t flag);
+void unset_flags(t_chunk *chunk, size_t flag);
+bool has_flags(t_chunk *chunk, size_t flag);
+bool is_large(t_chunk *chunk);
 size_t		get_min(size_t a, size_t b);
 
 void ft_free(void *ptr);

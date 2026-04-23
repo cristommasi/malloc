@@ -26,7 +26,7 @@ t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
 t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {
 
-	char *addr = ((char*)chunk - get_prev_size(chunk) - sizeof(t_chunk));
+	char *addr = ((char*)chunk - get_prevsize(chunk) - sizeof(t_chunk));
 
 	if (addr < (char*)heap + sizeof(t_heap))
 		return (NULL);
@@ -35,12 +35,12 @@ t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {
 
 void    *chunk_to_data(t_chunk *chunk_addr) {
 
-	return ((void *)(chunk_addr + 1));
+	return ((void *)(chunk_addr + sizeof(t_chunk)));
 }
 
 
 t_chunk    *data_to_chunk(void *data_addr) {
 
-	return ((t_chunk *)data_addr - 1);
+	return ((t_chunk *)((char*)data_addr - sizeof(t_chunk)));
 }
 

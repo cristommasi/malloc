@@ -7,7 +7,7 @@ NAME		= malloc
 SYMLINK     = libft_malloc.so
 
 CC			= cc -std=c17
-CFLAGS		= -Wall -Wextra -Werror -fPIC -I./libft
+CFLAGS		= -Wall -Wextra -Werror -fPIC -I./libft -g -O0
 LDFLAGS		= -shared
 RM			= rm -f
 
@@ -25,7 +25,7 @@ OBJS		= $(SRC:.c=.o)
 all: $(LIBFT) $(NAME) #$(SYMLINK)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
+	$(CC) $(CFLAGS)  $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 	
 #$(LDFLAGS)
 

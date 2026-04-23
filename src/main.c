@@ -54,7 +54,7 @@ void    ft_free(void *ptr) {
 		//printf("%s - chunk is null\n", __func__);
 		return ;
 	}
-	t_heap  **heap_head = arena_heap_group((size_t)chunk->size);
+	t_heap  **heap_head = arena_heap_group(get_size(chunk));
 	t_heap  *heap       = *heap_head;
 	t_heap  *prev       = NULL;
 
@@ -63,7 +63,7 @@ void    ft_free(void *ptr) {
 
 		if (chunk_belongs_to_heap(heap, chunk)) {
 
-			if (heap_type(chunk->size) == LARGE_HEAP) {
+			if (heap_type(get_size(chunk)) == LARGE_HEAP) {
 
                 int ret = arena_heap_munmap(prev, heap, heap_head);
 				if (ret == -1)
@@ -110,7 +110,7 @@ void    *ft_realloc(void *ptr, size_t size) {
     if (size == 0)
         return (ft_free(ptr), NULL);
 
-    cur_size = (size_t)chunk->size;
+    cur_size = get_size(chunk);
     if (p_new_size == cur_size) {
         return (ptr);
     }

@@ -76,6 +76,35 @@ void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap) {
 	prev->next = new_heap;
 }
 
+t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
+
+    t_chunk *new_inuse_chunk = heap->free_cis_start;
+	size_t   remaining       = heap->total_size - size - sizeof(t_chunk);
+
+	if (heap->TYPE == LARGE_HEAP) {
+
+		set_flags(new_inuse_chunk, IS_LARGE);
+		set_size(new_inuse_chunk, size);
+		set_prevsize(new_inuse_chunk, 0);
+		set_nextsize(new_inuse_chunk, 0);
+		set_flags(new_inuse_chunk, IN_USE);
+		new_inuse_chunk->next = NULL;
+		heap->blocks += 1;
+		heap->free_cis_start = NULL;
+		return (new_inuse_chunk);
+	}
+	t_chunk *new_free_chunk = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
+
+	set_size(new_free_chunk, remaining);
+	set_prevsize(new_free_chunk, size);
+	set_nextsize(new_free_chunk, 0);
+	set_flags(new_free_chunk, IS_CIS);
+    new_free_chunk->next = NULL;
+	heap->blocks += 1;
+	heap->free_cis_start = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
+	return (new_inuse_chunk);
+}
+
 t_heap  *heap_find_cis_mem(size_t size) {
 
 	t_heap  **cur = arena_heap_group(size);
@@ -94,41 +123,7 @@ t_heap  *heap_find_cis_mem(size_t size) {
 
 }
 
-t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
-    t_chunk *new_inuse_chunk = heap->free_cis_start;
-    
-
-	if (heap->TYPE == LARGE_HEAP) {
-
-		set_flags(new_inuse_chunk, IS_LARGE);
-		set_size(new_inuse_chunk, size);
-		heap->blocks += 1;
-		heap->free_cis_start = NULL;
-		return (new_inuse_chunk);
-	}
-	size_t remaining = heap->total_size - size - sizeof(t_chunk);
-
-	set_prevsize(new_inuse_chunk, 0);
-	set_nextsize(new_inuse_chunk, remaining);
-	set_flags(new_inuse_chunk, IN_USE);
-	set_size(new_inuse_chunk, size);
-	new_inuse_chunk->next = NULL;
-
-
-	t_chunk *new_free_chunk = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
-
-	set_prevsize(new_free_chunk, size);
-	set_nextsize(new_free_chunk, 0);
-	set_flags(new_free_chunk, IS_CIS);
-	set_size(new_free_chunk, remaining);
-    new_free_chunk->next = NULL;
-
-
-	heap->blocks += 1;
-	heap->free_cis_start = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
-	return (new_inuse_chunk);
-}
 
 int		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
@@ -210,13 +205,18 @@ t_chunk *	heap_split_chunk(t_heap *heap, t_chunk *chunk, size_t size) {
 
 	t_chunk *new_free_chunk = (t_chunk*)((char*)chunk + sizeof(t_chunk) + size);
 
-	new_free_chunk->size =  chunk->size - size - sizeof(t_chunk);
-	new_free_chunk->prev_size = size;
+	set_size(new_free_chunk, get_size(chunk) - size - sizeof(t_chunk));
+	set_prevsize(new_free_chunk, size);
+	set_nextsize(new_free_chunk, get_nextsize(chunk));
+	unset_flags(new_free_chunk, IN_USE);
 	new_free_chunk->next = NULL;
 	
-	set_prev_in_use(new_free_chunk);
-	arena_fastbin_set(heap, new_free_chunk);
 
+	// CHECK THAT NEXT HAS FLAGS AND PPREV
+	arena_fastbin_set(heap, new_free_chunk);
+	set_size(chunk, size);
+	set_nextsize(chunk, get_size(new_free_chunk));
+	set_flags(chunk, IN_USE);
 	return (new_free_chunk);
 }
 
@@ -230,8 +230,8 @@ t_chunk *heap_check_next_chunk(t_heap *heap, t_chunk *chunk, size_t new_size) {
 	if (in_use(next_chunk))
 		return (NULL);
 
-	uint32_t next_total = (next_chunk->size + sizeof(t_chunk));
-	uint32_t combined   = chunk->size + next_total;
+	uint32_t next_total = (get_size(next_chunk) + sizeof(t_chunk));
+	uint32_t combined   = get_size(chunk) + next_total;
 	t_chunk *nnc        = get_next_chunk(heap, next_chunk);
 
 	if (combined < (uint32_t)new_size)
@@ -241,17 +241,22 @@ t_chunk *heap_check_next_chunk(t_heap *heap, t_chunk *chunk, size_t new_size) {
 	
 	if (combined == (uint32_t)new_size) {
 
+		set_size(chunk, next_total);
+		set_flags(chunk, IN_USE);
+		set_prevsize(chunk, get_prevsize(chunk));
+		set_nextsize(chunk, 0);
 		if (nnc) {
-			nnc->prev_size = (nnc->prev_size & NEXT_INUSE) + chunk->size;
-			set_prev_in_use(nnc);
+			set_nextsize(chunk, get_size(nnc));
+			set_prevsize(nnc, get_size(chunk));
 		}
-		chunk->size += next_total;
 	}
 	else if (next_total >= MIN_TRIM) {
 
+		set_size(chunk, new_size);
 		t_chunk *new_free = heap_split_chunk(heap, chunk, new_size);
-		nnc->prev_size = (nnc->prev_size & NEXT_INUSE) + new_free->size;
-		chunk->size = new_size;
+		if (nnc) {
+			set_prevsize(nnc, new_size);
+		}
 	}
 	return (chunk);
 }
@@ -266,7 +271,7 @@ t_chunk *heap_check_prev_chunk(t_heap *heap, t_chunk *chunk, size_t new_size) {
 	if (prev_in_use(chunk))
 		return (NULL);
 
-	uint32_t prev_total = (prev->size + sizeof(t_chunk));
+	uint32_t prev_total = (get_size(prev) + sizeof(t_chunk));
 
 	if (prev_total < (uint32_t)new_size)
 		return (NULL);

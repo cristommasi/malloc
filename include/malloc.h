@@ -85,32 +85,41 @@ typedef enum {NONE, TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
 #define G_CHUNK_MIN_SIZE 16
 
 
-#define IN_USE 0b0000000000000001
+#define IN_USE       0b0000000000000001
 
-#define IS_CIS 0b0000000000000010
+#define IS_CIS       0b0000000000000010
 
-#define IS_LARGE  0b0000000000000100
+#define IS_LARGE     0b0000000000000100
+
+#define L_FLAG_MASK  0b1111111111111111111111111111111111111111111111111111111111111000
+
+#define TS_FLAG_MASK 0b1111111111111000
 
 
-typedef struct s_info
+typedef struct s_tiny_small
 {
 	uint16_t	prev_size;
 	uint16_t	next_size;
 	uint16_t	size;
 	uint16_t	flags;
-}	t_info;
 
-typedef union s_vars {
+}	t_tiny_small;
 
-	t_info	info;
-	size_t	L_size;	
-}	t_vars;
+typedef struct s_large {
+
+	size_t size;
+	
+}	t_large;
+
 
 // Metadata for a single allocated block
 typedef struct s_chunk {
 
-	t_vars				*vars;
-	struct s_chunk        *next;
+	union {
+		t_tiny_small	small;
+		t_large		    large;
+	};
+	struct s_chunk	*next;
 }                   t_chunk;
 
 //  Metadata for a whole mmap'd region

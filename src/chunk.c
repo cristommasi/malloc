@@ -2,7 +2,7 @@
 
 bool    chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk) {
 
-	return (heap->total_size == (chunk->size + sizeof(t_chunk) + heap_cis_mem_size(heap)));
+	return (heap->total_size == (get_size(chunk) + sizeof(t_chunk) + heap_cis_mem_size(heap)));
 }
 
 
@@ -17,11 +17,11 @@ bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 
 t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
-	char *addr = ((char*)chunk + sizeof(t_chunk) + chunk->size);
+	char *addr = ((char*)chunk + sizeof(t_chunk) + get_size(chunk));
 
 	if (addr > (char*)heap + sizeof(t_heap) + heap->total_size)
 		return (NULL);
-	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + chunk->size) );
+	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + get_size(chunk)) );
 }
 
 t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {

@@ -6,7 +6,7 @@ NAME_REAL   = libft_malloc_$(HOSTTYPE).so
 NAME		= malloc
 SYMLINK     = libft_malloc.so
 
-CC			= cc
+CC			= cc -std=c17
 CFLAGS		= -Wall -Wextra -Werror -fPIC -I./libft
 LDFLAGS		= -shared
 RM			= rm -f

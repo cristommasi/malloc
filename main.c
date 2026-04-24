@@ -1,3 +1,13 @@
+#define RESET   "\033[0m"
+
+
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+
 
 #include <stdio.h>
 #include <stdint.h>
@@ -13,12 +23,12 @@
 
 
 
-
+// THE LAYOUT OF THESE VARS IMPORTANT
 typedef struct t_small_tiny
 {
-	uint16_t	prev_size;
-    uint16_t	next_size;
 	uint32_t	size;
+    uint16_t	next_size;
+	uint16_t	prev_size;
 
 }	t_small_tiny;
 
@@ -52,105 +62,61 @@ void unset_flags(t_chunk *chunk, size_t flag);
 bool has_flags(t_chunk *chunk, size_t flag);
 bool is_large(t_chunk *chunk);
 
-bool is_large(t_chunk *chunk)
+
+void	print_binary(size_t value, int width, char *str)
 {
-	if (!chunk)
-		return false;
+	int		i;
+	char	*color;
 
-	return (chunk->large.size & IS_LARGE) != 0;
-}
-bool has_flags(t_chunk *chunk, size_t flag) {
+	i = width - 1;
+	while (i >= 0)
+	{
+		/* select color by bit range */
+		if (i >= 48)
+			color = RED;        /* top 16 bits */
+		else if (i >= 32)
+			color = GREEN;      /* next 16 bits */
+		else
+			color = BLUE;       /* lower 32 bits */
 
-    if (!chunk)
-		return false;
+		printf("%s%c" RESET,color,((value >> i) & 1) ? '1' : '0');
 
-    return (chunk->small.size & TS_FLAG_MASK & (uint32_t)flag) != 0;
-}
+		if (i % 8 == 0 && i != 0)
+			printf("_");
 
-
-void set_flags(t_chunk *chunk, size_t flag) {
-
-    if (!chunk)
-		return;
-
-    chunk->small.size |= (uint32_t)(flag & TS_FLAG_MASK);
-}
-
-
-void unset_flags(t_chunk *chunk, size_t flag) {
-
-    if (!chunk)
-		return;
-
-    chunk->small.size &= ~(uint32_t)(flag & TS_FLAG_MASK);
-}
-
-
-size_t get_size(t_chunk *chunk)
-{
-    if (!chunk) return 0;
-
-    if (is_large(chunk))
-        return chunk->large.size & L_SIZE_MASK;
-
-    return (size_t)(chunk->small.size & TS_SIZE_MASK);
-}
-
-void set_size(t_chunk *chunk, size_t size)
-{
-    if (!chunk) return;
-
-    if (is_large(chunk))
-    {
-        size_t flags = chunk->large.size & L_FLAG_MASK;
-        chunk->large.size = (size & L_SIZE_MASK) | flags;
-        return;
-    }
-
-    uint32_t flags = chunk->small.size & TS_FLAG_MASK;
-    chunk->small.size = (uint32_t)(size & TS_SIZE_MASK) | flags;
-}
-
-size_t get_prevsize(t_chunk *chunk) {
-
-    if (!chunk || is_large(chunk))
-		return (0);
-    return (size_t)chunk->small.prev_size;
-}
-
-
-void set_prevsize(t_chunk *chunk, size_t size) {
-
-    if (!chunk || is_large(chunk))
-		return ;
-    chunk->small.prev_size = (uint16_t)size;
-}
-
-
-
-void    print_binary(size_t value, int width)
-{
-    int i = width - 1;
-    while (i >= 0)
-    {
-        write(1, (value >> i) & 1 ? "1" : "0", 1);
-        if (i % 8 == 0 && i != 0)
-            write(1, "_", 1);
-        i--;
-    }
-    write(1, "\n", 1);
+		i--;
+	}
+	printf(" %s\n", str);
 }
 
 int main(void) {
-    t_chunk small = {0};  // zero init
-    t_chunk large = {0};  // zero init
 
-    set_flags(&small, IN_USE);
-    set_flags(&large, IS_LARGE);
-    set_size(&small, 32);
-    set_size(&large, 32);
+    t_chunk test = {0};  // zero init
 
-print_binary((size_t)small.small.size, 32);
-print_binary(large.large.size, 64);
+    set_flags(&test, IN_USE);
+    set_size(&test, 32);
+    set_prevsize(&test, 1024);
+    set_nextsize(&test, 48);
+    print_binary((size_t)test.large.size, 64, "REAL NUM LARGE\n");
+    print_binary(get_size(&test), 64, "get_size(&test);");
+    print_binary((size_t)get_prevsize(&test) << 48, 64, "get_prevsize(&test);");
+    print_binary((size_t)get_nextsize(&test) << 32, 64, "get_nextsize(&test);");
+    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
+    set_flags(&test, IS_LARGE);
+    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
+    if(has_flags(&test, IS_LARGE))
+        printf("IS_LARGE\n");
+    unset_flags(&test, IS_LARGE);
+    if(has_flags(&test, IS_LARGE))
+        printf("IS_LARGE\n");
+    else
+        printf("NOT_LARGE\n");
+    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
+    print_binary(get_size(&test), 64, "get_size(&test)\n");
+
+
+    // print_binary(get_size(&test), 64, "getsize");
+
+
     return 1;
 }

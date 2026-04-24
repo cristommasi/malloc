@@ -91,16 +91,16 @@
 #define IN_USE       0b001
 #define IS_CIS       0b010
 #define IS_LARGE     0b100
-#define TS_FLAG_MASK 0b00000000000000000000000000000111
-#define TS_SIZE_MASK 0b11111111111111111111111111111000
-#define L_FLAG_MASK ((size_t)0x7 << 32)   // flags at bits 32-34
-#define L_SIZE_MASK (~((size_t)0x7 << 32)) // everything except bits 32-34
+#define TS_FLAG_MASK  0b00000000000000000000000000000111U          // bits 0-2 of small.size
+#define TS_SIZE_MASK  0b11111111111111111111111111111000U          // bits 3-31 of small.size
+#define L_FLAG_MASK   ((size_t)0x7)
+#define L_SIZE_MASK   (~(size_t)0x7)
 
 
 typedef struct t_small_tiny
 {
 	uint32_t	size;
-	uint16_t	next_size;
+    uint16_t	next_size;
 	uint16_t	prev_size;
 
 }	t_small_tiny;
@@ -147,6 +147,8 @@ typedef struct s_arena {
 extern t_arena g_arena;
 
 
+void printchunk(t_chunk *chunk);
+void printheap(t_heap *heap, t_chunk *chunk);
 
 bool        arena_heap_uninitialized_or_large(size_t size);
 void	arena_fastbin_unlink(t_chunk *chunk); 
@@ -161,9 +163,9 @@ t_heap *heap_new_and_append(size_t size);
 size_t heap_free_size(t_heap *heap);
 t_heap    *heap_new(size_t zone_size); 
 void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
-t_heap  *heap_find_cis_mem(size_t size); 
+t_chunk  *heap_find_cis_mem_chunk(size_t size) ;
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
-int		heap_has_remaining_cis(t_heap *heap, size_t size); 
+bool		heap_has_remaining_cis(t_heap *heap, size_t size); 
 size_t heap_cis_mem_size(t_heap *heap);
 bool	heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add);
 t_chunk *heap_to_chunk(t_heap *heap_addr);
@@ -172,8 +174,9 @@ size_t	heap_chunk_size(size_t size);
 size_t		heap_type(size_t size);
 bool	heap_is_large(size_t size);
 bool heap_is_different_type(size_t sizeA, size_t sizeB);
-t_chunk *chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
-t_chunk *chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
+void chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need);
+void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
+void chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
 t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
 bool    chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk);
 bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
@@ -182,7 +185,7 @@ t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk);
 bool prev_chunk_suffices(t_chunk *prev, size_t need);
 bool next_chunk_suffices(t_chunk *next, size_t need);
 void    *chunk_to_data(t_chunk *chunk_addr);
-void chunk_relink(t_chunk *chunk, t_chunk *new_free, t_chunk *nnc);
+void chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk    *data_to_chunk(void *data_addr);
 void set_size(t_chunk *chunk, size_t size);
 size_t get_size(t_chunk *chunk);
@@ -202,5 +205,6 @@ void *ft_realloc(void *ptr, size_t size);
 // void    show_alloc_mem(void);
 
 #endif
+
 
 

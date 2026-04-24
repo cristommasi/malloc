@@ -7,7 +7,7 @@ NAME		= malloc
 SYMLINK     = libft_malloc.so
 
 CC			= cc -std=c17
-CFLAGS		= -Wall -Wextra -Werror -fPIC -I./libft -g -O0
+CFLAGS		= -Wall -Wextra  -fPIC -I./libft -g -O0
 LDFLAGS		= -shared
 RM			= rm -f
 

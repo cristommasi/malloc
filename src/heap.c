@@ -1,10 +1,12 @@
 #include "../include/malloc.h"
 
 
+
 t_heap *heap_new_and_append(size_t size) {
 
 	size_t  zone_size = heap_page_size(size);
 	t_heap *new_heap  = heap_new(zone_size);
+	
 	
 	if (new_heap == MAP_FAILED) {
 		return (MAP_FAILED);
@@ -22,6 +24,9 @@ t_heap *heap_new_and_append(size_t size) {
 	}
 	return (new_heap);
 }
+
+
+
 
 t_heap    *heap_new(size_t zone_size) {
 
@@ -46,6 +51,9 @@ t_heap    *heap_new(size_t zone_size) {
 	set_prevsize(new_chunk, 0);
 	set_nextsize(new_chunk, 0);
     new_chunk->next = NULL;
+
+	// printheap(new_heap, NULL);
+
 	return (new_heap);
 }
 
@@ -75,31 +83,41 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	set_flags(new_inuse_chunk, IN_USE);
 	new_inuse_chunk->next = NULL;
 
+	
 	if (heap_free_size(heap) > size + sizeof(t_chunk)) {
 
 		t_chunk *new_free_chunk = (t_chunk *)((char *)heap->free_cis_start + sizeof(t_chunk) + size);
 		set_size(new_free_chunk, heap_free_size(heap) - size - sizeof(t_chunk));
 		set_flags(new_free_chunk, IS_CIS);
 		new_free_chunk->next = NULL;
-		heap->free_cis_start += size + sizeof(t_chunk);
-
+		heap->free_cis_start = (t_chunk*)((char*)new_inuse_chunk + size + sizeof(t_chunk));
+		set_nextsize(new_inuse_chunk, get_size(new_free_chunk));
 	}
-	else
-		heap->free_cis_start = NULL;
+	else {
 
+		heap->free_cis_start = NULL;
+	}
 	heap->blocks += 1;
+
+	
+	//printheap(heap, new_inuse_chunk);
+	
 	return (new_inuse_chunk);
 }
 
-t_heap  *heap_find_cis_mem(size_t size) {
+t_chunk  *heap_find_cis_mem_chunk(size_t size) {
 
 	t_heap  **cur = arena_heap_group(size);
+	t_chunk *chunk = NULL;
 
 
 	while (*cur != NULL) {
 
 		if (heap_has_remaining_cis(*cur, size)) {
-			return (*cur);
+
+			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
+				return (NULL);
+			return (chunk);
 		}
 		cur = &(*cur)->next;
 	}
@@ -107,86 +125,41 @@ t_heap  *heap_find_cis_mem(size_t size) {
 }
 
 
-t_chunk *chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
 
-	size_t	new_size   = get_size(chunk) + need;
-	size_t	next_total = get_size(next) + sizeof(t_chunk);
-	t_chunk	*nnc       = get_next_chunk(heap, next);
-	t_chunk *new_free   = NULL;
-	
-	set_size(chunk, new_size);
-	if (next_total > need) {
-		
-        new_free = (t_chunk*)((char*)chunk + sizeof(t_chunk) + need);
-        set_size(new_free, next_total - need);
-        set_prevsize(new_free, new_size);
-        unset_flags(new_free, IN_USE);
-	}
-
-    if (has_flags(next, IS_CIS))
-		heap->free_cis_start = new_free;
-
-	chunk_relink(chunk, new_free, nnc);
-	return (new_free);
-}
-
-t_chunk *chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) {
-
-	size_t	prev_total   = get_size(prev) + sizeof(t_chunk);
-	size_t	new_size = get_size(chunk) + need;
-	t_chunk	*nnc       = get_next_chunk(heap, chunk);
-	t_chunk *new_free   = NULL;
-	
-	
-	ft_memmove(chunk_to_data(prev), chunk_to_data(chunk), get_size(chunk));
-	set_size(prev, new_size);
-	set_flags(prev, IN_USE);
-
-	if (prev_total > need) {
-		
-        new_free = (t_chunk*)((char*)prev + sizeof(t_chunk) + new_size);
-        set_size(new_free, prev_total - need - sizeof(t_chunk));
-        set_prevsize(new_free, new_size);
-        unset_flags(new_free, IN_USE);
-	}
-
-	chunk_relink(prev, new_free, nnc);
-	return (new_free);
-}
 
 t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 
-	t_chunk *new_free = NULL;
 	t_chunk *next 	  = get_next_chunk(heap, chunk);
 	t_chunk *prev     = get_prev_chunk(heap, chunk);
   	size_t   cur_size = get_size(chunk);
     size_t   need     = size - cur_size;
 
-	if (size < cur_size && size >= MIN_TRIM) {
 
-        if ((new_free = chunk_split_right(heap, chunk, chunk, size)) != NULL)
-            arena_fastbin_set(heap, new_free);
+	printf("cursize = %zu, size = %zu\n", cur_size, size);
+	if (size < cur_size && size >= MIN_TRIM) {
+		printf("(size < cur_size && size >= MIN_TRIM)\n");
+        chunk_split_left(heap, chunk, chunk, size);
         return (chunk);
     }
-	if (next && next_chunk_suffices(next, need)) {
+	else if ((next && next_chunk_suffices(next, need))) {
 
-		arena_fastbin_unlink(next);
-		if ((new_free = chunk_split_right(heap, chunk, next, need)) != NULL)
-			arena_fastbin_set(heap, new_free);
+
+		chunk_split_right(heap, chunk, next, need);
+
 		return (chunk);
 	}
 	else if (prev && prev_chunk_suffices(prev, need)) {
 
+		printf("(prev && prev_chunk_suffices(prev, need))\n");
 		arena_fastbin_unlink(prev);
-		if ((new_free = chunk_split_left(heap, chunk, prev, need)) != NULL)
-			arena_fastbin_set(heap, new_free);
+		chunk_split_left(heap, chunk, prev, need);
 		return (prev);
 	}
-
+	printf("return (NULL);\n");
 	return (NULL);
 }
 
-int		heap_has_remaining_cis(t_heap *heap, size_t size) {
+bool		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
 	return (((char*)heap->free_cis_start + size + sizeof(t_chunk)) <= (char *)heap_to_chunk(heap) + heap->total_size);
 }

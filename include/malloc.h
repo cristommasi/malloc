@@ -20,7 +20,7 @@
 #include <stdbool.h>
  // uint32
 #include <stdint.h>
- // printf
+ // //printf
 #include <stdio.h> 
 
 
@@ -48,13 +48,17 @@
 
 #define MUNMAP_ERROR "MUNMAP FAILED\n"
 
+#define DB_FREE_ERROR "free(): double free detected in tcache 2\n"
+
+#define IP_FREE_ERROR "free(): invalid pointer\n"
+
 // NO FD FLAG
 #define NO_FD -1
 
 // NO OFFSET FLAG
 #define NO_OFFSET 0
 
- // BLOCK ALLIGNMENT MULTIPLES OF 8
+ // BLOCK ALIGNMENT MULTIPLES OF 8
 #define ALIGNMENT (sizeof(size_t))
 
  // MACRO FN TO ALIGN
@@ -91,8 +95,8 @@
 #define IN_USE       0b001
 #define IS_CIS       0b010
 #define IS_LARGE     0b100
-#define TS_FLAG_MASK  0b00000000000000000000000000000111U          // bits 0-2 of small.size
-#define TS_SIZE_MASK  0b11111111111111111111111111111000U          // bits 3-31 of small.size
+#define TS_FLAG_MASK  0b00000000000000000000000000000111U
+#define TS_SIZE_MASK  0b11111111111111111111111111111000U 
 #define L_FLAG_MASK   ((size_t)0x7)
 #define L_SIZE_MASK   (~(size_t)0x7)
 
@@ -113,7 +117,7 @@ typedef struct s_large {
 }	t_large;
 
 
-// Metadata for a single allocated block
+
 typedef struct s_chunk {
 
 	union {

@@ -79,44 +79,40 @@ void	print_binary(size_t value, int width, char *str)
 		else
 			color = BLUE;       /* lower 32 bits */
 
-		printf("%s%c" RESET,color,((value >> i) & 1) ? '1' : '0');
+		//printf("%s%c" RESET,color,((value >> i) & 1) ? '1' : '0');
 
 		if (i % 8 == 0 && i != 0)
-			printf("_");
+			//printf("_");
 
 		i--;
 	}
-	printf(" %s\n", str);
+	//printf(" %s\n", str);
 }
+#include <stdlib.h>
 
-int main(void) {
+int main(void)
+{
 
-    t_chunk test = {0};  // zero init
+    
+    char *s1 = (char*)malloc(32);
+	char *s2 = (char*)malloc(32);
+	char *s3 = (char*)malloc(32);
+	char *s4 = (char*)malloc(32);
 
-    set_flags(&test, IN_USE);
-    set_size(&test, 32);
-    set_prevsize(&test, 1024);
-    set_nextsize(&test, 48);
-    print_binary((size_t)test.large.size, 64, "REAL NUM LARGE\n");
-    print_binary(get_size(&test), 64, "get_size(&test);");
-    print_binary((size_t)get_prevsize(&test) << 48, 64, "get_prevsize(&test);");
-    print_binary((size_t)get_nextsize(&test) << 32, 64, "get_nextsize(&test);");
-    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
-    set_flags(&test, IS_LARGE);
-    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
-    if(has_flags(&test, IS_LARGE))
-        printf("IS_LARGE\n");
-    unset_flags(&test, IS_LARGE);
-    if(has_flags(&test, IS_LARGE))
-        printf("IS_LARGE\n");
-    else
-        printf("NOT_LARGE\n");
-    print_binary((size_t)test.large.size, 64, "PREV - NEXT - SIZE\n");
-    print_binary(get_size(&test), 64, "get_size(&test)\n");
+    
+	free(s1);
+	free(s2);
+	free(s3);
+	free(s4);
+	
+	//printf("%p\n", s2);
+	free(s2);
+	//printf("\n");
+	
 
 
-    // print_binary(get_size(&test), 64, "getsize");
+    
 
 
-    return 1;
+    return (0);
 }

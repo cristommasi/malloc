@@ -45,10 +45,12 @@ void    *ft_malloc(size_t size) {
 
 void    ft_free(void *ptr) {
 	
-	t_chunk *chunk      = NULL;
-	t_heap  **heap_head = NULL;
-	t_heap  *heap       = NULL;
-	t_heap  *prev       = NULL;
+	t_chunk *chunk        = NULL;
+	t_heap *groups[3]     = { g_arena.tiny, g_arena.small, g_arena.large };
+	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };
+	t_heap  *heap         = NULL;
+	t_heap  *prev         = NULL;
+
 
 	if (ptr == NULL)
 		return ;
@@ -56,43 +58,43 @@ void    ft_free(void *ptr) {
 	if ((chunk = data_to_chunk(ptr)) == NULL)
 		return ;
 
-	if ((heap_head = arena_heap_group(get_size(chunk))) == NULL)
-		return ;
+	for (int i = 0; i < 3; i++) {
 
-	printf("chunk %p IN_USE flag = %d\n", chunk, has_flags(chunk, IN_USE));
-	heap = *heap_head;
+		heap = groups[i];
+		prev = NULL;
+		while (heap != NULL) {
 
-	printf("ft_free receives = chunk %p - data %p - free %p\n", (char*)chunk, (char*)ptr, (char*)heap->free_cis_start);
-	while (heap != NULL) {
+			if (chunk_belongs_to_heap(heap, chunk)) {
 
-		if (chunk_belongs_to_heap(heap, chunk)) {
+				if (is_large(chunk)) {
 
-			if (is_large(chunk)) {
-
-				arena_heap_munmap(prev, heap, heap_head);
-				ptr = NULL;
-				return ;
-			}
-			else {
-
-				if (!has_flags(chunk, IN_USE))
-					return;
-				
-				arena_fastbin_set(heap, chunk);
-				ptr = NULL;
-				if (heap->blocks == 0) {
-
-					arena_fastbin_drain(heap);
-                    arena_heap_munmap(prev, heap, heap_head);
-					
+					arena_heap_munmap(prev, heap, heads[i]);
 					return ;
 				}
-				return ;
+				else {
+
+					if (!has_flags(chunk, IN_USE)) {
+						
+						return (void)write(2, DB_FREE_ERROR, sizeof(DB_FREE_ERROR));
+					}
+
+					if (heap->blocks > 1) {
+						
+						return arena_fastbin_set(heap, chunk);
+					}
+					else {
+
+						arena_fastbin_drain(heap);
+						return arena_heap_munmap(prev, heap, heads[i]);
+					}
+				}
 			}
+			prev = heap;
+			heap = heap->next;
 		}
-		prev = heap;
-		heap = heap->next;
+
 	}
+	write(2, DB_FREE_ERROR, sizeof(DB_FREE_ERROR));
 }
 
 void    *ft_realloc(void *ptr, size_t size) {
@@ -115,8 +117,8 @@ void    *ft_realloc(void *ptr, size_t size) {
 		
         return (NULL);
 	}
-	printf("ft_realloc receives = chunk %p - data %p - free %p\n", (char*)chunk, (char*)ptr, (char*)heap->free_cis_start);
-	printf("new size = %zu\n", p_new_size);
+	//printf("ft_realloc receives = chunk %p - data %p - free %p\n", (char*)chunk, (char*)ptr, (char*)heap->free_cis_start);
+	//printf("new size = %zu\n", p_new_size);
 	//printheap(heap, chunk);
     if (size == 0) {
 		
@@ -154,8 +156,9 @@ int main(void)
 	ft_free(s3);
 	ft_free(s4);
 	
+	//printf("%p\n", s2);
 	ft_free(s2);
-	printf("\n");
+
 	
 
     return (0);

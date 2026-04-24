@@ -53,10 +53,10 @@ void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	else
 		heap->blocks -= 1;
 	t_chunk *next = get_next_chunk(heap, freed_chunk);
-	if (next)
+	if (next  && has_flags(next, IN_USE))
 		set_prevsize(next, get_size(freed_chunk));
 	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
-	if (prev != NULL)
+	if (prev && has_flags(prev, IN_USE))
 		set_nextsize(prev, get_size(freed_chunk));
 
 }
@@ -127,6 +127,7 @@ void     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 t_heap      **arena_heap_group(size_t size) {
 
 	size_t zone_size = heap_page_size(size);
+
 
 	if (zone_size == TINY_HEAP_SIZE) {
 

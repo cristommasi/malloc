@@ -24,6 +24,9 @@
 #include <stdio.h> 
 
 
+#if SIZE_MAX != 0xFFFFFFFFFFFFFFFFULL
+#	error "size_t must be 8 bytes (64-bit platform required)"
+#endif
 
  // SYSTEM DEFAULT PAGE_SIZE (4096)
 #ifdef __APPLE__
@@ -43,6 +46,8 @@
 #   define MAP_FLAGS (MAP_PRIVATE | MAP_ANONYMOUS)
 #endif
 
+#define MUNMAP_ERROR "MUNMAP FAILED\n"
+
 // NO FD FLAG
 #define NO_FD -1
 
@@ -60,6 +65,8 @@
 
  // max bytes for a small request
 #define SMALL_CHUNK_MAX 1024
+
+#define LARGE_CHUNK_MIN 1025
 
  // 16384 - fits 128 tiny allocs
 #define TINY_HEAP_SIZE (4 * PAGE_SIZE)
@@ -80,33 +87,27 @@
 
 #define BIN_LAST 0
 
-typedef enum {NONE, TINY_HEAP, SMALL_HEAP, LARGE_HEAP} t_heap_type;
-
-#define G_CHUNK_MIN_SIZE 16
-
-
-#define IN_USE       0b0000000000000001
-
-#define IS_CIS       0b0000000000000010
-
-#define IS_LARGE     0b0000000000000100
-
-#define L_FLAG_MASK  0b1111111111111111111111111111111111111111111111111111111111111000
-
-#define TS_FLAG_MASK 0b1111111111111000
+ // masks
+#define IN_USE       0b001
+#define IS_CIS       0b010
+#define IS_LARGE     0b100
+#define TS_FLAG_MASK 0b00000000000000000000000000000111
+#define TS_SIZE_MASK 0b11111111111111111111111111111000
+#define L_FLAG_MASK ((size_t)0x7 << 32)   // flags at bits 32-34
+#define L_SIZE_MASK (~((size_t)0x7 << 32)) // everything except bits 32-34
 
 
-typedef struct s_tiny_small
+typedef struct t_small_tiny
 {
-	uint16_t	prev_size;
+	uint32_t	size;
 	uint16_t	next_size;
-	uint16_t	size;
-	uint16_t	flags;
+	uint16_t	prev_size;
 
-}	t_tiny_small;
+}	t_small_tiny;
+
 
 typedef struct s_large {
-
+	
 	size_t size;
 	
 }	t_large;
@@ -116,7 +117,7 @@ typedef struct s_large {
 typedef struct s_chunk {
 
 	union {
-		t_tiny_small	small;
+		t_small_tiny	small;
 		t_large		    large;
 	};
 	struct s_chunk	*next;
@@ -126,7 +127,6 @@ typedef struct s_chunk {
 typedef struct s_heap {
 
 	uint32_t        blocks;
-	t_heap_type     TYPE;
 	size_t          total_size;
 	struct s_heap   *next;
 	t_chunk         *free_cis_start;
@@ -153,12 +153,13 @@ void	arena_fastbin_unlink(t_chunk *chunk);
 t_chunk     *arena_fastbin_get(size_t size);
 void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void	arena_fastbin_drain(t_heap *heap); 
-int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
+void     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 t_heap  *arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap      **arena_heap_group(size_t size); 
 void *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size);
 t_heap *heap_new_and_append(size_t size);
-t_heap    *heap_new(size_t zone_size, size_t size); 
+size_t heap_free_size(t_heap *heap);
+t_heap    *heap_new(size_t zone_size); 
 void    heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
 t_heap  *heap_find_cis_mem(size_t size); 
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
@@ -167,18 +168,21 @@ size_t heap_cis_mem_size(t_heap *heap);
 bool	heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add);
 t_chunk *heap_to_chunk(t_heap *heap_addr);
 size_t  heap_page_size(size_t size);
-t_heap_type  heap_type(size_t size);
 size_t	heap_chunk_size(size_t size);
+size_t		heap_type(size_t size);
 bool	heap_is_large(size_t size);
 bool heap_is_different_type(size_t sizeA, size_t sizeB);
-t_chunk *	heap_split_chunk(t_heap *heap, t_chunk *chunk, size_t size);
-t_chunk *heap_check_next_chunk(t_heap *heap, t_chunk *chunk, size_t new_size);
-t_chunk *heap_check_prev_chunk(t_heap *heap, t_chunk *chunk, size_t new_size);
+t_chunk *chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
+t_chunk *chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
+t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
 bool    chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk);
 bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
 t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk);
 t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk);
+bool prev_chunk_suffices(t_chunk *prev, size_t need);
+bool next_chunk_suffices(t_chunk *next, size_t need);
 void    *chunk_to_data(t_chunk *chunk_addr);
+void chunk_relink(t_chunk *chunk, t_chunk *new_free, t_chunk *nnc);
 t_chunk    *data_to_chunk(void *data_addr);
 void set_size(t_chunk *chunk, size_t size);
 size_t get_size(t_chunk *chunk);

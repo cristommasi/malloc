@@ -4,19 +4,73 @@
 
 bool        arena_heap_uninitialized_or_large(size_t size) {
 
-	t_heap_type TYPE = heap_type(size);
+	return ((!g_arena.tiny && heap_type(size) == TINY_CHUNK_MAX) || (!g_arena.small && heap_type(size) == SMALL_CHUNK_MAX) || heap_type(size) == LARGE_CHUNK_MIN);
+}
 
 
-	if ((TYPE == LARGE_HEAP) || (!g_arena.tiny && TYPE == TINY_HEAP) || (!g_arena.small && TYPE == SMALL_HEAP)) {
-		// if (TYPE == LARGE_HEAP)
-			//printf("%s - Request mem alloc is LARGE\n", __func__);
-		// else
-			//printf("%s - No heaps found initially\n", __func__);
-		return (true);
+
+t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
+
+	if (!chunk)
+		return (NULL);
+   t_heap  **heap = arena_heap_group(get_size(chunk));
+
+   while (*heap != NULL) {
+
+		if (chunk_belongs_to_heap(*heap, chunk))
+			return (*heap);
+		heap = &(*heap)->next;
+   }
+   return (NULL);
+}
+
+t_chunk     *arena_fastbin_get(size_t size) {
+
+	size_t  index        = BIN_IDX(size + sizeof(t_chunk));
+	t_chunk *chunk       = g_arena.fastbin[index];
+
+	if (!chunk) {
+		return (NULL);
+	}
+	g_arena.fastbin[index] = chunk->next;
+	chunk->next = NULL;
+	set_flags(chunk, IN_USE);
+	return (chunk);
+}
+
+void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
+
+	size_t  size = get_size(freed_chunk);
+	size_t	index = BIN_IDX(size + sizeof(t_chunk));
+
+
+	unset_flags(freed_chunk, IN_USE);
+	freed_chunk->next = g_arena.fastbin[index];
+	g_arena.fastbin[index] = freed_chunk;
+	heap->blocks -= 1;
+	t_chunk *next = get_next_chunk(heap, freed_chunk);
+	if (next != NULL)
+		set_prevsize(next, size);
+	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
+	if (prev != NULL)
+		set_nextsize(prev, size);
+
+}
+
+void	arena_fastbin_drain(t_heap *heap) {
+
+	for (int i = 0; i < FASTBIN_COUNT; i++) {
+
+		t_chunk **node = &g_arena.fastbin[i];
+		while (*node != NULL) {
+
+			if (chunk_belongs_to_heap(heap, *node))
+				*node = (*node)->next;
+			else
+				node = &(*node)->next;
+		}
 	}
 
-	//printf("%s - %s Heaps found initially\n", __func__, (TYPE == TINY_HEAP) ? "TINY" : "SMALL");
-	return (false);
 }
 
 void	arena_fastbin_unlink(t_chunk *chunk) {
@@ -40,64 +94,7 @@ void	arena_fastbin_unlink(t_chunk *chunk) {
 	}
 }
 
-t_chunk     *arena_fastbin_get(size_t size) {
-
-	size_t  index        = BIN_IDX(size + sizeof(t_chunk));
-	t_chunk *chunk       = g_arena.fastbin[index];
-	t_heap  *heap        = NULL;
-
-	if (!chunk) {
-		//printf("%s - Didnt find any free chunks in fastbin\n", __func__);
-		return (NULL);
-	}
-	heap = arena_heap_find_by_chunk(chunk);
-	if (!heap)
-		return (NULL);
-	heap->blocks += 1;
-	g_arena.fastbin[index] = chunk->next;
-	chunk->next = NULL;
-	set_flags(chunk, IN_USE);
-	//printf("%s - Found free chunk in fastbin\n", __func__);
-	return (chunk);
-}
-
-void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
-
-	size_t  size = get_size(freed_chunk);
-	size_t	index = BIN_IDX(size + sizeof(t_chunk));
-
-
-	unset_flags(freed_chunk, IN_USE);
-	freed_chunk->next = g_arena.fastbin[index];
-	g_arena.fastbin[index] = freed_chunk;
-	heap->blocks -= 1;
-	t_chunk *next = get_next_chunk(heap, freed_chunk);
-	if (next != NULL)
-		set_prevsize(next, size);
-	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
-	if (prev != NULL)
-		set_nextsize(prev, size);
-	// printf("%s - Set free chunk to fastbin\n", __func__);
-}
-
-void	arena_fastbin_drain(t_heap *heap) {
-
-	for (int i = 0; i < FASTBIN_COUNT; i++) {
-
-		t_chunk **node = &g_arena.fastbin[i];
-		while (*node != NULL) {
-
-			if (chunk_belongs_to_heap(heap, *node))
-				*node = (*node)->next;
-			else
-				node = &(*node)->next;
-		}
-	}
-	//printf("%s - Unlinked all chunks in fastbin\n", __func__);
-}
-
-
-int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
+void     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
 	t_heap *to_free = cur;
 
@@ -105,23 +102,9 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 		prev->next = cur->next;
 	else
 		*head = cur->next;
-	return (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)));
-}
-
-
-t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
-
-	if (!chunk)
-		return (NULL);
-   t_heap  **heap = arena_heap_group(get_size(chunk));
-
-   while (*heap != NULL) {
-
-		if (chunk_belongs_to_heap(*heap, chunk))
-			return (*heap);
-		heap = &(*heap)->next;
-   }
-   return (NULL);
+	
+	if (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)) == -1)
+		write(2, MUNMAP_ERROR, sizeof(MUNMAP_ERROR));
 }
 
 t_heap      **arena_heap_group(size_t size) {

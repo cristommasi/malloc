@@ -7,7 +7,6 @@ t_heap *heap_new_and_append(size_t size) {
 	size_t  zone_size = heap_page_size(size);
 	t_heap *new_heap  = heap_new(zone_size);
 	
-	
 	if (new_heap == MAP_FAILED) {
 		return (MAP_FAILED);
 	}
@@ -159,6 +158,8 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 
 bool		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
+	if (heap->free_cis_start == NULL)
+		return (false);
 	return (((char*)heap->free_cis_start + size + sizeof(t_chunk)) <= (char *)heap_to_chunk(heap) + heap->total_size);
 }
 

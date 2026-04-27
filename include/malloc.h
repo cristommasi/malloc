@@ -64,13 +64,15 @@
  // MACRO FN TO ALIGN
 #define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
 
+#define TINY_SMALL_BLOCK_MAX 128
+
  // max bytes for a tiny request
-#define TINY_CHUNK_MAX 128
+#define TINY_CHUNK_MAX 112
 
  // max bytes for a small request
-#define SMALL_CHUNK_MAX 1024
+#define SMALL_CHUNK_MAX 1008
 
-#define LARGE_CHUNK_MIN 1025
+#define LARGE_CHUNK_MIN 1009
 
  // 16384 - fits 128 tiny allocs
 #define TINY_HEAP_SIZE (4 * PAGE_SIZE)

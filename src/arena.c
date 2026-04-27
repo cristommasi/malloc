@@ -28,6 +28,7 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	size_t  index        = BIN_IDX(size);
 	t_chunk *chunk       = g_arena.fastbin[index];
 
+	
 	if (!chunk) {
 		return (NULL);
 	}

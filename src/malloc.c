@@ -141,46 +141,44 @@ void    *ft_realloc(void *ptr, size_t size) {
 
 void    show_alloc_mem(void) {
 
+    int     TOTAL_TYPES = 3;
     t_heap *cur[3]     = { g_arena.tiny, g_arena.small, g_arena.large};
+
     size_t  total_size = 0;
     int     i          = 0;
 
-    while (i < 3) {
+    while (i < TOTAL_TYPES) {
 
-        t_heap *heap_type = cur[i];
+        t_heap *cur_heap = cur[i];
+        print_heap_type(i, cur_heap);
 
-        while (heap_type != NULL) {
+        while (cur_heap != NULL) {
 
-            t_heap *cur_heap = heap_type;
-            print_heap_type(i, cur_heap);
+            int blocks = 0;
+            char *chunk = (char *)cur_heap + sizeof(t_heap);
+            char *end   = (char *)chunk + cur_heap->total_size;
 
-            while (cur_heap != NULL) {
+            while ((char *)chunk < (char *)end) {
 
-                char *chunk = (char *)cur_heap + sizeof(t_heap);
-                char *end   = (char *)chunk + cur_heap->total_size;
+                size_t cur_chunk_size = get_size((t_chunk *)chunk);
 
-                while ((char *)chunk < (char *)end) {
+                if (cur_chunk_size != 0 && has_flags((t_chunk *)chunk, IN_USE) && !has_flags((t_chunk *)chunk, IS_CIS)) {
 
-                    size_t cur_chunk_size = get_size((t_chunk *)chunk);
+                    char *addr_start        = (char*)chunk;
+                    char *addr_end          = (char*)chunk + sizeof(t_chunk) + cur_chunk_size;
+                    size_t total_chunk_size = cur_chunk_size + sizeof(t_chunk);
 
-                    if (cur_chunk_size != 0 && has_flags((t_chunk *)chunk, IN_USE) && !has_flags((t_chunk *)chunk, IS_CIS)) {
-
-                        char *addr_start        = (char*)chunk;
-                        char *addr_end          = (char*)chunk + sizeof(t_chunk) + cur_chunk_size;
-                        size_t total_chunk_size = cur_chunk_size + sizeof(t_chunk);
-
-                        print_chunk(addr_start, addr_end, total_chunk_size);
-                        total_size += total_chunk_size;
-                        chunk = chunk + total_chunk_size;
-                    }
-                    else
-                        chunk = chunk + 16;
+                    print_chunk(addr_start, addr_end, total_chunk_size);
+                    total_size += total_chunk_size;
+                    chunk = chunk + total_chunk_size;
+                    blocks += 1;
                 }
-
-                cur_heap = cur_heap->next;
+                else
+                    chunk = chunk + 16;
             }
 
-            heap_type = heap_type->next;
+            printf("blocks = %d\n", blocks);
+            cur_heap = cur_heap->next;
         }
         i++;
     }

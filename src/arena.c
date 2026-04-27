@@ -8,7 +8,6 @@ bool        arena_heap_uninitialized_or_large(size_t size) {
 }
 
 
-
 t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
 
 	if (!chunk)

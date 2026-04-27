@@ -108,6 +108,10 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 /// @brief Converts an int into a str.
 char	*ft_itoa(int n);
+/// @brief writes a decimal to hex with 0x prefix.
+void	ft_put_hex(unsigned long n);
+/// @brief writes a decimal to str.
+void	ft_put_ul(unsigned long n);
 /// @brief Apply the function 'f' to each characters in 
 /// @brief the string 's' to create a new string 
 /// @brief resulting of the successive applications of 'f'.

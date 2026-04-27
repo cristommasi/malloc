@@ -94,19 +94,11 @@ int main(void)
 {
 
     
-    char *s1 = (char*)malloc(32);
-	char *s2 = (char*)malloc(32);
-	char *s3 = (char*)malloc(32);
-	char *s4 = (char*)malloc(32);
+printf("%d\n", 0xA004A - 0xA0020);
 
-    
-	free(s1);
-	free(s2);
-	free(s3);
-	free(s4);
 	
 	//printf("%p\n", s2);
-	free(s2);
+
 	//printf("\n");
 	
 

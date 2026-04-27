@@ -125,8 +125,6 @@ t_chunk  *heap_find_cis_mem_chunk(size_t size) {
 }
 
 
-
-
 t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 
 	t_chunk *next 	  = get_next_chunk(heap, chunk);

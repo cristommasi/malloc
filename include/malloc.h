@@ -1,9 +1,9 @@
 #ifndef MALLOC_H
 #   define MALLOC_H
-#include <valgrind/valgrind.h>
-#include <valgrind/memcheck.h>
+
 // MAP_ANON & MAP_ANONYMOUS FLAGS
 #define _GNU_SOURCE
+
  // mmap(2)
 #include <sys/mman.h>
  // munmap(2)
@@ -92,9 +92,9 @@
 #define BIN_LAST 0
 
  // masks
-#define IN_USE       0b001
-#define IS_CIS       0b010
-#define IS_LARGE     0b100
+#define IN_USE        0b001
+#define IS_CIS        0b010
+#define IS_LARGE      0b100
 #define TS_FLAG_MASK  0b00000000000000000000000000000111U
 #define TS_SIZE_MASK  0b11111111111111111111111111111000U 
 #define L_FLAG_MASK   ((size_t)0x7)
@@ -202,13 +202,12 @@ void unset_flags(t_chunk *chunk, size_t flag);
 bool has_flags(t_chunk *chunk, size_t flag);
 bool is_large(t_chunk *chunk);
 size_t		get_min(size_t a, size_t b);
+void print_heap_type(int index, t_heap *cur);
+void print_chunk(char *start, char *end, size_t bytes);
 
 void ft_free(void *ptr);
 void *ft_malloc(size_t size);
 void *ft_realloc(void *ptr, size_t size);
-// void    show_alloc_mem(void);
+void    show_alloc_mem(void);
 
 #endif
-
-
-

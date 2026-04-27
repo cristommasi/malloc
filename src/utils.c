@@ -1,5 +1,33 @@
 #include "../include/malloc.h"
 
+void print_heap_type(int index, t_heap *cur) {
+
+	if (!cur)
+		return ;
+	
+	if (index == 0)
+		write(1, "TINY : ", sizeof("TINY : "));
+	else if (index == 1)
+		write(1, "SMALL : ", sizeof("SMALL : "));
+	else if (index == 2)
+		write(1, "LARGE : ", sizeof("LARGE : "));
+
+	ft_put_hex((unsigned long )cur);
+	write(1, "\n", 1);
+}
+
+void print_chunk(char *start, char *end, size_t bytes) {
+
+	if (!start || !end)
+		return ;
+	
+	ft_put_hex((unsigned long)start);
+	write(1, " - ", sizeof(" - "));
+	ft_put_hex((unsigned long)end);
+	write(1, " : ", sizeof(" : "));
+	ft_put_ul((unsigned long)bytes);
+	write(1, " bytes\n", sizeof(" bytes\n"));
+}
 
 bool is_large(t_chunk *chunk) {
 

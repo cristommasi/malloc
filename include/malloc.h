@@ -20,7 +20,7 @@
 #include <stdbool.h>
  // uint32
 #include <stdint.h>
- // //printf
+ // printf
 #include <stdio.h> 
 
 
@@ -178,7 +178,6 @@ t_chunk *heap_to_chunk(t_heap *heap_addr);
 size_t  heap_page_size(size_t size);
 size_t	heap_chunk_size(size_t size);
 size_t		heap_type(size_t size);
-bool	heap_is_large(size_t size);
 bool heap_is_different_type(size_t sizeA, size_t sizeB);
 void chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need);
 void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
@@ -211,5 +210,13 @@ void ft_free(void *ptr);
 void *ft_malloc(size_t size);
 void *ft_realloc(void *ptr, size_t size);
 void    show_alloc_mem(void);
+
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
 
 #endif

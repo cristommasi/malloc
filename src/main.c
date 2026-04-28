@@ -2,28 +2,69 @@
 
 #include <limits.h>
 
+void	free_all(char **ptr, int idx) {
+
+	if (!ptr)
+		return ;
+
+	for (int i = 0; i < idx; i++) {
+		ft_free(ptr[i]);
+	}
+	ft_free(ptr);
+}
+
+char **mallocmany(size_t max_allocs, size_t m_size) {
+
+	char **new = ft_malloc((max_allocs + 1) * (sizeof(char*)));
+	if (!new) {
+		printf("[mallocmany] **new FAILED\n");
+		return (NULL);
+	}
+
+	size_t i = 0;
+
+	while (i < max_allocs) {
+
+		new[i] = ft_malloc(m_size);
+		if (!new[i]) {
+			printf("[mallocmany] new[i] FAILED at i=%zu\n", i);
+			free_all(new, i);
+			return (NULL);
+		}
+		i++;
+	}
+	new[i] = NULL;
+	return (new);
+}
+
 int main(void)
 {
 
-
-	int i = 0;
-	for ( ; i < 128; i++) {
-
-		char *s1 = ft_malloc(112);
+	char **tiny = mallocmany(128, 112);
+	if (!tiny) {
+		return (1);
 	}
-	// char *new_tiny = ft_malloc(TINY_CHUNK_MAX);
-	// for (int i = 0; i < TINY_SMALL_BLOCK_MAX; i++) {
 
-	// 	char *s1 = ft_malloc(SMALL_CHUNK_MAX);
-	// }
-	// for (int i = 0; i < 129; i++) {
+	char **small = mallocmany(128, 1008);
+	if (!small)
+		return (1);
 
-	// 	char *s2 = ft_malloc(129);
-	// }
-	// char *s3 = ft_malloc(16);
-	// char *s4 = ft_malloc(1208);
-	// show_alloc_mem();
 
+	char **large = mallocmany(5, 1009);
+	if (!large)
+		return (1);
+
+
+	show_alloc_mem();
+
+	free_all(tiny, TINY_SMALL_BLOCK_MAX);
+	free_all(small, TINY_SMALL_BLOCK_MAX);
+	free_all(large, 5);
+	// free_all(small, TINY_SMALL_BLOCK_MAX);
+	// free_all(large, 5);
+
+	printf("\n\n");
+	show_alloc_mem();
 
     return (0);
 }

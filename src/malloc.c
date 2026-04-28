@@ -7,7 +7,6 @@ void    *ft_malloc(size_t size) {
 
 	t_heap  *heap  = NULL;
 	t_chunk	*chunk = NULL;
-	void	*ptr   = NULL;
 
 	if (size == 0) {
 		return (NULL);
@@ -21,16 +20,18 @@ void    *ft_malloc(size_t size) {
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
 
+		return (chunk_to_data(chunk));
+
 	}
 	else if ((chunk = arena_fastbin_get(size)) != NULL) {
-
 
 		if ((heap = arena_heap_find_by_chunk(chunk)) == NULL)
 			return (NULL);
 		heap->blocks += 1;
 
+		return (chunk_to_data(chunk));
 	}
-	else if (((chunk = heap_find_cis_mem_chunk(size)) == NULL)) {
+	else if ((chunk = heap_find_cis_mem_chunk(size)) == NULL) {
 
 		if ((heap = heap_new_and_append(size)) == MAP_FAILED)
 			return (NULL);
@@ -38,9 +39,9 @@ void    *ft_malloc(size_t size) {
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
 
+		return (chunk_to_data(chunk));
 	}
-	ptr = chunk_to_data(chunk);
-	return (ptr);
+	return (chunk_to_data(chunk));
 }
 
 void    ft_free(void *ptr) {
@@ -150,10 +151,9 @@ void    show_alloc_mem(void) {
     while (i < TOTAL_TYPES) {
 
         t_heap *cur_heap = cur[i];
-        print_heap_type(i, cur_heap);
-
         while (cur_heap != NULL) {
 
+			print_heap_type(i, cur_heap);
             int blocks = 0;
             char *chunk = (char *)cur_heap + sizeof(t_heap);
             char *end   = (char *)chunk + cur_heap->total_size;
@@ -176,8 +176,14 @@ void    show_alloc_mem(void) {
                 else
                     chunk = chunk + 16;
             }
-
-            printf("blocks = %d\n", blocks);
+			printf("%s%p - %p : %zu bytes (free cis mem) - blocks %d%s\n", 
+				YELLOW, 
+				cur_heap->free_cis_start, 
+				((cur_heap->free_cis_start) ? (char*)cur_heap->free_cis_start + heap_cis_mem_size(cur_heap) : NULL), 
+				heap_cis_mem_size(cur_heap),
+				blocks,
+				RESET
+			);
             cur_heap = cur_heap->next;
         }
         i++;

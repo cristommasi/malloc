@@ -4,7 +4,13 @@
 
 bool        arena_heap_uninitialized_or_large(size_t size) {
 
-	return ((!g_arena.tiny && heap_type(size) == TINY_CHUNK_MAX) || (!g_arena.small && heap_type(size) == SMALL_CHUNK_MAX) || heap_type(size) == LARGE_CHUNK_MIN);
+	if (heap_type(size) == LARGE_CHUNK_MIN)
+		return (true);
+	else if (!g_arena.tiny && heap_type(size) == TINY_CHUNK_MAX)
+		return (true);
+	else if (!g_arena.small && heap_type(size) == SMALL_CHUNK_MAX)
+		return (true);
+	return (false);
 }
 
 
@@ -26,16 +32,17 @@ t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
 t_chunk     *arena_fastbin_get(size_t size) {
 
 	size_t  index        = BIN_IDX(size);
-	t_chunk *chunk       = g_arena.fastbin[index];
+	t_chunk	*chunk       = g_arena.fastbin[index];
 
-	
-	if (!chunk) {
+
+
+	if (chunk == NULL) {
 		return (NULL);
 	}
+
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
 	set_flags(chunk, IN_USE);
-	printchunk(chunk);
 	return (chunk);
 }
 

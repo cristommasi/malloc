@@ -12,14 +12,18 @@
 #include <unistd.h>
  //getrlimit(2)
 #include <sys/resource.h>
- // thread functions
-#include <pthread.h>
+
  // libft
 #include "./libft/includes/libft.h"
  // bool type
 #include <stdbool.h>
  // uint32
 #include <stdint.h>
+ // abort() 
+#include <stdlib.h>
+ // thread functions
+#include <pthread.h>
+
  // printf
 #include <stdio.h> 
 

@@ -22,7 +22,7 @@ char **mallocmany(size_t max_allocs, size_t m_size) {
 	}
 
 	size_t i = 0;
-
+	char character = 'A';
 	while (i < max_allocs) {
 
 		new[i] = ft_malloc(m_size);
@@ -31,6 +31,7 @@ char **mallocmany(size_t max_allocs, size_t m_size) {
 			free_all(new, i);
 			return (NULL);
 		}
+		printf("%s\n", new[i]);
 		i++;
 	}
 	new[i] = NULL;
@@ -47,29 +48,29 @@ int main(void)
 		return (1);
 	}
 
-	char **small = mallocmany(128, 1008);
-	if (!small)
-		return (1);
+	// char **small = mallocmany(128, 1008);
+	// if (!small)
+	// 	return (1);
 
 
-	char **large = mallocmany(5, 1009);
-	if (!large)
-		return (1);
+	// char **large = mallocmany(5, 1009);
+	// if (!large)
+	// 	return (1);
 
 
-	show_alloc_mem();
+	// show_alloc_mem();
 
-	printf("\n\n");
+	// printf("\n\n");
 
-	printf("AFTER FREE \n");
-	free_all(tiny, TINY_SMALL_BLOCK_MAX);
-	free_all(small, TINY_SMALL_BLOCK_MAX);
-	free_all(large, 5);
+	// printf("AFTER FREE \n");
+	// free_all(tiny, TINY_SMALL_BLOCK_MAX);
+	// free_all(small, TINY_SMALL_BLOCK_MAX);
+	// free_all(large, 5);
 	// free_all(small, TINY_SMALL_BLOCK_MAX);
 	// free_all(large, 5);
 
 	
-	show_alloc_mem();
+	// show_alloc_mem();
 
     return (0);
 }

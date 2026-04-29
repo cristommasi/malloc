@@ -37,8 +37,10 @@ char **mallocmany(size_t max_allocs, size_t m_size) {
 	return (new);
 }
 
+
 int main(void)
 {
+
 
 	char **tiny = mallocmany(128, 112);
 	if (!tiny) {
@@ -57,13 +59,16 @@ int main(void)
 
 	show_alloc_mem();
 
+	printf("\n\n");
+
+	printf("AFTER FREE \n");
 	free_all(tiny, TINY_SMALL_BLOCK_MAX);
 	free_all(small, TINY_SMALL_BLOCK_MAX);
 	free_all(large, 5);
 	// free_all(small, TINY_SMALL_BLOCK_MAX);
 	// free_all(large, 5);
 
-	printf("\n\n");
+	
 	show_alloc_mem();
 
     return (0);

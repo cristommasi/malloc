@@ -127,10 +127,10 @@ bool next_chunk_suffices(t_chunk *next, size_t need) {
 	size_t next_size = get_size(next) + sizeof(t_chunk);
 
 	if (!has_flags(next, IN_USE) && next_size >= need && next_size >= MIN_TRIM) {
-		//printf("next_chunk_suffices TRUE\n");
+
 		return (true);
 	}
-	//printf("next_chunk_suffices FALSE\n");
+
 	return (false);
 }
 
@@ -139,10 +139,10 @@ bool prev_chunk_suffices(t_chunk *prev, size_t need) {
 	size_t prev_total = get_size(prev) + sizeof(t_chunk);
 
 	if (!has_flags(prev, IN_USE) && prev_total >= need && prev_total >= MIN_TRIM) {
-		//printf("prev_chunk_suffices TRUE\n");
+
 		return (true);
 	}
-	//printf("prev_chunk_suffices FALSE\n");
+
 	return (false);
 }
 

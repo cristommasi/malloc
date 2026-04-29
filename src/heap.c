@@ -128,9 +128,9 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
     size_t   need     = size - cur_size;
 
 
-	//printf("cursize = %zu, size = %zu\n", cur_size, size);
+
 	if (size < cur_size && size >= MIN_TRIM) {
-		//printf("(size < cur_size && size >= MIN_TRIM)\n");
+
         chunk_split_left(heap, chunk, chunk, size);
         return (chunk);
     }
@@ -143,12 +143,10 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 	}
 	else if (prev && prev_chunk_suffices(prev, need)) {
 
-		//printf("(prev && prev_chunk_suffices(prev, need))\n");
 		arena_fastbin_unlink(prev);
 		chunk_split_left(heap, chunk, prev, need);
 		return (prev);
 	}
-	//printf("return (NULL);\n");
 	return (NULL);
 }
 

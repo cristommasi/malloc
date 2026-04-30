@@ -50,11 +50,23 @@
 #   define MAP_FLAGS (MAP_PRIVATE | MAP_ANONYMOUS)
 #endif
 
-#define MUNMAP_ERROR "MUNMAP FAILED\n"
 
-#define DB_FREE_ERROR "free(): double free detected in tcache 2\n"
+#define F_MUMMAP_ERROR -1
 
-#define IP_FREE_ERROR "free(): invalid pointer\n"
+#define F_NO_ERROR 0
+
+#define F_DOUBLE_FREE_ERROR 1
+
+#define F_INV_PTR_ERROR 2
+
+
+#define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
+
+#define F_INV_PTR_MSG "free(): invalid pointer\n"
+
+#define F_MUNMAP_MSG "free(): munmap failed!\n"
+
+#define F_ABORT_MSG "abort()\n"
 
 // NO FD FLAG
 #define NO_FD -1
@@ -143,6 +155,7 @@ typedef struct s_heap {
 
 }               t_heap;
 
+typedef enum s_init {UNINITIALIZED, INITIALIZED} t_init;
 
 typedef struct s_arena {
 
@@ -150,6 +163,8 @@ typedef struct s_arena {
 	t_heap  *small;
 	t_heap  *large;
 
+	t_init			state;
+	pthread_mutex_t	lock;
 	t_chunk *fastbin[FASTBIN_COUNT]; // array of s-linked-list of sizes 16, 32, 48, 64, 80, 96, 112, 128 (LIFO)
 }               t_arena;
 
@@ -163,7 +178,7 @@ void		arena_fastbin_unlink(t_chunk *chunk);
 t_chunk		*arena_fastbin_get(size_t size);
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void		arena_fastbin_drain(t_heap *heap); 
-void		arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
+int		arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group(size_t size); 
 void		*arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size);
@@ -215,9 +230,12 @@ void		print_heap_type(int index, t_heap *cur);
 void		print_chunk(char *start, char *end, size_t bytes);
 
 
-void		ft_free(void *ptr);
 void		*ft_malloc(size_t size);
-void		*ft_realloc(void *ptr, size_t size);
+int		     ft_free(void *ptr);
+void    	*ft_realloc(void *ptr, size_t size);
+void		free_internal(void *ptr);
+void		*malloc_internal(size_t size);
+void		*realloc_internal(void *ptr, size_t size);
 void		show_alloc_mem(void);
 
 

@@ -1,9 +1,8 @@
 #include "../include/malloc.h"
 
-t_arena g_arena = {0};
 
 
-void    *ft_malloc(size_t size) {
+void    *malloc_internal(size_t size) {
 
 	t_heap  *heap  = NULL;
 	t_chunk	*chunk = NULL;
@@ -44,101 +43,17 @@ void    *ft_malloc(size_t size) {
 	return (chunk_to_data(chunk));
 }
 
-void    ft_free(void *ptr) {
-	
-	t_chunk *chunk        = NULL;
-	t_heap *groups[3]     = { g_arena.tiny, g_arena.small, g_arena.large };
-	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };
-	t_heap  *heap         = NULL;
-	t_heap  *prev         = NULL;
 
+void	*ft_malloc(size_t size) {
 
-	if (ptr == NULL)
-		return ;
-
-	if ((chunk = data_to_chunk(ptr)) == NULL)
-		return ;
-
-	for (int i = 0; i < 3; i++) {
-
-		heap = groups[i];
-		prev = NULL;
-		while (heap != NULL) {
-
-			if (chunk_belongs_to_heap(heap, chunk)) {
-
-				if (is_large(chunk)) {
-
-					arena_heap_munmap(prev, heap, heads[i]);
-					return ;
-				}
-				else {
-
-					if (!has_flags(chunk, IN_USE)) {
-						
-						return (void)write(2, DB_FREE_ERROR, sizeof(DB_FREE_ERROR));
-					}
-
-					if (heap->blocks > 1) {
-						
-						return arena_fastbin_set(heap, chunk);
-					}
-					else {
-
-						arena_fastbin_drain(heap);
-						return arena_heap_munmap(prev, heap, heads[i]);
-					}
-				}
-			}
-			prev = heap;
-			heap = heap->next;
-		}
-
-	}
-	write(2, DB_FREE_ERROR, sizeof(DB_FREE_ERROR));
+	arena_try_mutex_init();
+	pthread_mutex_lock(&g_arena.lock);
+	void *ptr = malloc_internal(size);
+	pthread_mutex_unlock(&g_arena.lock);
+	arena_try_mutex_destroy();
+	return (ptr);
 }
 
-void    *ft_realloc(void *ptr, size_t size) {
-    
-    t_chunk     *chunk       = NULL;
-    t_heap      *heap        = NULL;
-    size_t      p_new_size   = ALIGN(size);
-    size_t      cur_size     = 0;
-
-    
-    if (ptr == NULL) {
-		
-        return (ft_malloc(size));
-	}
-    if ((chunk = data_to_chunk(ptr)) == NULL) {
-		
-        return (NULL);
-	}
-    if ((heap = arena_heap_find_by_chunk(chunk)) == NULL) {
-		
-        return (NULL);
-	}
-    if (size == 0) {
-		
-        return (ft_free(ptr), NULL);
-	}
-    if ((cur_size = get_size(chunk)) == p_new_size) {
-		
-        return (ptr);
-	}
-    if (heap_is_different_type(p_new_size, cur_size)) {
-		
-        return (arena_get_new_chunk(ptr, p_new_size, cur_size));
-	}
-	else if (p_new_size != cur_size) {
-
-		
-		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
-			return (chunk_to_data(chunk));
-	}
-    return (arena_get_new_chunk(ptr, p_new_size, cur_size));
-
-}
 
 void    show_alloc_mem(void) {
 

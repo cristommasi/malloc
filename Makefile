@@ -14,7 +14,10 @@ RM			= rm -f
 LIBFT_DIR	= ./include/libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC			= src/main.c src/malloc.c src/arena.c src/heap.c src/chunk.c src/utils.c 
+SRC			= 	src/main.c \
+				src/malloc.c src/free.c src/realloc.c \
+				src/utils/arena.c src/utils/heap.c src/utils/chunk.c src/utils/utils.c 
+				
 OBJS		= $(SRC:.c=.o)
 
 

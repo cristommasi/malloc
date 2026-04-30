@@ -1,6 +1,51 @@
 
-#include "../include/malloc.h"
+#include "../../include/malloc.h"
 
+t_arena g_arena = {0};
+
+void	arena_try_mutex_init(void) {
+
+	if (g_arena.state == UNINITIALIZED) {
+
+		pthread_mutex_init(&g_arena.lock, NULL);
+		g_arena.state = INITIALIZED;
+	}
+}
+
+
+void	arena_try_mutex_destroy(void) {
+
+	if (g_arena.tiny == NULL && g_arena.small == NULL && g_arena.large == NULL && g_arena.state == INITIALIZED) {
+
+		pthread_mutex_destroy(&g_arena.lock);
+		g_arena.state = UNINITIALIZED;
+	}
+}
+
+int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
+
+	t_heap *to_free = cur;
+
+	if (prev)
+		prev->next = cur->next;
+	else
+		*head = cur->next;
+	
+	return (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)));
+}
+
+void    *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size) {
+
+	
+	void *new_ptr = ft_malloc(p_new_size);
+
+    if (!new_ptr) {
+        return (NULL);
+	}
+    ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
+    ft_free(ptr);
+    return (new_ptr);
+}
 
 bool        arena_heap_uninitialized_or_large(size_t size) {
 
@@ -117,19 +162,7 @@ void	arena_fastbin_unlink(t_chunk *chunk) {
 	}
 }
 
-void     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
-	t_heap *to_free = cur;
-
-	if (prev)
-		prev->next = cur->next;
-	else
-		*head = cur->next;
-	
-	if (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)) == -1)
-		write(2, MUNMAP_ERROR, sizeof(MUNMAP_ERROR));
-
-}
 
 t_heap      **arena_heap_group(size_t size) {
 
@@ -149,16 +182,4 @@ t_heap      **arena_heap_group(size_t size) {
 	}
 }
 
-void *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size) {
-
-	void *new_ptr = ft_malloc(p_new_size);
-
-    if (!new_ptr) {
-        return (NULL);
-	}
-	if (ptr)
-    	ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
-    ft_free(ptr);
-    return (new_ptr);
-}
 

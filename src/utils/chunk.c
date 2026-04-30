@@ -1,4 +1,7 @@
-#include "../include/malloc.h"
+#include "../../include/malloc.h"
+
+typedef struct s_chunk t_chunk;
+typedef struct s_heap t_heap;
 
 void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
 

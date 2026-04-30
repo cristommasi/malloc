@@ -1,4 +1,5 @@
-#include "../include/malloc.h"
+#include "../../include/malloc.h"
+
 
 void print_heap_type(int index, t_heap *cur) {
 
@@ -143,43 +144,43 @@ size_t  to_decimal(char *addr) {
 	return ((size_t)((addr)));
 }
 
-void printheap(t_heap *heap, t_chunk *lol) {
+// void printheap(t_heap *heap, t_chunk *lol) {
 
-	if (!heap) return ;
-	printf("--------------------------------------------------------------------------------------------------------------\n");
-	printf("\033[32m");
-	printf("NEW   heap       = %s\n", (heap_type(heap->total_size / 128) == TINY_CHUNK_MAX) ? "TINY" : ((heap_type(heap->total_size / 128) == SMALL_CHUNK_MAX) ? "SMALL" : "LARGE"));
-	printf("heap memory      = (t_heap) %p - (mem start) %p - (mem end) %p\n", (char*)heap, (char*)heap + sizeof(t_heap), (char*)heap + sizeof(t_heap) + heap->total_size);
-	printf("heap->free_start = %p\n", (char*)heap->free_cis_start);
-	printf("heap->total_size = %zu\n", heap->total_size);
-	printf("heap->free_size  = %zu\n", heap_free_size(heap));
-	printf("heap->blocks     = %zu\n", (size_t)heap->blocks);
-	printf("heap->next       = %p\n\n", heap->next);
-	printf("\033[0m");
+// 	if (!heap) return ;
+// 	printf("--------------------------------------------------------------------------------------------------------------\n");
+// 	printf("\033[32m");
+// 	printf("NEW   heap       = %s\n", (heap_type(heap->total_size / 128) == TINY_CHUNK_MAX) ? "TINY" : ((heap_type(heap->total_size / 128) == SMALL_CHUNK_MAX) ? "SMALL" : "LARGE"));
+// 	printf("heap memory      = (t_heap) %p - (mem start) %p - (mem end) %p\n", (char*)heap, (char*)heap + sizeof(t_heap), (char*)heap + sizeof(t_heap) + heap->total_size);
+// 	printf("heap->free_start = %p\n", (char*)heap->free_cis_start);
+// 	printf("heap->total_size = %zu\n", heap->total_size);
+// 	printf("heap->free_size  = %zu\n", heap_free_size(heap));
+// 	printf("heap->blocks     = %zu\n", (size_t)heap->blocks);
+// 	printf("heap->next       = %p\n\n", heap->next);
+// 	printf("\033[0m");
 
-	if (heap->free_cis_start) {
-		printchunk((t_chunk*)heap->free_cis_start);
+// 	if (heap->free_cis_start) {
+// 		printchunk((t_chunk*)heap->free_cis_start);
 
-	}
-	if (lol)
-		printchunk(lol);
-	printf("--------------------------------------------------------------------------------------------------------------\n");
-}
+// 	}
+// 	if (lol)
+// 		printchunk(lol);
+// 	printf("--------------------------------------------------------------------------------------------------------------\n");
+// }
 
-void printchunk(t_chunk *chunk) {
+// void printchunk(t_chunk *chunk) {
 
-	if (!chunk) return ;
-	if (has_flags(chunk, IS_CIS))
-		printf("\033[33m");
-	else
-		printf("\033[35m");
-	printf("NEW chunk          = %s %s %s\n", ((has_flags(chunk, IS_LARGE)) ? "LARGE" : "TINY-SMALL"), ((has_flags(chunk, IS_CIS)) ? "IS_CIS" : ""), ((has_flags(chunk, IN_USE)) ? "IN_USE" : "IS_FREE"));
-	printf("chunk memory       = (t_chunk) %p - (mem start) %p - (mem end) %p\n", (char*)chunk, (char*)chunk + sizeof(t_chunk), (char*)chunk + sizeof(t_chunk) + get_size(chunk));
-	printf("chunk->prev_size   = %zu\n", get_prevsize(chunk));
-	printf("chunk->next_size   = %zu\n", get_nextsize(chunk));
-	printf("chunk->size        = %zu\n", get_size(chunk));
-	printf("chunk->NEXT        = %p\n", chunk->next);
-	printf("chunk->data        = %p\n\n", (char*)chunk + sizeof(t_chunk));
-	printf("\033[0m");
-}
+// 	if (!chunk) return ;
+// 	if (has_flags(chunk, IS_CIS))
+// 		printf("\033[33m");
+// 	else
+// 		printf("\033[35m");
+// 	printf("NEW chunk          = %s %s %s\n", ((has_flags(chunk, IS_LARGE)) ? "LARGE" : "TINY-SMALL"), ((has_flags(chunk, IS_CIS)) ? "IS_CIS" : ""), ((has_flags(chunk, IN_USE)) ? "IN_USE" : "IS_FREE"));
+// 	printf("chunk memory       = (t_chunk) %p - (mem start) %p - (mem end) %p\n", (char*)chunk, (char*)chunk + sizeof(t_chunk), (char*)chunk + sizeof(t_chunk) + get_size(chunk));
+// 	printf("chunk->prev_size   = %zu\n", get_prevsize(chunk));
+// 	printf("chunk->next_size   = %zu\n", get_nextsize(chunk));
+// 	printf("chunk->size        = %zu\n", get_size(chunk));
+// 	printf("chunk->NEXT        = %p\n", chunk->next);
+// 	printf("chunk->data        = %p\n\n", (char*)chunk + sizeof(t_chunk));
+// 	printf("\033[0m");
+// }
 

@@ -1,7 +1,5 @@
 #include "../../include/malloc.h"
 
-typedef struct s_chunk t_chunk;
-typedef struct s_heap t_heap;
 
 t_heap *heap_new_and_append(size_t size) {
 

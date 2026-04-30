@@ -3,8 +3,7 @@
 
 void	ft_free(void *ptr) {
 
-	arena_try_mutex_init();
-	pthread_mutex_lock(&g_arena.lock);
+	arena_try_mutex_init_lock();
 
 	int ret = free_internal(ptr);
     if (ret == -1) {
@@ -19,9 +18,8 @@ void	ft_free(void *ptr) {
 
 		write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
 	}
-	pthread_mutex_unlock(&g_arena.lock);
-
-	arena_try_mutex_destroy();
+	
+	arena_try_mutex_destroy_unlock();
 }
 
 

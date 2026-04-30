@@ -22,7 +22,6 @@ char **mallocmany(size_t max_allocs, size_t m_size) {
 	}
 
 	size_t i = 0;
-	char character = 'A';
 	while (i < max_allocs) {
 
 		new[i] = ft_malloc(m_size);
@@ -31,7 +30,6 @@ char **mallocmany(size_t max_allocs, size_t m_size) {
 			free_all(new, i);
 			return (NULL);
 		}
-		printf("%s\n", new[i]);
 		i++;
 	}
 	new[i] = NULL;
@@ -47,7 +45,7 @@ int main(void)
 	if (!tiny) {
 		return (1);
 	}
-
+	printf("SUCCESS\n");
 	// char **small = mallocmany(128, 1008);
 	// if (!small)
 	// 	return (1);

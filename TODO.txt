@@ -1,40 +1,59 @@
-MALLOC_CHECK_         0-3
-0 = silent, ignore errors
-1 = print error message to stderr but continue
-2 = abort() immediately on any corruption
-3 = print + abort
 
 
-MALLOC_SCRIBBLE       0-1
-1 = on alloc: fill with 0xAA  (10101010)
-1 = on free:  fill with 0x55  (01010101)
+• Manage malloc debug environment variables. You can imitate those from the system
+malloc or invent your own {
+
+    MALLOC_CHECK_         0-3
+    0 = silent, ignore errors
+    1 = print error message to stderr but continue
+    2 = abort() immediately on any corruption
+    3 = print + abort
 
 
-MALLOC_PERTURB_       0-1
-1 = on alloc: fill with custom poison byte
+    MALLOC_SCRIBBLE       0-1
+    1 = on alloc: fill with 0xAA  (10101010)
+    1 = on free:  fill with 0x55  (01010101)
 
 
-MALLOC_VERBOSE        0-1
-1 = ft_malloc(32)  -> 0x7ffff7fb6120
-1 = ft_free(0x7ffff7fb6120)
-1 = ft_realloc(0x7ffff7fb6120, 64) -> 0x7ffff7fb6200
+    MALLOC_PERTURB_       0-1
+    1 = on alloc: fill with custom poison byte
 
 
-MALLOC_HIST_SIZE      0-n
-How many past alloc/free events to keep in a ring buffer for the extended dump.
+    MALLOC_VERBOSE        0-1
+    1 = ft_malloc(32)  -> 0x7ffff7fb6120
+    1 = ft_free(0x7ffff7fb6120)
+    1 = ft_realloc(0x7ffff7fb6120, 64) -> 0x7ffff7fb6200
 
 
-MALLOC_MMAP_THRESHOLD 1025      size to go directly to mmap
-Size before using mmap directly LARGE_CHUNK_MIN
+    MALLOC_HIST_SIZE      0-n
+    How many past alloc/free events to keep in a ring buffer for the extended dump.
+
+
+    MALLOC_MMAP_THRESHOLD 1025      size to go directly to mmap
+    Size before using mmap directly LARGE_CHUNK_MIN
+}
+
+
+Manage the use of your malloc in a multi-threaded program {
+
+    mutex on malloc, realloc and free
+
+}
+
+• Implement a show_alloc_mem_ex() function that provides extended details, such
+as a history of memory allocations or a hexadecimal dump of the allocated memory
+zones {
+
+    show_alloc_mem_ex()
+    Address          Hex bytes (16 per row)                           ASCII
+    0x7ffff7fb6120  41 41 41 41 41 41 41 41  41 41 41 41 00 00 00 00  AAAAAAAA AAAA....
+    0x7ffff7fb6130  42 42 42 42 42 42 42 42  42 42 42 42 00 00 00 00  BBBBBBBB BBBB....
+}
 
 
 
-mutex on malloc, realloc and free
+• Defragment the freed memory {
 
-show_alloc_mem_ex()
-Address          Hex bytes (16 per row)                           ASCII
-0x7ffff7fb6120  41 41 41 41 41 41 41 41  41 41 41 41 00 00 00 00  AAAAAAAA AAAA....
-0x7ffff7fb6130  42 42 42 42 42 42 42 42  42 42 42 42 00 00 00 00  BBBBBBBB BBBB....
+    void    heap_defrag(t_heap *heap, t_chunk *chunk)
+}
 
-
-void    heap_defrag(t_heap *heap, t_chunk *chunk)

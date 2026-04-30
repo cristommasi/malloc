@@ -3,9 +3,12 @@
 
 void	*ft_realloc(void *ptr, size_t size) {
 
-    try_mutex
+    arena_try_mutex_init_lock();
 
+    void *new_ptr = realloc_internal(ptr, size);
 
+    arena_try_mutex_destroy_unlock();
+    return (new_ptr);
 }
 
 
@@ -19,7 +22,7 @@ void    *realloc_internal(void *ptr, size_t size) {
     
     if (ptr == NULL) {
 
-		pthread_mutex_unlock(&g_arena.lock);
+		pthread_mutex_unlock(&g_lock);
         return (ft_malloc(size));
 	}
     if ((chunk = data_to_chunk(ptr)) == NULL) {
@@ -32,7 +35,7 @@ void    *realloc_internal(void *ptr, size_t size) {
 	}
     if (size == 0) {
 		
-		pthread_mutex_unlock(&g_arena.lock);
+		pthread_mutex_unlock(&g_lock);
         return (ft_free(ptr), NULL);
 	}
     if ((cur_size = get_size(chunk)) == p_new_size) {
@@ -41,7 +44,7 @@ void    *realloc_internal(void *ptr, size_t size) {
 	}
     if (heap_is_different_type(p_new_size, cur_size)) {
 		
-        pthread_mutex_unlock(&g_arena.lock);
+        pthread_mutex_unlock(&g_lock);
         return (arena_get_new_chunk(ptr, p_new_size, cur_size));
 	}
 	else if (p_new_size != cur_size) {
@@ -50,9 +53,8 @@ void    *realloc_internal(void *ptr, size_t size) {
 		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
 			return (chunk_to_data(chunk));
 	}
-    pthread_mutex_unlock(&g_arena.lock);
+    pthread_mutex_unlock(&g_lock);
     return (arena_get_new_chunk(ptr, p_new_size, cur_size));
-
 }
 
 

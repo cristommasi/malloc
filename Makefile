@@ -11,12 +11,12 @@ CFLAGS		= -Wall -Wextra  -fPIC -I./libft -g -O0
 LDFLAGS		= -shared
 RM			= rm -f
 
-LIBFT_DIR	= ./include/libft
+LIBFT_DIR	= ./libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC			= 	src/main.c \
-				src/malloc.c src/free.c src/realloc.c \
-				src/utils/arena.c src/utils/heap.c src/utils/chunk.c src/utils/utils.c 
+SRC			= 	main.c \
+				src/malloc.c src/free.c src/realloc.c src/show_alloc_mem.c src/show_alloc_mem_ex.c \
+				src/shared/arena.c src/shared/heap.c src/shared/chunk.c src/shared/chunk_info.c 
 				
 OBJS		= $(SRC:.c=.o)
 

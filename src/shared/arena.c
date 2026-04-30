@@ -2,24 +2,43 @@
 #include "../../include/malloc.h"
 
 t_arena g_arena = {0};
+pthread_mutex_t	g_lock;
 
-void	arena_try_mutex_init(void) {
+
+void	arena_try_mutex_init_lock(void) {
+
 
 	if (g_arena.state == UNINITIALIZED) {
 
-		pthread_mutex_init(&g_arena.lock, NULL);
+		pthread_mutex_init(&g_lock, NULL);
 		g_arena.state = INITIALIZED;
+		pthread_mutex_lock(&g_lock);
+		arena_init_debug_env();
+		return ;
 	}
+	pthread_mutex_lock(&g_lock);
 }
 
 
-void	arena_try_mutex_destroy(void) {
+void	arena_try_mutex_destroy_unlock(void) {
 
+	
 	if (g_arena.tiny == NULL && g_arena.small == NULL && g_arena.large == NULL && g_arena.state == INITIALIZED) {
 
-		pthread_mutex_destroy(&g_arena.lock);
+		pthread_mutex_unlock(&g_lock);
+		pthread_mutex_destroy(&g_lock);
 		g_arena.state = UNINITIALIZED;
+		return ;
 	}
+	pthread_mutex_unlock(&g_lock);
+}
+
+void	arena_init_debug_env(void) {
+
+	//IMPLEMENT HERE
+	
+	return ;
+
 }
 
 int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
@@ -36,7 +55,7 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
 void    *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size) {
 
-	
+	pthread_mutex_unlock(&g_lock);
 	void *new_ptr = ft_malloc(p_new_size);
 
     if (!new_ptr) {

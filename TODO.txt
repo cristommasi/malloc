@@ -10,10 +10,6 @@ malloc or invent your own {
     3 = print + abort
 
 
-    MALLOC_SCRIBBLE       0-1
-    1 = on alloc: fill with 0xAA  (10101010)
-    1 = on free:  fill with 0x55  (01010101)
-
 
     MALLOC_PERTURB_       0-1
     1 = on alloc: fill with custom poison byte

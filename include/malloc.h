@@ -18,17 +18,8 @@
  // bool type
 #include <stdbool.h>
 
- // uint32
-#include <stdint.h>
-
- // abort() 
-#include <stdlib.h>
-
  // thread functions
 #include <pthread.h>
-
- // printf delete after
-#include <stdio.h> 
 
  // self defined PREPROC
 #include "./malloc_constants.h"
@@ -39,6 +30,8 @@
  // structs for arena, chunk, heap, enums
 #include "./malloc_types.h"
 
+ // printf delete after
+#include <stdio.h> 
 
 extern t_arena			g_arena;
 extern pthread_mutex_t	g_lock;

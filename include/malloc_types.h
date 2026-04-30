@@ -1,7 +1,10 @@
 #ifndef MALLOC_TYPES_H
 #   define MALLOC_TYPES_H
 
+ // abort() - size_t
 #include <stdlib.h>
+
+ // uint(bits)_t types
 #include <stdint.h>
 
 typedef enum s_init {
@@ -10,52 +13,6 @@ typedef enum s_init {
 	INITIALIZED = 1
 
 } t_init;
-
-typedef enum s_MALLOC_CHECK {
-	
-	SILENT = 0, 
-	PRINT = 1, 
-	ABORT = 2, 
-	PRINT_ABORT = 3
-
-} t_MALLOC_CHECK;
-
-typedef enum s_MALLOC_SCRIBBLE {
-
-	SCRIBBLE_NONE = 0,
-	SCRIBBLE_DEFAULT = 1
-
-} t_MALLOC_SCRIBBLE;
-
-
-typedef enum s_MALLOC_PERTURB {
-
-	PERTURB_NONE = 0,
-	PERTURB_CUSTOM = 1
-	
-} t_MALLOC_PERTURB;
-
-
-typedef enum s_MALLOC_VERBOSE {
-
-	VERBOSE_NONE = 0,
-	VERBOSE_YES = 1
-	
-} t_MALLOC_VERBOSE;
-
-typedef enum s_MALLOC_HIST_SIZE {
-
-	HISTORY_NONE = 0,
-	HISTORY_KEEP = 1
-	
-} t_MALLOC_HIST_SIZE;
-
-typedef enum s_MALLOC_MMAP_THRESHOLD {
-
-	DEFAULT = 0,
-	CUSTOM = 1
-	
-} t_MALLOC_MMAP_THRESHOLD;
 
 
 typedef struct t_small_tiny
@@ -94,19 +51,21 @@ typedef struct s_heap {
 }               t_heap;
 
 
+
+typedef struct MALLOC_ENV_VARS
+{
+	unsigned int	MALLOC_CHECK; // print msg or abort
+	char			MALLOC_PERTURB; // free and alloc fill with bits
+	unsigned int	MALLOC_ARENA_MAX; //max amount of arenas
+	size_t			MALLOC_MMAP_THRESHOLD; // min before calling mmap()
+
+} MALLOC_ENV_VARS;
+
+
 typedef struct s_arena {
 
-	t_init  				state;
-
-
-	t_MALLOC_CHECK			check;
-	t_MALLOC_SCRIBBLE 		scribble;
-	t_MALLOC_PERTURB		perturb;
-	unsigned char			perturb_byte;
-	t_MALLOC_VERBOSE		verbose;
-	t_MALLOC_HIST_SIZE		history;
-	t_MALLOC_MMAP_THRESHOLD	min_large;
-	size_t					min_large_size;
+	t_init  			state;
+	MALLOC_ENV_VARS		env;
 
 	t_heap  			*tiny;
 	t_heap  			*small;

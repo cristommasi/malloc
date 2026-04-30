@@ -36,7 +36,9 @@ void	arena_try_mutex_destroy_unlock(void) {
 void	arena_init_debug_env(void) {
 
 	//IMPLEMENT HERE
-	
+	char *val;
+
+	if ((val = getenv("MALLOC_CHECK")))
 	return ;
 
 }

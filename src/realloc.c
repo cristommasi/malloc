@@ -1,15 +1,6 @@
 #include "../include/malloc.h"
 
 
-void	*ft_realloc(void *ptr, size_t size) {
-
-    arena_try_mutex_init_lock();
-
-    void *new_ptr = realloc_internal(ptr, size);
-
-    arena_try_mutex_destroy_unlock();
-    return (new_ptr);
-}
 
 
 void    *realloc_internal(void *ptr, size_t size) {

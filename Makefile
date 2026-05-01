@@ -14,9 +14,19 @@ RM			= rm -f
 LIBFT_DIR	= ./libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC			= 	main.c \
-				src/malloc.c src/free.c src/realloc.c src/show_alloc_mem.c src/show_alloc_mem_ex.c \
-				src/shared/arena.c src/shared/heap.c src/shared/chunk.c src/shared/chunk_info.c 
+SRC			= main.c \
+src/init.c \
+src/malloc.c \
+src/free.c \
+src/realloc.c \
+src/show_alloc_mem.c \
+src/show_alloc_mem_ex.c \
+src/mallopt.c \
+src/shared/arena.c \
+src/shared/heap.c \
+src/shared/chunk.c \
+src/shared/chunk_info.c \
+src/shared/ops_info.c
 				
 OBJS		= $(SRC:.c=.o)
 

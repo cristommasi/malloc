@@ -1,14 +1,7 @@
 
 #include "../include/malloc.h"
 
-void    show_alloc_mem(void) {
 
-    arena_try_mutex_init_lock();
-
-    show_alloc_mem_internal();
-
-    arena_try_mutex_destroy_unlock();
-}
 
 void    show_alloc_mem_internal(void) {
 

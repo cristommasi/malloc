@@ -91,29 +91,40 @@
 #define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
 
 
-#define BIN_LAST 0
-
 
  // masks
 #define IN_USE        0b001
-
 #define IS_CIS        0b010
-
 #define IS_LARGE      0b100
-
 #define TS_FLAG_MASK  0b00000000000000000000000000000111U
-
 #define TS_SIZE_MASK  0b11111111111111111111111111111000U 
-
 #define L_FLAG_MASK   ((size_t)0b0000000000000000000000000000000000000000000000000000000000000111)
-
 #define L_SIZE_MASK   ((size_t)0b1111111111111111111111111111111111111111111111111111111111111000)
 
 
- // default scribble bytes
-#define DEFAULT_ALLOC_SCRIBBLE (char)0xAA
+ // _MALLOC_CHECK_
+#define _MALLOC_CHECK_PARAM_            0x0
+#define _M_CHECK_SILENT                 (uint8_t)0
+#define _M_CHECK_PRINT                  (uint8_t)1
+#define _M_CHECK_ABORT                  (uint8_t)2
+#define _M_CHECK_PRINT_ABORT            (uint8_t)3
+#define _M_CHECK_DEFAULT				(uint8_t)3
 
-#define DEFAULT_FREE_SCRIBBLE (char)0x55
+
+ // _MALLOC_PERTURB_
+#define _MALLOC_PERTURB_PARAM_          0x1
+#define _M_PERTURB_DEFAULT              (size_t)0
+
+
+ // _MALLOC_ARENA_MAX_
+#define _MALLOC_ARENA_MAX_PARAM_        0x2
+#define _M_ARENA_MAX_DEFAULT            (uint32_t)0
+
+
+ // _MALLOC_MMAP_THRESHOLD_
+#define _MALLOC_MMAP_THRESHOLD_PARAM_   0x3
+#define _M_MMAP_T_DEFAULT               (size_t)1009
+
 
 
 #endif

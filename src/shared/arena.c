@@ -1,48 +1,6 @@
 
 #include "../../include/malloc.h"
 
-t_arena g_arena = {0};
-pthread_mutex_t	g_lock;
-
-
-void	arena_try_mutex_init_lock(void) {
-
-
-	if (g_arena.state == UNINITIALIZED) {
-
-		pthread_mutex_init(&g_lock, NULL);
-		g_arena.state = INITIALIZED;
-		pthread_mutex_lock(&g_lock);
-		arena_init_debug_env();
-		return ;
-	}
-	pthread_mutex_lock(&g_lock);
-}
-
-
-void	arena_try_mutex_destroy_unlock(void) {
-
-	
-	if (g_arena.tiny == NULL && g_arena.small == NULL && g_arena.large == NULL && g_arena.state == INITIALIZED) {
-
-		pthread_mutex_unlock(&g_lock);
-		pthread_mutex_destroy(&g_lock);
-		g_arena.state = UNINITIALIZED;
-		return ;
-	}
-	pthread_mutex_unlock(&g_lock);
-}
-
-void	arena_init_debug_env(void) {
-
-	//IMPLEMENT HERE
-	char *val;
-
-	if ((val = getenv("MALLOC_CHECK")))
-	return ;
-
-}
-
 int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
 	t_heap *to_free = cur;
@@ -52,6 +10,9 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 	else
 		*head = cur->next;
 	
+	if (has_perturb()) {
+		ft_memset(heap_to_chunk(to_free) , get_perturb_free(), to_free->total_size + sizeof(t_heap));
+	}
 	return (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)));
 }
 
@@ -109,6 +70,10 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
 	set_flags(chunk, IN_USE);
+
+	if (has_perturb()) {
+		ft_memset(chunk_to_data(chunk) , get_perturb_alloc(), get_size(chunk));
+	}
 	return (chunk);
 }
 
@@ -131,6 +96,10 @@ void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
 	if (prev && has_flags(prev, IN_USE))
 		set_nextsize(prev, get_size(freed_chunk));
+	
+	if (has_perturb()) {
+		ft_memset(chunk_to_data(freed_chunk) , get_perturb_free(), get_size(freed_chunk));
+	}
 
 }
 

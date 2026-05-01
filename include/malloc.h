@@ -37,8 +37,6 @@ extern t_arena			g_arena;
 extern pthread_mutex_t	g_lock;
 
 
-void		arena_try_mutex_destroy_unlock(void);
-void		arena_try_mutex_init_lock(void);
 bool		arena_heap_uninitialized_or_large(size_t size);
 void		arena_fastbin_unlink(t_chunk *chunk); 
 t_chunk		*arena_fastbin_get(size_t size);
@@ -95,15 +93,26 @@ size_t		get_min(size_t a, size_t b);
 void		print_heap_type(int index, t_heap *cur);
 void		print_chunk(char *start, char *end, size_t bytes);
 
+bool        has_perturb(void);
+int         get_perturb_alloc(void);
+int         get_perturb_free(void);
+bool        has_check(void); 
+bool        has_arena_max(void); 
+uint32_t    get_arena_max(void);
+bool        has_mmap_threshold(void);
+size_t      get_mmap_threshold(void); 
 
 void		*ft_malloc(size_t size);
 void		 ft_free(void *ptr);
 void    	*ft_realloc(void *ptr, size_t size);
-int		free_internal(void *ptr);
+int		    free_internal(void *ptr);
 void		*malloc_internal(size_t size);
 void		*realloc_internal(void *ptr, size_t size);
 void		show_alloc_mem(void);
 void		show_alloc_mem_internal(void);
+int         ft_mallopt(int param, int value);
+int		    mallopt_internal(int param, int value);
+
 void		show_alloc_mem_ex(void);
 void		show_alloc_mem_ex_internal(void);
 

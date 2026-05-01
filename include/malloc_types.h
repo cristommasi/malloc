@@ -7,13 +7,6 @@
  // uint(bits)_t types
 #include <stdint.h>
 
-typedef enum s_init {
-
-	UNINITIALIZED = 0, 
-	INITIALIZED = 1
-
-} t_init;
-
 
 typedef struct t_small_tiny
 {
@@ -51,28 +44,27 @@ typedef struct s_heap {
 }               t_heap;
 
 
-
-typedef struct MALLOC_ENV_VARS
+typedef struct MALLOC_OPS
 {
-	unsigned int	MALLOC_CHECK; // print msg or abort
-	char			MALLOC_PERTURB; // free and alloc fill with bits
-	unsigned int	MALLOC_ARENA_MAX; //max amount of arenas
-	size_t			MALLOC_MMAP_THRESHOLD; // min before calling mmap()
+	uint8_t			PERTURB; // free and alloc fill with bits
+	uint8_t			CHECK; // print msg or abort
+	uint32_t		ARENA_MAX; //max amount of arenas
+	size_t			MMAP_THRESHOLD; // min before calling mmap()
 
-} MALLOC_ENV_VARS;
+} MALLOC_OPS;
 
 
 typedef struct s_arena {
 
-	t_init  			state;
-	MALLOC_ENV_VARS		env;
+	MALLOC_OPS			OPS;
 
+	
 	t_heap  			*tiny;
 	t_heap  			*small;
 	t_heap  			*large;
 	t_chunk 			*fastbin[64];
+	uint32_t			heap_count;
 
-	
 }               t_arena;
 
 #endif

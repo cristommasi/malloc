@@ -11,6 +11,9 @@ void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need)
 
 	if (!has_flags(next, IS_CIS))
 		arena_fastbin_unlink(next);
+	if (has_perturb()) {
+		ft_memset(chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), new_size);
+	}
 	set_size(chunk, new_size);
 	if (next_total > new_size) {
 
@@ -22,6 +25,9 @@ void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need)
 		}
 		else if (!has_flags(next, IS_CIS)) {
 			arena_fastbin_set(heap, new_free);
+		}
+		if (has_perturb()) {
+			ft_memset(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
 		}
 	}
 	else if (need == next_total && has_flags(next, IS_CIS)) {
@@ -49,6 +55,9 @@ void chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) 
         set_size(new_free, prev_total - need - sizeof(t_chunk));
         set_prevsize(new_free, new_size);
         unset_flags(new_free, IN_USE);
+		if (has_perturb()) {
+			ft_memset(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
+		}
 	}
 
 	chunk_relink(prev, new_free, nnc);

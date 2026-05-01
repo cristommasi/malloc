@@ -38,6 +38,7 @@ t_heap    *heap_new(size_t zone_size) {
 
     t_chunk *new_chunk = new_heap->free_cis_start;
 
+
 	ft_memset(new_chunk, 0, sizeof(t_chunk));
 	if (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) {
 		set_flags(new_chunk, IS_LARGE);
@@ -47,6 +48,10 @@ t_heap    *heap_new(size_t zone_size) {
 	set_prevsize(new_chunk, 0);
 	set_nextsize(new_chunk, 0);
 	new_chunk->next = NULL;
+
+	if (has_perturb()) {
+		ft_memset(chunk_to_data(new_chunk) , get_perturb_free(), get_size(new_chunk));
+	}
 	return (new_heap);
 }
 
@@ -97,6 +102,9 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 		set_nextsize(new_inuse_chunk, 0);
 	}
 	heap->blocks += 1;
+	if (has_perturb()) {
+		ft_memset(chunk_to_data(new_inuse_chunk) , get_perturb_alloc(), get_size(new_inuse_chunk));
+	}
 	return (new_inuse_chunk);
 }
 

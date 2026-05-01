@@ -1,26 +1,7 @@
 #include "../include/malloc.h"
 
 
-void	ft_free(void *ptr) {
 
-	arena_try_mutex_init_lock();
-
-	int ret = free_internal(ptr);
-    if (ret == -1) {
-
-        write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
-    }
-	if (ret == F_DOUBLE_FREE_ERROR) {
-
-		write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
-	}
-	else if (ret == F_INV_PTR_ERROR) {
-
-		write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
-	}
-	
-	arena_try_mutex_destroy_unlock();
-}
 
 
 int    free_internal(void *ptr) {
@@ -33,10 +14,10 @@ int    free_internal(void *ptr) {
 
 
 	if (ptr == NULL)
-		return F_INV_PTR_MSG;
+		return F_INV_PTR_ERROR;
 
 	if ((chunk = data_to_chunk(ptr)) == NULL)
-		return F_INV_PTR_MSG;
+		return F_INV_PTR_ERROR;
 
 	for (int i = 0; i < 3; i++) {
 

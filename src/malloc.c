@@ -1,15 +1,5 @@
 #include "../include/malloc.h"
 
-void	*ft_malloc(size_t size) {
-
-	arena_try_mutex_init_lock();
-
-	void *ptr = malloc_internal(size);
-
-	arena_try_mutex_destroy_unlock();
-	
-	return (ptr);
-}
 
 void    *malloc_internal(size_t size) {
 

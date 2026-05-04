@@ -5,14 +5,14 @@
 
 int main(void) {
 
-
-	int *heap = ft_malloc(127 * sizeof(int));
-	ft_memset(heap, 123, 1);
+	int *heap2 = ft_malloc(16);
+	int *heap = ft_malloc(16);
 	// heap = heap + 2 * sizeof(char*);
 	// ft_memset(heap, 'B', 8);
 	// heap = heap + 4 * sizeof(char*);
 	// ft_memset(heap, 'C', 8);
+	ft_free(heap);
 	show_alloc_mem_ex();
-    
+    // [H][1]   ]
     return (0);
 }

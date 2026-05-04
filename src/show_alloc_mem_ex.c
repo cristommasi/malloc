@@ -12,7 +12,7 @@ void    show_alloc_mem_ex_internal(void) {
     t_heap *arena_types[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
     int     h          = 0;
 
-    write(1, "Address\t\tHex bytes\t\t\t\tASCII\n", sizeof("Address\t\tHex bytes\t\t\t\tASCII\n"));
+    write(1, "Address\t\tHex bytes\t\t\t\t\tASCII\n", sizeof("Address\t\tHex bytes\t\t\t\t\tASCII\n"));
     while (h < HEAP_TYPE_COUNT) {
 
         t_heap *cur_heap = arena_types[h];
@@ -37,7 +37,7 @@ void    show_alloc_mem_ex_internal(void) {
 
                         if (i % 16 == 0) {
                             write(1, "0x", 2);
-                            ft_put_hex((unsigned char)*cur_chunk_data, 1);
+                            ft_put_hex((unsigned long)cur_chunk_data, 1);
                             write(1, ": ", 2);
                         }
                         print_chunk_data_in_hex(cur_chunk_data);
@@ -53,13 +53,27 @@ void    show_alloc_mem_ex_internal(void) {
     }
 }
 
+void    ft_put_hex_byte(unsigned char byte, int mode) {
+
+    static const char hex[16] = "0123456789abcdef";
+    static const char HEX[16] = "0123456789ABCDEF";
+
+    if (mode == 0) {
+
+        write(1, &hex[byte >> 4], 1);
+        write(1, &hex[byte & 0x0F], 1);
+    }
+    else {
+        write(1, &HEX[byte >> 4], 1);
+        write(1, &HEX[byte & 0x0F], 1);
+    }
+}
+
 void    print_chunk_data_in_hex(char *chunk_data) {
 
     for (int i = 0; i < 16; i++) {
-
-        ft_put_hex((unsigned char)chunk_data[i], 0);
-        if (i != 0 && i % 2 != 0)
-            write(1, " ", 1);
+        ft_put_hex_byte((unsigned char)chunk_data[i], 0);
+        write(1, " ", 1);
     }
 }
 

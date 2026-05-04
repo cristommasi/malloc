@@ -6,8 +6,8 @@ t_heap		*heap_new_and_append(size_t size) {
 	size_t  zone_size = heap_page_size(size);
 	t_heap *new_heap  = heap_new(zone_size);
 	
-	if (new_heap == MAP_FAILED || M_ARENA_MAX_EXCEEDED_ERROR) {
-		return (new_heap);
+	if (new_heap == MAP_FAILED) {
+		return (MAP_FAILED);
 	}
 
 	if (zone_size == TINY_HEAP_SIZE) {
@@ -27,7 +27,7 @@ t_heap		*heap_new_and_append(size_t size) {
 t_heap		*heap_new(size_t zone_size) {
 
 	if (has_arena_max() && g_arena.count + 1 >= get_arena_max()) {
-		return (M_ARENA_MAX_EXCEEDED_ERROR);
+		return (MAP_FAILED);
 	}
 	t_heap  *new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
 	
@@ -113,6 +113,7 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
+			(*cur)->blocks += 1;
 			return (chunk);
 		}
 		cur = &(*cur)->next;

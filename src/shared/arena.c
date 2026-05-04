@@ -13,7 +13,9 @@ int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 	if (has_perturb()) {
 		ft_memset(heap_to_chunk(to_free) , get_perturb_free(), to_free->total_size + sizeof(t_heap));
 	}
-	return (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)));
+	int ret = munmap((void*)to_free, to_free->total_size + sizeof(t_heap));
+	g_arena.count  = (g_arena.count == 1) ? 0 : g_arena.count - 1;
+	return (ret);
 }
 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
@@ -68,7 +70,6 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	if (chunk == NULL) {
 		return (NULL);
 	}
-
 	g_arena.fastbin[index] = chunk->next;
 	chunk->next = NULL;
 	set_flags(chunk, IN_USE);

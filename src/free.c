@@ -19,8 +19,8 @@ int    free_internal(void *ptr) {
 	if ((chunk = data_to_chunk(ptr)) == NULL)
 		return F_INV_PTR_ERROR;
 
-	if (has_perturb() && *(char*)ptr == get_perturb_free())
-		return F_DOUBLE_FREE_ERROR;
+	// if (has_perturb() && *(char*)ptr == get_perturb_free())
+	// 	return F_DOUBLE_FREE_ERROR;
 	
 	for (int i = 0; i < 3; i++) {
 

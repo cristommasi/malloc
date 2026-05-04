@@ -1,14 +1,13 @@
 #include "../include/malloc.h"
 
-    pthread_mutex_t	g_lock;
-    t_arena         g_arena = {0};
+pthread_mutex_t	g_lock;
+t_arena         g_arena = {0};
 
 __attribute__((constructor))
 static void malloc_ctor(void) {
 
 
     pthread_mutex_init(&g_lock, NULL);
-    pthread_mutex_lock(&g_lock);
 
     g_arena.OPS.CHECK           = _M_CHECK_DEFAULT;
     g_arena.OPS.PERTURB         = _M_PERTURB_DEFAULT;
@@ -17,19 +16,18 @@ static void malloc_ctor(void) {
 
     char *val = NULL;
 
-	if ((val = getenv("_MALLOC_CHECK_")) != NULL) {
+	if ((val = getenv("MALLOC_CHECK_")) != NULL) {
 		ft_mallopt(_MALLOC_CHECK_PARAM_, ft_atoi(val));
 	}
-	if ((val = getenv("_MALLOC_PERTURB_")) != NULL) {
+	if ((val = getenv("MALLOC_PERTURB_")) != NULL) {
 		ft_mallopt(_MALLOC_PERTURB_PARAM_, ft_atoi(val));
 	}
-	if ((val = getenv("_MALLOC_ARENA_MAX_")) != NULL) {
+	if ((val = getenv("MALLOC_ARENA_MAX")) != NULL) {
 		ft_mallopt(_MALLOC_ARENA_MAX_PARAM_, ft_atoi(val));
 	}
-	if ((val = getenv("_MALLOC_MMAP_THRESHOLD_")) != NULL) {
+	if ((val = getenv("MALLOC_MMAP_THRESHOLD_")) != NULL) {
 		ft_mallopt(_MALLOC_MMAP_THRESHOLD_PARAM_, ft_atoi(val));
 	}
-    pthread_mutex_unlock(&g_lock);
 }
 
 __attribute__((destructor))
@@ -44,23 +42,11 @@ void	*ft_malloc(size_t size) {
 	pthread_mutex_lock(&g_lock);
 
 	void *ptr = malloc_internal(size);
-    
-    if (ptr == M_ARENA_MAX_EXCEEDED_ERROR) {
-
-        uint8_t check = get_check();
-
-        if (check == 1)
-            write(2, M_ARENA_MAX_EXCEEDED_MSG, sizeof(M_ARENA_MAX_EXCEEDED_MSG));
-        if (check == 2)
-            abort();
-        else if (check == 3) {
-            write(2, M_ARENA_MAX_EXCEEDED_MSG, sizeof(M_ARENA_MAX_EXCEEDED_MSG));
-            abort();
-        }
+    if (!ptr) {
+        pthread_mutex_unlock(&g_lock);
+        return (NULL);
     }
-
 	pthread_mutex_unlock(&g_lock);
-	
 	return (ptr);
 }
 
@@ -112,6 +98,10 @@ void	*ft_realloc(void *ptr, size_t size) {
     pthread_mutex_lock(&g_lock);
 
     void *new_ptr = realloc_internal(ptr, size);
+    if (!new_ptr) {
+        pthread_mutex_unlock(&g_lock);
+        return (NULL);
+    }
 
     pthread_mutex_unlock(&g_lock);
     return (new_ptr);
@@ -122,6 +112,16 @@ void    show_alloc_mem(void) {
     pthread_mutex_lock(&g_lock);
 
     show_alloc_mem_internal();
+
+    pthread_mutex_unlock(&g_lock);
+}
+
+
+void    show_alloc_mem_ex(void) {
+
+    pthread_mutex_lock(&g_lock);
+
+    show_alloc_mem_ex_internal();
 
     pthread_mutex_unlock(&g_lock);
 }

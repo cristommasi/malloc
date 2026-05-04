@@ -41,15 +41,6 @@ void    show_alloc_mem_internal(void) {
                 else
                     chunk = chunk + 16;
             }
-            //DELETE AFTER
-			printf("%s%p - %p : %zu bytes (free cis mem) - blocks %d%s\n", 
-				YELLOW, 
-				cur_heap->free_cis_start, 
-				((cur_heap->free_cis_start) ? (char*)cur_heap->free_cis_start + heap_cis_mem_size(cur_heap) : NULL), 
-				heap_cis_mem_size(cur_heap),
-				blocks,
-				RESET
-			);
             cur_heap = cur_heap->next;
         }
         i++;
@@ -71,7 +62,7 @@ void print_heap_type(int index, t_heap *cur) {
 	else if (index == 2)
 		write(1, "LARGE : ", sizeof("LARGE : "));
 
-	ft_put_hex((unsigned long )cur);
+	ft_put_hex((unsigned long )cur, 1);
 	write(1, "\n", 1);
 }
 
@@ -80,9 +71,9 @@ void print_chunk(char *start, char *end, size_t bytes) {
 	if (!start || !end)
 		return ;
 	
-	ft_put_hex((unsigned long)start);
+    write(1, "0x", 2);ft_put_hex((unsigned long)start, 1);
 	write(1, " - ", sizeof(" - "));
-	ft_put_hex((unsigned long)end);
+    write(1, "0x", 2);ft_put_hex((unsigned long)end, 1);
 	write(1, " : ", sizeof(" : "));
 	ft_put_ul((unsigned long)bytes);
 	write(1, " bytes\n", sizeof(" bytes\n"));

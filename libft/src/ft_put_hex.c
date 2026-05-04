@@ -1,26 +1,29 @@
 #include "../includes/libft.h"
 
-void	ft_put_hex(unsigned long n)
+void	ft_put_hex(unsigned long n, int mode)
 {
-	char	buf[2 + sizeof(unsigned long) * 2];
+	char	buf[sizeof(unsigned long) * 2];
 	char	*hex;
+	char	*HEX;
 	int		i;
+	char	c;
 
-	hex = "0123456789ABCDEF";
-	buf[0] = '0';
-	buf[1] = 'x';
+	HEX = "0123456789ABCDEF";
+	hex = "0123456789abcdef";
+	i = sizeof(buf);
+
 	if (n == 0)
 	{
-		write(1, "0x0", 3);
+		write(1, "00", 2);
 		return ;
 	}
-	i = 2 + sizeof(unsigned long) * 2 - 1;
+
 	while (n > 0)
 	{
-		buf[i] = hex[n % 16];
+		c = (mode == 1) ? HEX[n % 16] : hex[n % 16];
+		buf[--i] = c;
 		n /= 16;
-		i--;
 	}
-	write(1, "0x", 2);
-	write(1, &buf[i + 1], (2 + sizeof(unsigned long) * 2 - 1) - i);
+
+	write(1, &buf[i], sizeof(buf) - i);
 }

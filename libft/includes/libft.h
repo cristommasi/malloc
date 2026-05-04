@@ -6,7 +6,7 @@
 /*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:41:22 by ctommasi          #+#    #+#             */
-/*   Updated: 2026/04/22 19:36:27 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/05/04 18:44:31 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	**ft_split(char const *s, char c);
 /// @brief Converts an int into a str.
 char	*ft_itoa(int n);
 /// @brief writes a decimal to hex with 0x prefix.
-void	ft_put_hex(unsigned long n);
+void	ft_put_hex(unsigned long n, int mode);
 /// @brief writes a decimal to str.
 void	ft_put_ul(unsigned long n);
 /// @brief Apply the function 'f' to each characters in 

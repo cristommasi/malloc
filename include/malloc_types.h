@@ -63,7 +63,7 @@ typedef struct s_arena {
 	t_heap  			*small;
 	t_heap  			*large;
 	t_chunk 			*fastbin[64];
-	uint32_t			heap_count;
+	uint32_t			count;
 
 }               t_arena;
 

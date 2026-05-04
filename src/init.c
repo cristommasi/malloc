@@ -44,6 +44,20 @@ void	*ft_malloc(size_t size) {
 	pthread_mutex_lock(&g_lock);
 
 	void *ptr = malloc_internal(size);
+    
+    if (ptr == M_ARENA_MAX_EXCEEDED_ERROR) {
+
+        uint8_t check = get_check();
+
+        if (check == 1)
+            write(2, M_ARENA_MAX_EXCEEDED_MSG, sizeof(M_ARENA_MAX_EXCEEDED_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, M_ARENA_MAX_EXCEEDED_MSG, sizeof(M_ARENA_MAX_EXCEEDED_MSG));
+            abort();
+        }
+    }
 
 	pthread_mutex_unlock(&g_lock);
 	
@@ -55,19 +69,41 @@ void	ft_free(void *ptr) {
 	pthread_mutex_lock(&g_lock);
 
 	int ret = free_internal(ptr);
+    uint8_t check = get_check();
     if (ret == -1) {
 
-        write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
+        if (check == 1)
+            write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
+            abort();
+        }
     }
 	if (ret == F_DOUBLE_FREE_ERROR) {
 
-		write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
+        if (check == 1)
+            write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
+            abort();
+        }
 	}
 	else if (ret == F_INV_PTR_ERROR) {
 
-		write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
+        if (check == 1)
+            write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
+            abort();
+        }
 	}
-	
+
 	pthread_mutex_unlock(&g_lock);
 }
 

@@ -30,22 +30,6 @@
 #   define MAP_FLAGS (MAP_PRIVATE | MAP_ANONYMOUS)
 #endif
 
-#define F_MUMMAP_ERROR -1
-
-#define F_NO_ERROR 0
-
-#define F_DOUBLE_FREE_ERROR 1
-
-#define F_INV_PTR_ERROR 2
-
-
-#define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
-
-#define F_INV_PTR_MSG "free(): invalid pointer\n"
-
-#define F_MUNMAP_MSG "free(): munmap failed!\n"
-
-#define F_ABORT_MSG "abort()\n"
 
 // NO FD FLAG
 #define NO_FD -1
@@ -93,6 +77,8 @@
 
 
  // masks
+
+#define NO_FLAGS      0b0
 #define IN_USE        0b001
 #define IS_CIS        0b010
 #define IS_LARGE      0b100
@@ -113,12 +99,14 @@
 
  // _MALLOC_PERTURB_
 #define _MALLOC_PERTURB_PARAM_          0x1
+#define FREE_PERTURB                    0
+#define ALLOC_PERTURB                   1
 #define _M_PERTURB_DEFAULT              (size_t)0
-
 
  // _MALLOC_ARENA_MAX_
 #define _MALLOC_ARENA_MAX_PARAM_        0x2
 #define _M_ARENA_MAX_DEFAULT            (uint32_t)0
+
 
 
  // _MALLOC_MMAP_THRESHOLD_
@@ -126,5 +114,17 @@
 #define _M_MMAP_T_DEFAULT               (size_t)1009
 
 
+#define M_ARENA_MAX_EXCEEDED_ERROR     ((void*)-2)
+#define F_MUMMAP_ERROR -1
+#define F_NO_ERROR 0
+#define F_DOUBLE_FREE_ERROR 1
+#define F_INV_PTR_ERROR 2
+
+
+#define M_ARENA_MAX_EXCEEDED_MSG "malloc(): max number of arenas exceeded\n"
+#define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
+#define F_INV_PTR_MSG "free(): invalid pointer\n"
+#define F_MUNMAP_MSG "free(): munmap failed!\n"
+#define F_ABORT_MSG "abort()\n"
 
 #endif

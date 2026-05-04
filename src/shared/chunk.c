@@ -1,43 +1,76 @@
 #include "../../include/malloc.h"
 
+t_chunk		*chunk_new(char *start, size_t size, size_t prev_s, size_t next_s, size_t flags) {
 
-void chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
+	t_chunk *new_chunk = (t_chunk*)start;
+
+	ft_memset(new_chunk, 0, sizeof(t_chunk));
+
+
+	set_flags(new_chunk, flags);
+	set_size(new_chunk, size);
+	set_prevsize(new_chunk, prev_s);
+	set_nextsize(new_chunk, next_s);
+	new_chunk->next = NULL;
+	return (new_chunk);
+}
+
+void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need) {
+
+	t_chunk	*next         = get_next_chunk(heap, chunk);
+	t_chunk	*prev         = get_prev_chunk(heap, chunk);
+
+	set_size(chunk, need);
+	if (prev)
+		set_nextsize(prev, need);
+
+	size_t	new_free_size = get_size(chunk) - sizeof(t_chunk) - need;
+	t_chunk *new_free     = chunk_new( (char*)chunk + sizeof(t_chunk) + need, new_free_size, need, 0, IN_USE);
+
+	if (next) {
+		set_nextsize(new_free, get_size(next));
+		set_prevsize(next, get_size(new_free));
+	}
+	arena_fastbin_set(heap, new_free);
+}
+
+void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
 
 	size_t	new_size   = get_size(chunk) + need;
 	size_t	next_total = get_size(next) + sizeof(t_chunk);
 	t_chunk *new_free  = (t_chunk*)((char*)chunk + sizeof(t_chunk) + new_size);
 	t_chunk	*nnc       = get_next_chunk(heap, next);
+	t_chunk *prev 	   = get_prev_chunk(heap, chunk);
 	
 
-	if (!has_flags(next, IS_CIS))
-		arena_fastbin_unlink(next);
-	if (has_perturb()) {
-		ft_memset(chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), new_size);
-	}
+	if (prev) set_nextsize(prev, new_size);
+
 	set_size(chunk, new_size);
+
+	if (has_flags(next, IS_CIS)) {
+
+		t_chunk *new_free = heap_split_cis_mem(heap, need);
+		if (has_perturb()) ft_memset(new_free, get_perturb_alloc(), get_size(new_free) + sizeof(t_chunk));
+		new_free = NULL;
+		return ;
+	}
+
+	arena_fastbin_unlink(next);
+	if (has_perturb()) ft_memset(chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), need);
+	
 	if (next_total > new_size) {
 
 		set_size(new_free, next_total - need - sizeof(t_chunk));
 		set_prevsize(new_free, new_size);
-		if (has_flags(next, IS_CIS)) {
-			set_flags(new_free, IS_CIS);
-			heap->free_cis_start = new_free;
-		}
-		else if (!has_flags(next, IS_CIS)) {
-			arena_fastbin_set(heap, new_free);
-		}
-		if (has_perturb()) {
-			ft_memset(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
-		}
-	}
-	else if (need == next_total && has_flags(next, IS_CIS)) {
-
-		heap->free_cis_start = NULL;
+		if (has_perturb()) ft_memset(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
+		chunk_relink(chunk, new_free, nnc);
+		arena_fastbin_set(heap, new_free);
+		return ;
 	}
 	chunk_relink(chunk, new_free, nnc);
 }
 
-void chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) {
+void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) {
 
 	size_t	prev_total  = get_size(prev) + sizeof(t_chunk);
 	size_t	new_size   = get_size(chunk) + need;
@@ -63,23 +96,7 @@ void chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) 
 	chunk_relink(prev, new_free, nnc);
 }
 
-void chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need) {
-
-	size_t	new_free_size = get_size(chunk) - sizeof(t_chunk) - need;
-	t_chunk *new_free     = (t_chunk*)((char*)chunk + sizeof(t_chunk) + need);
-	t_chunk	*next         = get_next_chunk(heap, chunk);
-	t_chunk	*prev         = get_prev_chunk(heap, chunk);	
-	
-	set_size(chunk, need);
-	set_size(new_free, new_free_size);
-	arena_fastbin_set(heap, new_free);
-	if (prev)
-		set_nextsize(prev, need);
-	chunk_relink(chunk, new_free, next);
-}
-
-
-void chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
+void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
 
     if (center) {
 
@@ -97,13 +114,12 @@ void chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
     }
 }
 
-bool    chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk) {
+bool		chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk) {
 
 	return (heap->total_size == (get_size(chunk) + sizeof(t_chunk) + heap_cis_mem_size(heap)));
 }
 
-
-bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
+bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 
 	if (!heap || !chunk)
 		return (false);
@@ -113,8 +129,7 @@ bool    chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 	return ((char *)chunk >= start && (char *)chunk <= end);
 }
 
-
-t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk) {
+t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
 	char *addr = ((char*)chunk + sizeof(t_chunk) + get_size(chunk));
 
@@ -123,7 +138,7 @@ t_chunk *get_next_chunk(t_heap *heap, t_chunk *chunk) {
 	return ( (t_chunk *)((char*)chunk + sizeof(t_chunk) + get_size(chunk)) );
 }
 
-t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {
+t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk) {
 
 	char *addr = ((char*)chunk - get_prevsize(chunk) - sizeof(t_chunk));
 
@@ -132,7 +147,7 @@ t_chunk *get_prev_chunk(t_heap *heap, t_chunk *chunk) {
 	return ( (t_chunk *)(addr) );
 }
 
-bool next_chunk_suffices(t_chunk *next, size_t need) {
+bool		next_chunk_suffices(t_chunk *next, size_t need) {
 
 	size_t next_size = get_size(next) + sizeof(t_chunk);
 
@@ -144,7 +159,7 @@ bool next_chunk_suffices(t_chunk *next, size_t need) {
 	return (false);
 }
 
-bool prev_chunk_suffices(t_chunk *prev, size_t need) {
+bool		prev_chunk_suffices(t_chunk *prev, size_t need) {
 
 	size_t prev_total = get_size(prev) + sizeof(t_chunk);
 
@@ -156,16 +171,31 @@ bool prev_chunk_suffices(t_chunk *prev, size_t need) {
 	return (false);
 }
 
-
-
-void    *chunk_to_data(t_chunk *chunk_addr) {
+void		*chunk_to_data(t_chunk *chunk_addr) {
 
 	return ((void *)((char*)chunk_addr + sizeof(t_chunk)));
 }
-
 
 t_chunk    *data_to_chunk(void *data_addr) {
 
 	return ((t_chunk *)((char*)data_addr - sizeof(t_chunk)));
 }
 
+void		chunk_perturb(t_chunk *chunk, int FLAGS) {
+
+	if (!chunk) return ;
+
+	void *data = chunk_to_data(chunk);
+	if ((char *)data == NULL) return ;
+
+	int perturb_type;
+	
+	if (FLAGS == FREE_PERTURB)
+		perturb_type = get_perturb_free();
+	else if (FLAGS == ALLOC_PERTURB)
+		perturb_type = get_perturb_alloc();
+	else
+		return ;
+	
+	ft_memset(data, perturb_type, get_size(chunk));
+}

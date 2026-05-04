@@ -15,6 +15,11 @@ int     get_perturb_free(void) {
     return (~((int)g_arena.OPS.PERTURB));
 }
 
+uint8_t     get_check(void) {
+    
+    return (g_arena.OPS.CHECK);
+}
+
 bool    has_check(void) {
 
     return ((bool)g_arena.OPS.CHECK);

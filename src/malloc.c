@@ -12,12 +12,13 @@ void    *malloc_internal(size_t size) {
 	size = ALIGN(size);
 	if (arena_heap_uninitialized_or_large(size)) {
 
-		if ((heap = heap_new_and_append(size)) == MAP_FAILED)
-			return (NULL);
+		heap = heap_new_and_append(size);
+		if (heap == MAP_FAILED || heap == M_ARENA_MAX_EXCEEDED_ERROR)
+			return (heap);
 
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
-
+		heap->blocks += 1;
 		return (chunk_to_data(chunk));
 
 	}
@@ -31,13 +32,15 @@ void    *malloc_internal(size_t size) {
 	}
 	else if ((chunk = heap_find_cis_mem_chunk(size)) == NULL) {
 
-		if ((heap = heap_new_and_append(size)) == MAP_FAILED)
-			return (NULL);
+		heap = heap_new_and_append(size);
+		if (heap == MAP_FAILED || heap == M_ARENA_MAX_EXCEEDED_ERROR)
+			return (heap);
 
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
-
+		heap->blocks += 1;
 		return (chunk_to_data(chunk));
 	}
+	heap->blocks += 1;
 	return (chunk_to_data(chunk));
 }

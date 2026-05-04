@@ -1,8 +1,6 @@
 #include "../include/malloc.h"
 
 
-
-
 void    *realloc_internal(void *ptr, size_t size) {
     
     t_chunk     *chunk       = NULL;
@@ -14,7 +12,9 @@ void    *realloc_internal(void *ptr, size_t size) {
     if (ptr == NULL) {
 
 		pthread_mutex_unlock(&g_lock);
-        return (ft_malloc(size));
+        ptr = ft_malloc(size);
+        pthread_mutex_lock(&g_lock);
+        return (ptr);
 	}
     if ((chunk = data_to_chunk(ptr)) == NULL) {
 		
@@ -27,7 +27,9 @@ void    *realloc_internal(void *ptr, size_t size) {
     if (size == 0) {
 		
 		pthread_mutex_unlock(&g_lock);
-        return (ft_free(ptr), NULL);
+        ft_free(ptr);
+        pthread_mutex_lock(&g_lock);
+        return (NULL);
 	}
     if ((cur_size = get_size(chunk)) == p_new_size) {
 		
@@ -35,17 +37,14 @@ void    *realloc_internal(void *ptr, size_t size) {
 	}
     if (heap_is_different_type(p_new_size, cur_size)) {
 		
-        pthread_mutex_unlock(&g_lock);
-        return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+        return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
 	}
 	else if (p_new_size != cur_size) {
-
 		
 		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
 			return (chunk_to_data(chunk));
 	}
-    pthread_mutex_unlock(&g_lock);
-    return (arena_get_new_chunk(ptr, p_new_size, cur_size));
+    return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
 }
 
 

@@ -1,7 +1,7 @@
 
 #include "../../include/malloc.h"
 
-int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
+int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 
 	t_heap *to_free = cur;
 
@@ -16,32 +16,35 @@ int     arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 	return (munmap((void*)to_free, to_free->total_size + sizeof(t_heap)));
 }
 
-void    *arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size) {
+void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 
 	pthread_mutex_unlock(&g_lock);
 	void *new_ptr = ft_malloc(p_new_size);
+	pthread_mutex_lock(&g_lock);
 
-    if (!new_ptr) {
-        return (NULL);
+	if (!new_ptr) {
+		return (NULL);
 	}
-    ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
-    ft_free(ptr);
-    return (new_ptr);
+	ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
+	pthread_mutex_unlock(&g_lock);
+	ft_free(ptr);
+	pthread_mutex_lock(&g_lock);
+	return (new_ptr);
 }
 
-bool        arena_heap_uninitialized_or_large(size_t size) {
+bool		arena_heap_uninitialized_or_large(size_t size) {
 
-	if (heap_type(size) == LARGE_CHUNK_MIN)
+	size_t type = heap_type(size);
+	if (type == LARGE_CHUNK_MIN)
 		return (true);
-	else if (!g_arena.tiny && heap_type(size) == TINY_CHUNK_MAX)
+	else if (!g_arena.tiny && type == TINY_CHUNK_MAX)
 		return (true);
-	else if (!g_arena.small && heap_type(size) == SMALL_CHUNK_MAX)
+	else if (!g_arena.small && type == SMALL_CHUNK_MAX)
 		return (true);
 	return (false);
 }
 
-
-t_heap  *arena_heap_find_by_chunk(t_chunk *chunk) {
+t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
 
 	if (!chunk)
 		return (NULL);
@@ -62,7 +65,6 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	t_chunk	*chunk       = g_arena.fastbin[index];
 
 
-
 	if (chunk == NULL) {
 		return (NULL);
 	}
@@ -71,13 +73,13 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	chunk->next = NULL;
 	set_flags(chunk, IN_USE);
 
-	if (has_perturb()) {
-		ft_memset(chunk_to_data(chunk) , get_perturb_alloc(), get_size(chunk));
-	}
+	if (has_perturb())
+		chunk_perturb(chunk, ALLOC_PERTURB);
+
 	return (chunk);
 }
 
-void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
+void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	size_t  size = get_size(freed_chunk);
 	size_t	index = BIN_IDX(size);
@@ -86,25 +88,27 @@ void    arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	unset_flags(freed_chunk, IN_USE);
 	freed_chunk->next = g_arena.fastbin[index];
 	g_arena.fastbin[index] = freed_chunk;
+
 	if (heap->blocks == 0)
 		heap->blocks = 0;
 	else
 		heap->blocks -= 1;
+	
 	t_chunk *next = get_next_chunk(heap, freed_chunk);
-	if (next  && has_flags(next, IN_USE))
+	if (next)
 		set_prevsize(next, get_size(freed_chunk));
 	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
-	if (prev && has_flags(prev, IN_USE))
+	if (prev)
 		set_nextsize(prev, get_size(freed_chunk));
 	
-	if (has_perturb()) {
-		ft_memset(chunk_to_data(freed_chunk) , get_perturb_free(), get_size(freed_chunk));
-	}
+	
+	if (has_perturb())
+		chunk_perturb(freed_chunk, FREE_PERTURB);
 
 }
 
-void	arena_fastbin_drain(t_heap *heap)
-{
+void		arena_fastbin_drain(t_heap *heap) {
+
 	int			i;
 	t_chunk		*cur;
 	t_chunk		*next;
@@ -131,7 +135,7 @@ void	arena_fastbin_drain(t_heap *heap)
 	}
 }
 
-void	arena_fastbin_unlink(t_chunk *chunk) {
+void		arena_fastbin_unlink(t_chunk *chunk) {
 
 	size_t  index        = BIN_IDX(get_size(chunk));
 	t_chunk *cur		 = g_arena.fastbin[index];
@@ -151,8 +155,6 @@ void	arena_fastbin_unlink(t_chunk *chunk) {
 		cur = cur->next;
 	}
 }
-
-
 
 t_heap      **arena_heap_group(size_t size) {
 

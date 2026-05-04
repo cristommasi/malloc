@@ -45,7 +45,7 @@ void		arena_fastbin_drain(t_heap *heap);
 int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group(size_t size); 
-void		*arena_get_new_chunk(void *ptr, size_t p_new_size, size_t cur_size);
+void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
 
 
 t_heap		*heap_new_and_append(size_t size);
@@ -77,6 +77,8 @@ bool		next_chunk_suffices(t_chunk *next, size_t need);
 void		*chunk_to_data(t_chunk *chunk_addr);
 void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk		*data_to_chunk(void *data_addr);
+void        chunk_perturb(t_chunk *chunk, int FLAGS);
+t_chunk     *chunk_new(char *start, size_t size, size_t prev_s, size_t next_s, size_t flags);
 
 
 void		set_size(t_chunk *chunk, size_t size);
@@ -93,6 +95,7 @@ size_t		get_min(size_t a, size_t b);
 void		print_heap_type(int index, t_heap *cur);
 void		print_chunk(char *start, char *end, size_t bytes);
 
+uint8_t     get_check(void);
 bool        has_perturb(void);
 int         get_perturb_alloc(void);
 int         get_perturb_free(void);

@@ -7,29 +7,29 @@ NAME		= malloc
 SYMLINK     = libft_malloc.so
 
 CC			= cc -std=c17
-CFLAGS		= -Wall -Wextra  -fPIC -I./libft -g -O0
+CFLAGS		= -Wall -Wextra -I./libft # -fPIC
 LDFLAGS		= -shared
 RM			= rm -f
 
 LIBFT_DIR	= ./libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SRC			= main.c \
-src/init.c \
-src/malloc.c \
-src/free.c \
-src/realloc.c \
-src/show_alloc_mem.c \
-src/show_alloc_mem_ex.c \
-src/mallopt.c \
-src/shared/arena.c \
-src/shared/heap.c \
-src/shared/chunk.c \
-src/shared/chunk_info.c \
-src/shared/ops_info.c
+SRCS		=	main.c \
+				src/init.c \
+				src/malloc.c \
+				src/free.c \
+				src/realloc.c \
+				src/show_alloc_mem.c \
+				src/show_alloc_mem_ex.c \
+				src/mallopt.c \
+				src/shared/arena.c \
+				src/shared/heap.c \
+				src/shared/chunk.c \
+				src/shared/chunk_info.c \
+				src/shared/ops_info.c
 
-OBJDIR      = objs			
-OBJS		= $(SRC:.c=.o)
+OBJDIR		= objs
+OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 
 
@@ -39,19 +39,18 @@ OBJS		= $(SRC:.c=.o)
 all: $(LIBFT) $(NAME) #$(SYMLINK)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS)  $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
-	
-#$(LDFLAGS)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 
+#$(LDFLAGS)
 # $(SYMLINK): $(NAME)
 #     ln -sf $(NAME) $(SYMLINK)
 
-%.o: %.c
+$(OBJDIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-
 clean:
-	$(RM) $(OBJS)
+	$(RM) -r $(OBJDIR)
 
 fclean: clean
 	$(RM) $(NAME) 

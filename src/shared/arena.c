@@ -14,7 +14,7 @@ int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
 		ft_memset(heap_to_chunk(to_free) , get_perturb_free(), to_free->total_size + sizeof(t_heap));
 	}
 	int ret = munmap((void*)to_free, to_free->total_size + sizeof(t_heap));
-	g_arena.count  = (g_arena.count == 1) ? 0 : g_arena.count - 1;
+	g_arena.count  = (g_arena.count >= 1) ? g_arena.count - 1 : 0;
 	return (ret);
 }
 

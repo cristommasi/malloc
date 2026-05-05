@@ -1,7 +1,6 @@
 #include "./include/malloc.h"
 #include <stdio.h>
 
-// ── MAIN ──────────────────────────────────────────────────────────────────────
 
 int main(void) {
 

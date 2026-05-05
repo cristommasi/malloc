@@ -27,7 +27,8 @@ src/shared/heap.c \
 src/shared/chunk.c \
 src/shared/chunk_info.c \
 src/shared/ops_info.c
-				
+
+OBJDIR      = objs			
 OBJS		= $(SRC:.c=.o)
 
 
@@ -45,7 +46,6 @@ $(NAME): $(OBJS) $(LIBFT)
 # $(SYMLINK): $(NAME)
 #     ln -sf $(NAME) $(SYMLINK)
 
-
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -55,7 +55,7 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME) 
-#$(SYMLINK)
+
 
 re: fclean all
 #----------------------------------------------------------------------
@@ -66,11 +66,14 @@ libft: $(LIBFT)
 $(LIBFT):
 	make -C $(LIBFT_DIR)
 
-clean_libft:
+libft_clean:
 	make -C $(LIBFT_DIR) clean
 
-fclean_libft:
+libft_fclean:
 	make -C $(LIBFT_DIR) fclean
+
+libft_re:
+	make -C $(LIBFT_DIR) re
 
 
 .PHONY: all clean fclean libft clean_libft fclean_libft

@@ -6,7 +6,7 @@
 /*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:41:22 by ctommasi          #+#    #+#             */
-/*   Updated: 2026/05/04 18:44:31 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/05/05 15:28:39 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@
 # include <stdio.h>
 # include <stddef.h>
 # include <stdarg.h>
+# include <stdint.h>
+
+# define HEX_LOWER_CASE 0
+# define HEX_UPPER_CASE 1
 
 typedef struct s_list
 {
@@ -108,10 +112,14 @@ char	*ft_strtrim(char const *s1, char const *set);
 char	**ft_split(char const *s, char c);
 /// @brief Converts an int into a str.
 char	*ft_itoa(int n);
-/// @brief writes a decimal to hex with 0x prefix.
-void	ft_put_hex(unsigned long n, int mode);
-/// @brief writes a decimal to str.
-void	ft_put_ul(unsigned long n);
+/// @brief writes a size_t address in hex with trailing 0s to fd.
+void    ft_puthexaddr_fd(uintptr_t n, int fd, int mode);
+/// @brief writes a unsigned long in hex to fd.
+void	ft_puthex_fd(unsigned long n, int fd, int mode);
+/// @brief writes a byte in hex to fd.
+void    ft_puthexbyte_fd(unsigned char byte, int fd, int mode);
+/// @brief writes a unsigned long in str to fd.
+void	ft_putul_fd(unsigned long n, int fd);
 /// @brief Apply the function 'f' to each characters in 
 /// @brief the string 's' to create a new string 
 /// @brief resulting of the successive applications of 'f'.

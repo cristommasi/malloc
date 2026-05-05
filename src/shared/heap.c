@@ -72,7 +72,7 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
     t_chunk *new_inuse_chunk = heap->free_cis_start;
 	size_t	remaining		 = heap_free_size(heap);
 
-
+	unset_flags(new_inuse_chunk, IS_CIS);
 	set_size(new_inuse_chunk, size);
 	set_flags(new_inuse_chunk, IN_USE);
 	new_inuse_chunk->next = NULL;

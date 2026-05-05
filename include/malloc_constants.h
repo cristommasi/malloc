@@ -70,10 +70,12 @@
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32
 
+#define MIN_CHUNK_SIZE 32
+
+#define HEX_DUMP_HEADER_TXT "Address\t\t    Hex bytes\t\t\t\t     ASCII\n"
 
 // index 0 doesnt exist
 #define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
-
 
 
  // masks
@@ -86,6 +88,8 @@
 #define TS_SIZE_MASK  0b11111111111111111111111111111000U 
 #define L_FLAG_MASK   ((size_t)0b0000000000000000000000000000000000000000000000000000000000000111)
 #define L_SIZE_MASK   ((size_t)0b1111111111111111111111111111111111111111111111111111111111111000)
+
+
 
 
  // _MALLOC_CHECK_
@@ -108,19 +112,24 @@
 #define _M_ARENA_MAX_DEFAULT            (uint32_t)0
 
 
-
  // _MALLOC_MMAP_THRESHOLD_
 #define _MALLOC_MMAP_THRESHOLD_PARAM_   0x3
 #define _M_MMAP_T_DEFAULT               (size_t)1009
 
-
+ // mallopt()
+#define M_PARAM_ERROR                   1
 #define M_ARENA_MAX_EXCEEDED_ERROR     ((void*)-2)
-#define F_MUMMAP_ERROR -1
-#define F_NO_ERROR 0
-#define F_DOUBLE_FREE_ERROR 1
-#define F_INV_PTR_ERROR 2
+#define F_MUMMAP_ERROR                 -1
+#define F_NO_ERROR                      0
+#define F_DOUBLE_FREE_ERROR             1
+#define F_INV_PTR_ERROR                 2
 
+ // show_alloc_mem_ex params
+#define M_SHOW_INUSE 0
+#define M_SHOW_INUSE_FREE 1
+#define M_SHOW_ALL 2
 
+#define M_PARAM_ERR_MSG "mallopt(): parameter out of bounds\n"
 #define M_ARENA_MAX_EXCEEDED_MSG "malloc(): max number of arenas exceeded\n"
 #define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
 #define F_INV_PTR_MSG "free(): invalid pointer\n"

@@ -1,90 +1,75 @@
 #include "../include/malloc.h"
-void    print_chunk_data_in_hex(char *chunk_data) ;
-void    print_chunk_data_in_ascii(char *chunk_data);
 
 
+void    show_alloc_mem_ex_internal(int show_free_zones) {
 
-void    show_alloc_mem_ex_internal(void) {
+    t_heap *HEAP_TYPES[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
 
-    if (!g_arena.tiny && !g_arena.small && !g_arena.large)
-        return ;
+    write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
 
-    t_heap *arena_types[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
-    int     h          = 0;
+    for (int i = 0; i < HEAP_TYPE_COUNT; i++) {
 
-    write(1, "Address\t\tHex bytes\t\t\t\t\tASCII\n", sizeof("Address\t\tHex bytes\t\t\t\t\tASCII\n"));
-    while (h < HEAP_TYPE_COUNT) {
+        if (!HEAP_TYPES[i])
+            continue;
+        char *heap_addr = (char *)heap_to_chunk(HEAP_TYPES[i]);
+        char *heap_end  = heap_addr + HEAP_TYPES[i]->total_size;
 
-        t_heap *cur_heap = arena_types[h];
-        while (cur_heap != NULL) {
+        while (heap_addr < heap_end) {
 
-            char *cur_heap_addr = (char *)cur_heap + sizeof(t_heap);
-            char *heap_end   = cur_heap_addr + cur_heap->total_size;
-
-            while (cur_heap_addr < heap_end) {
-
-                char *cur_chunk = cur_heap_addr;
-                size_t cur_chunk_size = get_size((t_chunk*)cur_chunk);
-                char *chunk_end = cur_chunk + sizeof(t_chunk) + cur_chunk_size;
-
-      
-                if (cur_chunk_size != 0 && has_flags((t_chunk*)cur_chunk, IN_USE)) {
-
-                    char *cur_chunk_data = cur_chunk + sizeof(t_chunk);
-                    
-                    int i = 0;
-                    while (cur_chunk_data < chunk_end) {
-
-                        if (i % 16 == 0) {
-                            write(1, "0x", 2);
-                            ft_put_hex((unsigned long)cur_chunk_data, 1);
-                            write(1, ": ", 2);
-                        }
-                        print_chunk_data_in_hex(cur_chunk_data);
-                        print_chunk_data_in_ascii(cur_chunk_data);
-                        cur_chunk_data += 16;
-                    }
-                }
-                cur_heap_addr = chunk_end;
-            }
-            cur_heap = cur_heap->next;
+            t_chunk *cur_chunk = (t_chunk*)heap_addr;
+            heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
         }
-        h++;
     }
+   
 }
 
-void    ft_put_hex_byte(unsigned char byte, int mode) {
+size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {
 
-    static const char hex[16] = "0123456789abcdef";
-    static const char HEX[16] = "0123456789ABCDEF";
+    size_t  chunk_size  = get_size(cur_chunk);
+   
+    if (chunk_size == 0)
+        return (16 + sizeof(t_chunk));
 
-    if (mode == 0) {
+    if (show_free_zones  == M_SHOW_INUSE && (!has_flags(cur_chunk, IN_USE) || has_flags(cur_chunk, IS_CIS)))
+        return (chunk_size + sizeof(t_chunk));
+    else if (show_free_zones == M_SHOW_INUSE_FREE && has_flags(cur_chunk, IS_CIS))
+        return (chunk_size + sizeof(t_chunk));
 
-        write(1, &hex[byte >> 4], 1);
-        write(1, &hex[byte & 0x0F], 1);
+    char    *data_addr = (char *)cur_chunk + sizeof(t_chunk);
+    char    *data_end  = data_addr + chunk_size;
+
+    while (data_addr < data_end) {
+
+        ft_puthexaddr_fd((uintptr_t)data_addr, STDOUT_FILENO, HEX_LOWER_CASE);
+        ft_putstr_fd(": ", STDOUT_FILENO);
+        print_data_bytes_hex(data_addr);
+        print_data_bytes_ascii(data_addr);
+        write(STDOUT_FILENO, "\n", 1);
+        data_addr = data_addr + 16;
     }
-    else {
-        write(1, &HEX[byte >> 4], 1);
-        write(1, &HEX[byte & 0x0F], 1);
-    }
+    return (chunk_size + sizeof(t_chunk));  
 }
 
-void    print_chunk_data_in_hex(char *chunk_data) {
+void    print_data_bytes_hex(char *data) {
 
     for (int i = 0; i < 16; i++) {
-        ft_put_hex_byte((unsigned char)chunk_data[i], 0);
-        write(1, " ", 1);
+
+        unsigned char byte = (unsigned char)data[i];
+        ft_puthexbyte_fd(byte, STDOUT_FILENO, HEX_LOWER_CASE);
+        if ((i + 1) % 2 == 0)
+            write(STDOUT_FILENO, " ", 2);
     }
+    write(STDOUT_FILENO, " ", 1);
 }
 
-void    print_chunk_data_in_ascii(char *chunk_data) {
+void    print_data_bytes_ascii(char *data) {
 
     for (int i = 0; i < 16; i++) {
 
-        if (ft_isprint(chunk_data[i]))
-            write(1, &chunk_data[i], 1);
+        unsigned char byte = (unsigned char)data[i];
+        if (ft_isprint(byte))
+            write(STDOUT_FILENO, &byte, 1);
         else
-            write(1, ".", 1);
+            write(STDOUT_FILENO, ".", 1);
     }
-    write(1, "\n", 1);
 }

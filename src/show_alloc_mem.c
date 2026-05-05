@@ -2,11 +2,7 @@
 #include "../include/malloc.h"
 
 
-
 void    show_alloc_mem_internal(void) {
-
-    if (!g_arena.tiny && !g_arena.small && !g_arena.large)
-        return ;
 
     t_heap *cur[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
     size_t  total_size = 0;
@@ -45,9 +41,9 @@ void    show_alloc_mem_internal(void) {
         }
         i++;
     }
-    write(1, "Total : ", sizeof("Total : "));
-    ft_put_ul(total_size);
-    write(1, "\n", 1);
+    ft_putstr_fd("Total : ", STDOUT_FILENO);
+    ft_putul_fd(total_size, STDOUT_FILENO);
+    write(STDOUT_FILENO, "\n", 1);
 }
 
 void print_heap_type(int index, t_heap *cur) {
@@ -56,14 +52,14 @@ void print_heap_type(int index, t_heap *cur) {
 		return ;
 	
 	if (index == 0)
-		write(1, "TINY : ", sizeof("TINY : "));
+        ft_putstr_fd("TINY : ", STDOUT_FILENO);
 	else if (index == 1)
-		write(1, "SMALL : ", sizeof("SMALL : "));
+        ft_putstr_fd("SMALL : ", STDOUT_FILENO);
 	else if (index == 2)
-		write(1, "LARGE : ", sizeof("LARGE : "));
+        ft_putstr_fd("LARGE : ", STDOUT_FILENO);
 
-	ft_put_hex((unsigned long )cur, 1);
-	write(1, "\n", 1);
+	ft_puthexaddr_fd((uintptr_t)cur, STDOUT_FILENO, 1);
+	write(STDOUT_FILENO, "\n", 1);
 }
 
 void print_chunk(char *start, char *end, size_t bytes) {
@@ -71,10 +67,10 @@ void print_chunk(char *start, char *end, size_t bytes) {
 	if (!start || !end)
 		return ;
 	
-    write(1, "0x", 2);ft_put_hex((unsigned long)start, 1);
-	write(1, " - ", sizeof(" - "));
-    write(1, "0x", 2);ft_put_hex((unsigned long)end, 1);
-	write(1, " : ", sizeof(" : "));
-	ft_put_ul((unsigned long)bytes);
-	write(1, " bytes\n", sizeof(" bytes\n"));
+    ft_puthex_fd((uintptr_t)start, STDOUT_FILENO, HEX_UPPER_CASE);
+    ft_putstr_fd(" - ", STDOUT_FILENO);
+    ft_puthex_fd((uintptr_t)end, STDOUT_FILENO, HEX_UPPER_CASE);
+    ft_putstr_fd(" : ", STDOUT_FILENO);
+	ft_putul_fd((uintptr_t)bytes, STDOUT_FILENO);
+    ft_putstr_fd(" bytes\n", STDOUT_FILENO);
 }

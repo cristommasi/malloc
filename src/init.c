@@ -13,7 +13,7 @@ static void malloc_ctor(void) {
     g_arena.OPS.PERTURB         = _M_PERTURB_DEFAULT;
     g_arena.OPS.ARENA_MAX       = _M_ARENA_MAX_DEFAULT;
     g_arena.OPS.MMAP_THRESHOLD  = _M_MMAP_T_DEFAULT;
-    g_arena.OPS.SHOW_ALLOC      = _M_MMAP_T_DEFAULT;
+
 
     char *val = NULL;
 

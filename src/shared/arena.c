@@ -1,17 +1,12 @@
 
 #include "../../include/malloc.h"
 
-int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head) {
+int			arena_heap_munmap(t_heap *to_free, t_heap **head) {
 
-	t_heap *to_free = cur;
-
-	if (prev)
-		prev->next = cur->next;
-	else
-		*head = cur->next;
-	
+	arena_heap_unlink(to_free, head);
+	 
 	if (has_perturb()) {
-		ft_memset(heap_to_chunk(to_free) , get_perturb_free(), to_free->total_size + sizeof(t_heap));
+		ft_memset(to_free, get_perturb_free(), to_free->total_size + sizeof(t_heap));
 	}
 	int ret = munmap((void*)to_free, to_free->total_size + sizeof(t_heap));
 	g_arena.count  = (g_arena.count >= 1) ? g_arena.count - 1 : 0;
@@ -50,7 +45,7 @@ t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
 
 	if (!chunk)
 		return (NULL);
-   t_heap  **heap = arena_heap_group(get_size(chunk));
+   t_heap  **heap = arena_heap_group_by_chunk(get_size(chunk));
 
    while (*heap != NULL) {
 
@@ -71,7 +66,10 @@ t_chunk     *arena_fastbin_get(size_t size) {
 		return (NULL);
 	}
 	g_arena.fastbin[index] = chunk->next;
+	if (g_arena.fastbin[index])
+		g_arena.fastbin[index]->prev = NULL;
 	chunk->next = NULL;
+	chunk->prev = NULL;
 	set_flags(chunk, IN_USE);
 
 	if (has_perturb())
@@ -87,7 +85,10 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	
 	unset_flags(freed_chunk, IN_USE);
+	freed_chunk->prev = NULL;
 	freed_chunk->next = g_arena.fastbin[index];
+	if (g_arena.fastbin[index])
+		g_arena.fastbin[index]->prev = freed_chunk;
 	g_arena.fastbin[index] = freed_chunk;
 
 	if (heap->blocks == 0)
@@ -108,61 +109,69 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 }
 
-void		arena_fastbin_drain(t_heap *heap) {
-
-	int			i;
-	t_chunk		*cur;
-	t_chunk		*next;
-	t_chunk		**node;
-
-	i = 0;
-	while (i < FASTBIN_COUNT)
-	{
-		node = &g_arena.fastbin[i];
-		while (*node)
-		{
-			cur = *node;
-
-			if (chunk_belongs_to_heap(heap, cur))
-			{
-				next = cur->next;
-				cur->next = NULL;
-				*node = next;
-			}
-			else
-				node = &(*node)->next;
-		}
-		i++;
-	}
-}
-
 void		arena_fastbin_unlink(t_chunk *chunk) {
 
-	size_t  index        = BIN_IDX(get_size(chunk));
-	t_chunk *cur		 = g_arena.fastbin[index];
-	t_chunk *prev        = NULL;
+	if (chunk->prev) {
 
-	while (cur != NULL) {
+		chunk->prev->next = chunk->next;
+	}
+	else {
 
-		if (cur == chunk) {
-			if (prev)
-				prev->next = cur->next;
-			else
-				g_arena.fastbin[index] = cur->next;
-			cur->next = NULL;
-			return ;
-		}
-		prev = cur;
-		cur = cur->next;
+		g_arena.fastbin[BIN_IDX(get_size(chunk))] = chunk->next;
+
+	}
+	if (chunk->next)
+		chunk->next->prev = chunk->prev;
+
+	chunk->next = NULL;
+	chunk->prev = NULL;
+}
+
+void		arena_heap_unlink(t_heap *heap, t_heap **head) {
+
+
+	if (heap->prev) {
+
+		heap->prev->next = heap->next;
+	}
+	else {
+
+		*head = heap->next;
+
+	}
+	if (heap->next)
+		heap->next->prev = heap->prev;
+
+	heap->next = NULL;
+	heap->prev = NULL;
+}
+
+
+void		arena_fastbin_drain(t_heap *heap) {
+
+	char		*cur = (char*)heap_to_chunk(heap);
+	char		*end = cur + heap->total_size;
+
+	while (cur < end)
+	{
+
+		t_chunk *chunk = (t_chunk*)cur;
+
+		arena_fastbin_unlink(chunk);
+		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
 	}
 }
 
-t_heap      **arena_heap_group(size_t size) {
+
+
+t_heap      **arena_heap_group_by_chunk(size_t size) {
 
 	size_t zone_size = heap_page_size(size);
 
-
-	if (zone_size == TINY_HEAP_SIZE) {
+	if (zone_size >= get_mmap_threshold()) {
+		return (&g_arena.large);
+	}
+	else if (zone_size == TINY_HEAP_SIZE) {
 
 		return (&g_arena.tiny);
 	}
@@ -170,9 +179,7 @@ t_heap      **arena_heap_group(size_t size) {
 
 		return (&g_arena.small);
 	}
-	else {
-		return (&g_arena.large);
-	}
+	return (NULL);
 }
 
 

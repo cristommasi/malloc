@@ -31,6 +31,7 @@ typedef struct s_chunk {
 		t_large		    large;
 	};
 	struct s_chunk	*next;
+	struct s_chunk	*prev;
 }                   t_chunk;
 
 
@@ -39,6 +40,7 @@ typedef struct s_heap {
 	uint32_t        blocks;
 	size_t          total_size;
 	struct s_heap   *next;
+	struct s_heap   *prev;
 	t_chunk         *free_cis_start;
 
 }               t_heap;

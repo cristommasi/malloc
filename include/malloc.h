@@ -42,10 +42,11 @@ void		arena_fastbin_unlink(t_chunk *chunk);
 t_chunk		*arena_fastbin_get(size_t size);
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void		arena_fastbin_drain(t_heap *heap); 
-int			arena_heap_munmap(t_heap *prev, t_heap *cur, t_heap **head);
+int			arena_heap_munmap(t_heap *cur, t_heap **head);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
-t_heap		**arena_heap_group(size_t size); 
+t_heap		**arena_heap_group_by_chunk(size_t size); 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
+void		arena_heap_unlink(t_heap *heap, t_heap **head);
 
 
 t_heap		*heap_new_and_append(size_t size);

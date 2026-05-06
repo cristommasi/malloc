@@ -40,9 +40,10 @@ t_heap		*heap_new(size_t zone_size) {
 	new_heap->total_size     = zone_size;
 	new_heap->free_cis_start = heap_to_chunk(new_heap);
 	new_heap->next           = NULL;
+	new_heap->prev           = NULL;
 
 	t_chunk *new_chunk = chunk_new(
-		(char*)new_heap->free_cis_start, zone_size - sizeof(t_chunk), 0, 0,
+		(char*)new_heap->free_cis_start, zone_size - CHUNK_INUSE_SIZE, 0, 0,
 		(zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) ? (IS_LARGE | IS_CIS) : IS_CIS
 	);
 	if (has_perturb())
@@ -64,6 +65,7 @@ void		heap_append(t_heap **HEAP_TYPE, t_heap *new_heap) {
 		prev = cur;
 		cur = cur->next;
 	}
+	new_heap->prev = prev;
 	prev->next = new_heap;
 }
 
@@ -76,14 +78,15 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	set_size(new_inuse_chunk, size);
 	set_flags(new_inuse_chunk, IN_USE);
 	new_inuse_chunk->next = NULL;
+	new_inuse_chunk->prev = NULL;
 	if (has_perturb())
 		chunk_perturb(new_inuse_chunk, ALLOC_PERTURB);
 
-	if (remaining > size + (2 * sizeof(t_chunk))) {
+	if (remaining > size + (2 * CHUNK_INUSE_SIZE)) {
 
-		size_t	new_free_size = remaining - size - (2 * sizeof(t_chunk));
+		size_t	new_free_size = remaining - size - (2 * CHUNK_INUSE_SIZE);
 
-		t_chunk *new_free_chunk = chunk_new( (char *)new_inuse_chunk + sizeof(t_chunk) + size, new_free_size, size, 0, IS_CIS );
+		t_chunk *new_free_chunk = chunk_new( (char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, new_free_size, size, 0, IS_CIS );
 
 		if (has_perturb())
 			chunk_perturb(new_free_chunk, FREE_PERTURB);
@@ -102,14 +105,14 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
 t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 
-	t_heap  **cur = arena_heap_group(size);
+	t_heap  **cur = arena_heap_group_by_chunk(size);
 	t_chunk *chunk = NULL;
 
 
 	while (*cur != NULL) {
 
 
-		if (heap_free_size(*cur) >= size + sizeof(t_chunk)) {
+		if (heap_free_size(*cur) >= size + CHUNK_INUSE_SIZE) {
 
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
@@ -153,7 +156,7 @@ bool		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
 	if (heap->free_cis_start == NULL)
 		return (false);
-	return (((char*)heap->free_cis_start + size + sizeof(t_chunk)) <= (char *)heap_to_chunk(heap) + heap->total_size);
+	return (((char*)heap->free_cis_start + size + CHUNK_INUSE_SIZE) <= (char *)heap_to_chunk(heap) + heap->total_size);
 }
 
 size_t		heap_cis_mem_size(t_heap *heap) {
@@ -185,7 +188,7 @@ bool		heap_is_different_type(size_t sizeA, size_t sizeB) {
 size_t		heap_page_size(size_t size) {
 
 	if (size >= get_mmap_threshold()) {
-		return (size + sizeof(t_chunk));
+		return (size + CHUNK_INUSE_SIZE);
 	}
 	else if (size <= TINY_CHUNK_MAX) {
 		return (TINY_HEAP_SIZE);

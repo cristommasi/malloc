@@ -62,9 +62,9 @@
 #define LARGE_CHUNK_MIN 1009
 
 
-#define CHUNK_INUSE_SIZE 8
+#define CHUNK_INUSE_SIZE (size_t)8
 
-#define CHUNK_FREE_SIZE 24
+#define CHUNK_FREE_SIZE (size_t)24
 
 
  // MIN size to leave a chunk with 16 header + 16 data

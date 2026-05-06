@@ -77,7 +77,7 @@
 #define FASTBIN_COUNT 64
 
 // index 0 doesnt exist
-#define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
+int		bin_idx(size_t size);
 
 
  // masks

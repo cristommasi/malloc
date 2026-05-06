@@ -38,7 +38,7 @@ static void malloc_dtor(void) {
 }
 
 
-void	*ft2_malloc(size_t size) {
+void	*ft_malloc(size_t size) {
 
 	pthread_mutex_lock(&g_lock);
 
@@ -51,7 +51,7 @@ void	*ft2_malloc(size_t size) {
 	return (ptr);
 }
 
-void	ft2_free(void *ptr) {
+void	ft_free(void *ptr) {
 
 	pthread_mutex_lock(&g_lock);
 
@@ -94,7 +94,7 @@ void	ft2_free(void *ptr) {
 	pthread_mutex_unlock(&g_lock);
 }
 
-void	*ft2_realloc(void *ptr, size_t size) {
+void	*ft_realloc(void *ptr, size_t size) {
 
     pthread_mutex_lock(&g_lock);
 

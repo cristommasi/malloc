@@ -2,8 +2,6 @@
 
 
 
-
-
 int    free_internal(void *ptr) {
 	
 	t_chunk *chunk        = NULL;
@@ -13,7 +11,7 @@ int    free_internal(void *ptr) {
 
 
 	if (ptr == NULL)
-		return F_INV_PTR_ERROR;
+		return F_NO_ERROR;
 
 	if ((chunk = data_to_chunk(ptr)) == NULL)
 		return F_INV_PTR_ERROR;

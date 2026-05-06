@@ -11,6 +11,7 @@ void    show_alloc_mem_ex_internal(int show_free_zones) {
 
         if (!HEAP_TYPES[i])
             continue;
+        print_heap_type(i, HEAP_TYPES[i]);
         char *heap_addr = (char *)heap_to_chunk(HEAP_TYPES[i]);
         char *heap_end  = heap_addr + HEAP_TYPES[i]->total_size;
 

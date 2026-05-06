@@ -16,7 +16,7 @@ int			arena_heap_munmap(t_heap *to_free, t_heap **head) {
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 
 	pthread_mutex_unlock(&g_lock);
-	void *new_ptr = ft2_malloc(p_new_size);
+	void *new_ptr = ft_malloc(p_new_size);
 	pthread_mutex_lock(&g_lock);
 
 	if (!new_ptr) {
@@ -24,7 +24,7 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	}
 	ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
 	pthread_mutex_unlock(&g_lock);
-	ft2_free(ptr);
+	ft_free(ptr);
 	pthread_mutex_lock(&g_lock);
 	return (new_ptr);
 }
@@ -56,9 +56,22 @@ t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
    return (NULL);
 }
 
+int		bin_idx(size_t size) {
+
+	if (size == 8)
+		return (0);
+	int index = ((int)size - FASTBIN_MIN_CHUNK) / ALIGNMENT;
+	if (index >= 64)
+		return (-1);
+	return (index);
+}
+
+
 t_chunk     *arena_fastbin_get(size_t size) {
 
-	size_t  index        = BIN_IDX(size);
+	int  index        = bin_idx(size);
+	if (index == -1)
+		return (NULL);
 	t_chunk	*chunk       = g_arena.fastbin[index];
 
 
@@ -81,9 +94,11 @@ t_chunk     *arena_fastbin_get(size_t size) {
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	size_t  size = get_size(freed_chunk);
-	size_t	index = BIN_IDX(size);
+	int	index = bin_idx(size);
 
-	
+	if (index == -1) return ;
+
+	printf("siize = %zu\n", size);
 	unset_flags(freed_chunk, IN_USE);
 	freed_chunk->prev = NULL;
 	freed_chunk->next = g_arena.fastbin[index];
@@ -103,9 +118,10 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	if (prev)
 		set_nextsize(prev, get_size(freed_chunk));
 	
-	
+	printf("HERE\n");
 	if (has_perturb())
 		chunk_perturb(freed_chunk, FREE_PERTURB);
+	printf("HERE222\n");
 
 }
 
@@ -117,7 +133,7 @@ void		arena_fastbin_unlink(t_chunk *chunk) {
 	}
 	else {
 
-		g_arena.fastbin[BIN_IDX(get_size(chunk))] = chunk->next;
+		g_arena.fastbin[bin_idx(get_size(chunk))] = chunk->next;
 
 	}
 	if (chunk->next)
@@ -154,9 +170,14 @@ void		arena_fastbin_drain(t_heap *heap) {
 
 	while (cur < end)
 	{
+
 		t_chunk *chunk = (t_chunk*)cur;
 
-		arena_fastbin_unlink(chunk);
+		if (has_flags(chunk, IS_CIS))
+			break ;
+		if (!has_flags(chunk, IN_USE)) {
+			arena_fastbin_unlink(chunk);
+		}
 		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
 	}
 }

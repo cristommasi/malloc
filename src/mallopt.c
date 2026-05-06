@@ -12,7 +12,7 @@ int		mallopt_internal(int param, int value) {
 	}
 	else if (param == _MALLOC_PERTURB_PARAM_) {
 
-		if (value >= 0 && value <= 1)
+		if (value >= 0 && value <= 255)
 			g_arena.OPS.PERTURB = (uint8_t)value;
 		else
 			return (M_PARAM_ERROR);

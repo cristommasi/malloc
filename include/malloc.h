@@ -111,9 +111,9 @@ size_t      print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones);
 void        print_data_bytes_hex(char *data);
 void        print_data_bytes_ascii(char *data);
 
-void		*ft2_malloc(size_t size);
-void		 ft2_free(void *ptr);
-void    	*ft2_realloc(void *ptr, size_t size);
+void		*ft_malloc(size_t size);
+void		 ft_free(void *ptr);
+void    	*ft_realloc(void *ptr, size_t size);
 int		    free_internal(void *ptr);
 void		*malloc_internal(size_t size);
 void		*realloc_internal(void *ptr, size_t size);
@@ -125,21 +125,5 @@ int		    mallopt_internal(int param, int value);
 void		show_alloc_mem_ex(int show_free_zones);
 void		show_alloc_mem_ex_internal(int show_free_zones);
 
-
-//DELETE AFTER-----------------------------------------------------------------------
-
-
-void printchunk(t_chunk *chunk);
-void printheap(t_heap *heap, t_chunk *chunk);
-
-#define RESET   "\033[0m"
-#define RED     "\033[31m"
-#define GREEN   "\033[32m"
-#define YELLOW  "\033[33m"
-#define BLUE    "\033[34m"
-#define MAGENTA "\033[35m"
-#define CYAN    "\033[36m"
-
-//DELETE AFTER-----------------------------------------------------------------------
 
 #endif

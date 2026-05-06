@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ctommasi <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 11:23:56 by ctommasi          #+#    #+#             */
-/*   Updated: 2024/09/20 11:24:00 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/05/06 16:37:29 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-static void	*ft_malloc(size_t size)
+static void	*ft_malloc2(size_t size)
 {
 	void	*ptr;
 
@@ -22,7 +22,7 @@ static void	*ft_malloc(size_t size)
 	return (ptr);
 }
 
-static void	ft_free_all(char **res, size_t i)
+static void	ft_free2_all(char **res, size_t i)
 {
 	while (i > 0)
 	{
@@ -79,14 +79,14 @@ char	**ft_split(char const *s, char c)
 
 	i = 0;
 	j = 0;
-	res = (char **)ft_malloc((ft_array_len(s, c) + 1) * sizeof(char *));
+	res = (char **)ft_malloc2((ft_array_len(s, c) + 1) * sizeof(char *));
 	if (res == NULL)
-		return (ft_free_all(res, i), NULL);
+		return (ft_free2_all(res, i), NULL);
 	while (i < ft_array_len(s, c))
 	{
 		while (s[j] == c)
 			j++;
-		res[i] = (char *)ft_malloc((ft_word_len(s, c, j) + 1) * sizeof(char));
+		res[i] = (char *)ft_malloc2((ft_word_len(s, c, j) + 1) * sizeof(char));
 		if (!res[i])
 			return (ft_free_all(res, i), NULL);
 		k = 0;

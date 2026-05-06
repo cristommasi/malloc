@@ -111,9 +111,9 @@ size_t      print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones);
 void        print_data_bytes_hex(char *data);
 void        print_data_bytes_ascii(char *data);
 
-void		*ft_malloc(size_t size);
-void		 ft_free(void *ptr);
-void    	*ft_realloc(void *ptr, size_t size);
+void		*ft2_malloc(size_t size);
+void		 ft2_free(void *ptr);
+void    	*ft2_realloc(void *ptr, size_t size);
 int		    free_internal(void *ptr);
 void		*malloc_internal(size_t size);
 void		*realloc_internal(void *ptr, size_t size);

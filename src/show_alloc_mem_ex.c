@@ -26,15 +26,13 @@ size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {
 
     size_t  chunk_size  = get_size(cur_chunk);
    
-    if (chunk_size == 0)
-        return (16 + sizeof(t_chunk));
 
     if (show_free_zones  == M_SHOW_INUSE && (!has_flags(cur_chunk, IN_USE) || has_flags(cur_chunk, IS_CIS)))
-        return (chunk_size + sizeof(t_chunk));
+        return (chunk_size + CHUNK_INUSE_SIZE);
     else if (show_free_zones == M_SHOW_INUSE_FREE && has_flags(cur_chunk, IS_CIS))
-        return (chunk_size + sizeof(t_chunk));
+        return (chunk_size + CHUNK_INUSE_SIZE);
 
-    char    *data_addr = (char *)cur_chunk + sizeof(t_chunk);
+    char    *data_addr = (char *)cur_chunk + CHUNK_INUSE_SIZE;
     char    *data_end  = data_addr + chunk_size;
 
     while (data_addr < data_end) {
@@ -46,7 +44,7 @@ size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {
         write(STDOUT_FILENO, "\n", 1);
         data_addr = data_addr + 16;
     }
-    return (chunk_size + sizeof(t_chunk));  
+    return (chunk_size + CHUNK_INUSE_SIZE);  
 }
 
 void    print_data_bytes_hex(char *data) {

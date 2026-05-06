@@ -16,7 +16,7 @@ int			arena_heap_munmap(t_heap *to_free, t_heap **head) {
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 
 	pthread_mutex_unlock(&g_lock);
-	void *new_ptr = ft_malloc(p_new_size);
+	void *new_ptr = ft2_malloc(p_new_size);
 	pthread_mutex_lock(&g_lock);
 
 	if (!new_ptr) {
@@ -24,7 +24,7 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	}
 	ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
 	pthread_mutex_unlock(&g_lock);
-	ft_free(ptr);
+	ft2_free(ptr);
 	pthread_mutex_lock(&g_lock);
 	return (new_ptr);
 }
@@ -154,7 +154,6 @@ void		arena_fastbin_drain(t_heap *heap) {
 
 	while (cur < end)
 	{
-
 		t_chunk *chunk = (t_chunk*)cur;
 
 		arena_fastbin_unlink(chunk);
@@ -168,7 +167,8 @@ t_heap      **arena_heap_group_by_chunk(size_t size) {
 
 	size_t zone_size = heap_page_size(size);
 
-	if (zone_size >= get_mmap_threshold()) {
+	if (size >= get_mmap_threshold()) {
+
 		return (&g_arena.large);
 	}
 	else if (zone_size == TINY_HEAP_SIZE) {

@@ -11,7 +11,7 @@ void    show_alloc_mem_internal(void) {
 
         t_heap *cur_heap = HEAP_TYPES[i];
         while (cur_heap != NULL) {
-
+            int blocks = 0;
 			print_heap_type(i, cur_heap);
             char *heap_addr = (char *)heap_to_chunk(cur_heap);
             char *heap_end   = heap_addr + cur_heap->total_size;
@@ -24,22 +24,26 @@ void    show_alloc_mem_internal(void) {
                 if (chunk_size != 0 && has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS)) {
 
                     char *data_addr         = (char*)cur_chunk;
-                    char *addr_end          = (char*)cur_chunk + sizeof(t_chunk) + chunk_size;
-                    size_t total_chunk_size = chunk_size  + sizeof(t_chunk);
+                    char *addr_end          = (char*)cur_chunk + CHUNK_INUSE_SIZE + chunk_size;
+                    size_t total_chunk_size = chunk_size  + CHUNK_INUSE_SIZE;
 
                     print_chunk(data_addr, addr_end, total_chunk_size);
                     total_size += total_chunk_size;
                     heap_addr = heap_addr + total_chunk_size;
+                    blocks += 1;
                 }
                 else
-                    heap_addr = heap_addr + 16;
+                    heap_addr = heap_addr + CHUNK_INUSE_SIZE;
             }
+                ft_putstr_fd("Blocks: ", STDOUT_FILENO);
+    printf("%d\n", blocks);
             cur_heap = cur_heap->next;
         }
     }
     ft_putstr_fd("Total : ", STDOUT_FILENO);
     ft_putul_fd(total_size, STDOUT_FILENO);
     write(STDOUT_FILENO, "\n", 1);
+
 }
 
 void print_heap_type(int index, t_heap *cur) {

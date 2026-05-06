@@ -12,7 +12,7 @@ void    *realloc_internal(void *ptr, size_t size) {
     if (ptr == NULL) {
 
 		pthread_mutex_unlock(&g_lock);
-        ptr = ft_malloc(size);
+        ptr = ft2_malloc(size);
         pthread_mutex_lock(&g_lock);
         return (ptr);
 	}
@@ -27,7 +27,7 @@ void    *realloc_internal(void *ptr, size_t size) {
     if (size == 0) {
 		
 		pthread_mutex_unlock(&g_lock);
-        ft_free(ptr);
+        ft2_free(ptr);
         pthread_mutex_lock(&g_lock);
         return (NULL);
 	}

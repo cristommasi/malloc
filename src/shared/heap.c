@@ -99,7 +99,6 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 		heap->free_cis_start = NULL;
 		set_nextsize(new_inuse_chunk, 0);
 	}
-	heap->blocks += 1;
 	return (new_inuse_chunk);
 }
 
@@ -116,6 +115,7 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
+
 			(*cur)->blocks += 1;
 			return (chunk);
 		}
@@ -201,7 +201,7 @@ size_t		heap_page_size(size_t size) {
 
 size_t		heap_type(size_t size) {
 
-	if (size >= get_mmap_threshold()) {
+	if (size > get_mmap_threshold()) {
 		return (LARGE_CHUNK_MIN);
 	}
 	else if (size <= TINY_CHUNK_MAX) {

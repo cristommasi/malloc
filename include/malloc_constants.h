@@ -53,13 +53,13 @@
 
 
  // max bytes for a tiny request
-#define TINY_CHUNK_MAX 112
+#define TINY_CHUNK_MAX 120
 
  // max bytes for a small request
-#define SMALL_CHUNK_MAX 1008
+#define SMALL_CHUNK_MAX 1016
 
  // min default bytes for large request
-#define LARGE_CHUNK_MIN 1009
+#define LARGE_CHUNK_MIN 1017
 
 
 #define CHUNK_INUSE_SIZE (size_t)8
@@ -68,10 +68,10 @@
 
 
  // MIN size to leave a chunk with 16 header + 16 data
-#define MIN_TRIM 32
+#define MIN_TRIM 24
 
- // 16, 32, 48, 64, 80, 96, 112, 128
-#define FASTBIN_MIN_CHUNK 16
+ // 8, 16, 32, 48, 64, 80, 96, 112, 128
+#define FASTBIN_MIN_CHUNK 8
 
  // 0, 1, 2, 3, 4, 5, 6, 7
 #define FASTBIN_COUNT 64
@@ -116,7 +116,7 @@
 
  // _MALLOC_MMAP_THRESHOLD_
 #define _MALLOC_MMAP_THRESHOLD_PARAM_   0x3
-#define _M_MMAP_T_DEFAULT               (size_t)1009
+#define _M_MMAP_T_DEFAULT               (size_t)1017
 
  // mallopt()
 #define M_PARAM_ERROR                   1

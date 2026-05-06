@@ -3,11 +3,11 @@
 
 void    show_alloc_mem_ex_internal(int show_free_zones) {
 
-    t_heap *HEAP_TYPES[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
+    t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large};
 
     write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
 
-    for (int i = 0; i < HEAP_TYPE_COUNT; i++) {
+    for (int i = 0; i < 3; i++) {
 
         if (!HEAP_TYPES[i])
             continue;
@@ -20,7 +20,6 @@ void    show_alloc_mem_ex_internal(int show_free_zones) {
             heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
         }
     }
-   
 }
 
 size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {

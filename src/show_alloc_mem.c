@@ -4,10 +4,10 @@
 
 void    show_alloc_mem_internal(void) {
 
-    t_heap *HEAP_TYPES[HEAP_TYPE_COUNT] = { g_arena.tiny, g_arena.small, g_arena.large};
+    t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large};
     size_t  total_size = 0;
 
-    for (int i = 0; i < HEAP_TYPE_COUNT; i++) {
+    for (int i = 0; i < 3; i++) {
 
         t_heap *cur_heap = HEAP_TYPES[i];
         while (cur_heap != NULL) {

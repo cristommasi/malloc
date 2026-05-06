@@ -22,7 +22,6 @@
  // SYSTEM DEFAULT PROT FLAGS
 #define PROT_FLAGS (PROT_READ | PROT_WRITE)
 
-
  // SYSTEM DEFAULT MAP FLAGS
 #ifdef __APPLE__ 
 #   define MAP_FLAGS (MAP_PRIVATE | MAP_ANON)
@@ -30,30 +29,12 @@
 #   define MAP_FLAGS (MAP_PRIVATE | MAP_ANONYMOUS)
 #endif
 
-
 // NO FD FLAG
 #define NO_FD -1
 
 // NO OFFSET FLAG
 #define NO_OFFSET 0
 
- // BLOCK ALIGNMENT MULTIPLES OF 8
-#define ALIGNMENT (sizeof(size_t))
-
- // MACRO FN TO ALIGN
-#define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
-
-#define HEAP_TYPE_COUNT 3
-
-#define TINY_SMALL_BLOCK_MAX 128
-
- // max bytes for a tiny request
-#define TINY_CHUNK_MAX 112
-
- // max bytes for a small request
-#define SMALL_CHUNK_MAX 1008
-
-#define LARGE_CHUNK_MIN 1009
 
  // 16384 - fits 128 tiny allocs
 #define TINY_HEAP_SIZE (4 * PAGE_SIZE)
@@ -61,18 +42,39 @@
  // 131072 - fits 128 small allocs
 #define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
 
+
+
+ // BLOCK ALIGNMENT MULTIPLES OF 8
+#define ALIGNMENT (sizeof(size_t))
+
+ // MACRO FN TO ALIGN
+#define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
+
+
+
+ // max bytes for a tiny request
+#define TINY_CHUNK_MAX 112
+
+ // max bytes for a small request
+#define SMALL_CHUNK_MAX 1008
+
+ // min default bytes for large request
+#define LARGE_CHUNK_MIN 1009
+
+
+#define CHUNK_INUSE_SIZE 8
+
+#define CHUNK_FREE_SIZE 24
+
+
+ // MIN size to leave a chunk with 16 header + 16 data
+#define MIN_TRIM 32
+
  // 16, 32, 48, 64, 80, 96, 112, 128
 #define FASTBIN_MIN_CHUNK 16
 
  // 0, 1, 2, 3, 4, 5, 6, 7
 #define FASTBIN_COUNT 64
-
- // MIN size to leave a chunk with 16 header + 16 data
-#define MIN_TRIM 32
-
-#define MIN_CHUNK_SIZE 32
-
-#define HEX_DUMP_HEADER_TXT "Address\t\t    Hex bytes\t\t\t\t     ASCII\n"
 
 // index 0 doesnt exist
 #define BIN_IDX(size) (((size - FASTBIN_MIN_CHUNK) / ALIGNMENT))
@@ -129,11 +131,14 @@
 #define M_SHOW_INUSE_FREE 1
 #define M_SHOW_ALL 2
 
+ // error messages for free and mallopt()
 #define M_PARAM_ERR_MSG "mallopt(): parameter out of bounds\n"
 #define M_ARENA_MAX_EXCEEDED_MSG "malloc(): max number of arenas exceeded\n"
 #define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
 #define F_INV_PTR_MSG "free(): invalid pointer\n"
 #define F_MUNMAP_MSG "free(): munmap failed!\n"
 #define F_ABORT_MSG "abort()\n"
+
+#define HEX_DUMP_HEADER_TXT "Address\t\t    Hex bytes\t\t\t\t     ASCII\n"
 
 #endif

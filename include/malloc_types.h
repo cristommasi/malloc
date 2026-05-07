@@ -8,40 +8,22 @@
 #include <stdint.h>
 
 
-typedef struct t_small_tiny
-{
-	uint32_t	size;
-    uint16_t	next_size;
-	uint16_t	prev_size;
-
-}	t_small_tiny;
-
-
-typedef struct s_large {
-	
-	size_t size;
-	
-}	t_large;
-
-
 typedef struct s_chunk {
 
-	union {
-		t_small_tiny	small;
-		t_large		    large;
-	};
+	size_t			prev_size;
+	size_t			size;
 	struct s_chunk	*next;
 	struct s_chunk	*prev;
 }                   t_chunk;
 
-
+// can be 64
 typedef struct s_heap {
 
-	uint32_t        blocks;
+	size_t        	blocks;
 	size_t          total_size;
+	t_chunk         *free_cis_start;
 	struct s_heap   *next;
 	struct s_heap   *prev;
-	t_chunk         *free_cis_start;
 
 }               t_heap;
 
@@ -59,12 +41,12 @@ typedef struct MALLOC_OPS
 typedef struct s_arena {
 
 	MALLOC_OPS			OPS;
-
 	
 	t_heap  			*tiny;
 	t_heap  			*small;
 	t_heap  			*large;
-	t_chunk 			*fastbin[64];
+	t_chunk 			*fastbin[10];
+	t_chunk 			*smallbin[56];
 	uint32_t			count;
 
 }               t_arena;

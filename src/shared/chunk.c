@@ -1,35 +1,36 @@
 #include "../../include/malloc.h"
 
-t_chunk		*chunk_new(char *start, size_t size, size_t prev_s, size_t next_s, size_t flags) {
+t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags) {
 
 	t_chunk *new_chunk = (t_chunk*)start;
 
 	ft_memset(new_chunk, 0, CHUNK_INUSE_SIZE);
 
 
-	set_flags(new_chunk, flags);
-	set_size(new_chunk, size);
 	set_prevsize(new_chunk, prev_s);
-	set_nextsize(new_chunk, next_s);
-	new_chunk->next = NULL;
-	new_chunk->prev = NULL;
+	set_size(new_chunk, size);
+	set_flags(new_chunk, flags);
+	// new_chunk->next = NULL;
+	// new_chunk->prev = NULL;
 	return (new_chunk);
 }
 
 void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need) {
 
 	t_chunk	*next         = get_next_chunk(heap, chunk);
-	t_chunk	*prev         = get_prev_chunk(heap, chunk);
 
 	set_size(chunk, need);
-	if (prev)
-		set_nextsize(prev, need);
+
 
 	size_t	new_free_size = get_size(chunk) - CHUNK_INUSE_SIZE - need;
-	t_chunk *new_free     = chunk_new( (char*)chunk + CHUNK_INUSE_SIZE + need, new_free_size, need, 0, IN_USE);
+	t_chunk *new_free     = chunk_new( 
+		(char*)chunk + CHUNK_INUSE_SIZE + need, 
+		0, 
+		new_free_size, 
+		NO_FLAGS
+	);
 
 	if (next) {
-		set_nextsize(new_free, get_size(next));
 		set_prevsize(next, get_size(new_free));
 	}
 	arena_fastbin_set(heap, new_free);
@@ -41,10 +42,8 @@ void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need
 	size_t	next_total = get_size(next) + CHUNK_INUSE_SIZE;
 	t_chunk *new_free  = (t_chunk*)((char*)chunk + CHUNK_INUSE_SIZE + new_size);
 	t_chunk	*nnc       = get_next_chunk(heap, next);
-	t_chunk *prev 	   = get_prev_chunk(heap, chunk);
-	
 
-	if (prev) set_nextsize(prev, new_size);
+	
 
 	set_size(chunk, new_size);
 
@@ -101,16 +100,15 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
 
     if (center) {
 
-        set_nextsize(prev, get_size(center));
+
         if (next) {
 
-            set_nextsize(center, get_size(next));
+
             set_prevsize(next, get_size(center));
         }
     }
 	else if (next) {
 
-        set_nextsize(prev, get_size(next));
         set_prevsize(next, get_size(prev));
     }
 }

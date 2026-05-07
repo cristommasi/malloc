@@ -42,6 +42,10 @@ void		arena_fastbin_unlink(t_chunk *chunk);
 t_chunk		*arena_fastbin_get(size_t size);
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
 void		arena_fastbin_drain(t_heap *heap); 
+t_chunk		*arena_smallbin_get(size_t size);
+void        arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk);
+void        arena_smallbin_unlink(t_chunk *chunk);
+void		arena_smallbin_drain(t_heap *heap);
 int			arena_heap_munmap(t_heap *cur, t_heap **head);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group_by_chunk(size_t size); 
@@ -79,15 +83,13 @@ void		*chunk_to_data(t_chunk *chunk_addr);
 void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk		*data_to_chunk(void *data_addr);
 void        chunk_perturb(t_chunk *chunk, int FLAGS);
-t_chunk     *chunk_new(char *start, size_t size, size_t prev_s, size_t next_s, size_t flags);
+t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
 
 
 void		set_size(t_chunk *chunk, size_t size);
 size_t		get_size(t_chunk *chunk);
 void		set_prevsize(t_chunk *chunk, size_t size);
 size_t		get_prevsize(t_chunk *chunk); 
-void		set_nextsize(t_chunk *chunk, size_t size);
-size_t		get_nextsize(t_chunk *chunk);
 void		set_flags(t_chunk *chunk, size_t flag);
 void		unset_flags(t_chunk *chunk, size_t flag);
 bool		has_flags(t_chunk *chunk, size_t flag);

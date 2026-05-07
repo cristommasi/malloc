@@ -45,15 +45,15 @@
 
 
  // BLOCK ALIGNMENT MULTIPLES OF 8
-#define ALIGNMENT (sizeof(size_t))
+#define ALIGNMENT (2 * sizeof(size_t))
 
  // MACRO FN TO ALIGN
 #define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
 
-
-
+ // 102 allocs of 160
  // max bytes for a tiny request
-#define TINY_CHUNK_MAX 120
+#define TINY_CHUNK_MAX 144
+
 
  // max bytes for a small request
 #define SMALL_CHUNK_MAX 1016
@@ -62,35 +62,35 @@
 #define LARGE_CHUNK_MIN 1017
 
 
-#define CHUNK_INUSE_SIZE (size_t)8
+#define CHUNK_INUSE_SIZE (size_t)16
 
-#define CHUNK_FREE_SIZE (size_t)24
+#define CHUNK_FREE_SIZE (size_t)32
 
 
  // MIN size to leave a chunk with 16 header + 16 data
-#define MIN_TRIM 24
+#define MIN_TRIM 32
 
  // 8, 16, 32, 48, 64, 80, 96, 112, 128
-#define FASTBIN_MIN_CHUNK 8
+#define FASTBIN_MIN_CHUNK 16
+
+#define SMALLBIN_MIN_CHUNK 160
 
  // 0, 1, 2, 3, 4, 5, 6, 7
-#define FASTBIN_COUNT 64
+#define FASTBIN_COUNT 10
 
-// index 0 doesnt exist
-int		bin_idx(size_t size);
+#define SMALLBIN_COUNT 56
 
+
+int		FBIN_IDX(size_t size);
+int		SBIN_IDX(size_t size);
 
  // masks
-
-#define NO_FLAGS      0b0
-#define IN_USE        0b001
-#define IS_CIS        0b010
-#define IS_LARGE      0b100
-#define TS_FLAG_MASK  0b00000000000000000000000000000111U
-#define TS_SIZE_MASK  0b11111111111111111111111111111000U 
-#define L_FLAG_MASK   ((size_t)0b0000000000000000000000000000000000000000000000000000000000000111)
-#define L_SIZE_MASK   ((size_t)0b1111111111111111111111111111111111111111111111111111111111111000)
-
+#define NO_FLAGS     ((size_t)0)
+#define IN_USE       ((size_t)0b001)
+#define IS_CIS       ((size_t)0b010)
+#define IS_LARGE     ((size_t)0b100)
+#define L_FLAG_MASK  ((size_t)0b0000000000000000000000000000000000000000000000000000000000000111)
+#define L_SIZE_MASK  ((size_t)0b1111111111111111111111111111111111111111111111111111111111111000)
 
 
 
@@ -140,5 +140,6 @@ int		bin_idx(size_t size);
 #define F_ABORT_MSG "abort()\n"
 
 #define HEX_DUMP_HEADER_TXT "Address\t\t    Hex bytes\t\t\t\t     ASCII\n"
+
 
 #endif

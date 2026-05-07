@@ -1,6 +1,6 @@
 #include "../include/malloc.h"
 
-
+int blockz = 0;
 void    show_alloc_mem_ex_internal(int show_free_zones) {
 
     t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large};
@@ -9,18 +9,23 @@ void    show_alloc_mem_ex_internal(int show_free_zones) {
 
     for (int i = 0; i < 3; i++) {
 
-        if (!HEAP_TYPES[i])
-            continue;
-        print_heap_type(i, HEAP_TYPES[i]);
-        char *heap_addr = (char *)heap_to_chunk(HEAP_TYPES[i]);
-        char *heap_end  = heap_addr + HEAP_TYPES[i]->total_size;
+        t_heap *heap = HEAP_TYPES[i];
+        while (heap != NULL) {
 
-        while (heap_addr < heap_end) {
-
-            t_chunk *cur_chunk = (t_chunk*)heap_addr;
-            heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
+            print_heap_type(i, heap);
+            char *heap_addr = (char *)heap_to_chunk(heap);
+            char *heap_end  = heap_addr + heap->total_size;
+    
+            while (heap_addr < heap_end) {
+    
+                t_chunk *cur_chunk = (t_chunk*)heap_addr;
+                heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
+            }
+            heap = heap->next;
         }
+
     }
+    printf("blocks = %d\n", blockz);
 }
 
 size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {
@@ -36,6 +41,8 @@ size_t  print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones) {
     char    *data_addr = (char *)cur_chunk + CHUNK_INUSE_SIZE;
     char    *data_end  = data_addr + chunk_size;
 
+    if (has_flags(cur_chunk, IN_USE))
+        blockz += 1;
     while (data_addr < data_end) {
 
         ft_puthexaddr_fd((uintptr_t)data_addr, STDOUT_FILENO, HEX_LOWER_CASE);

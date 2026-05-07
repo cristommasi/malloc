@@ -6,7 +6,7 @@
 /*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/20 11:23:56 by ctommasi          #+#    #+#             */
-/*   Updated: 2026/05/06 16:37:29 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/05/07 15:26:00 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	**ft_split(char const *s, char c)
 			j++;
 		res[i] = (char *)ft_malloc2((ft_word_len(s, c, j) + 1) * sizeof(char));
 		if (!res[i])
-			return (ft_free_all(res, i), NULL);
+			return (ft_free2_all(res, i), NULL);
 		k = 0;
 		while (s[j] && s[j] != c)
 			res[i][k++] = s[j++];

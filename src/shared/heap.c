@@ -9,17 +9,17 @@ t_heap		*heap_new_and_append(size_t size) {
 	if (new_heap == MAP_FAILED) {
 		return (MAP_FAILED);
 	}
+	if (size >= get_mmap_threshold()) {
 
-	if (zone_size == TINY_HEAP_SIZE) {
+		heap_append(&g_arena.large, new_heap);
+	}
+	else if (zone_size == TINY_HEAP_SIZE) {
 
 		heap_append(&g_arena.tiny, new_heap);
 	}
 	else if (zone_size == SMALL_HEAP_SIZE) {
 
 		heap_append(&g_arena.small, new_heap);
-	}
-	else {
-		heap_append(&g_arena.large, new_heap);
 	}
 	return (new_heap);
 }
@@ -42,10 +42,10 @@ t_heap		*heap_new(size_t zone_size) {
 	new_heap->next           = NULL;
 	new_heap->prev           = NULL;
 
-	t_chunk *new_chunk = chunk_new(
-		(char*)new_heap->free_cis_start, zone_size - CHUNK_INUSE_SIZE, 0, 0,
-		(zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) ? (IS_LARGE | IS_CIS) : IS_CIS
-	);
+	size_t flags = (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) ? (IS_LARGE | IS_CIS) : IS_CIS;
+
+	t_chunk *new_chunk = chunk_new((char*)new_heap->free_cis_start, 0, zone_size - CHUNK_INUSE_SIZE, flags);
+
 	if (has_perturb())
 		chunk_perturb(new_chunk, FREE_PERTURB);
 	return (new_heap);
@@ -74,6 +74,7 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
     t_chunk *new_inuse_chunk = heap->free_cis_start;
 	size_t	remaining		 = heap_free_size(heap);
 
+
 	unset_flags(new_inuse_chunk, IS_CIS);
 	set_size(new_inuse_chunk, size);
 	set_flags(new_inuse_chunk, IN_USE);
@@ -86,18 +87,21 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
 		size_t	new_free_size = remaining - size - (2 * CHUNK_INUSE_SIZE);
 
-		t_chunk *new_free_chunk = chunk_new( (char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, new_free_size, size, 0, IS_CIS );
+		t_chunk *new_free_chunk = chunk_new( 
+			(char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, 
+			0,
+			new_free_size, 
+			IS_CIS
+		);
 
 		if (has_perturb())
 			chunk_perturb(new_free_chunk, FREE_PERTURB);
 
 		heap->free_cis_start = new_free_chunk;
-		set_nextsize(new_inuse_chunk, new_free_size);
 	}
 	else {
 
 		heap->free_cis_start = NULL;
-		set_nextsize(new_inuse_chunk, 0);
 	}
 	return (new_inuse_chunk);
 }

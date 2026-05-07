@@ -9,16 +9,22 @@ void    show_alloc_mem_ex_internal(int show_free_zones) {
 
     for (int i = 0; i < 3; i++) {
 
-        if (!HEAP_TYPES[i])
-            continue;
-        print_heap_type(i, HEAP_TYPES[i]);
-        char *heap_addr = (char *)heap_to_chunk(HEAP_TYPES[i]);
-        char *heap_end  = heap_addr + HEAP_TYPES[i]->total_size;
+        t_heap *heap = HEAP_TYPES[i];
 
-        while (heap_addr < heap_end) {
+        while (heap != NULL) {
 
-            t_chunk *cur_chunk = (t_chunk*)heap_addr;
-            heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
+
+            print_heap_type(i, heap);
+            char *heap_addr = (char *)heap_to_chunk(heap);
+            char *heap_end  = heap_addr + heap->total_size;
+    
+            while (heap_addr < heap_end) {
+    
+                t_chunk *cur_chunk = (t_chunk*)heap_addr;
+                heap_addr = heap_addr + print_data_in_chunk(cur_chunk, show_free_zones);
+            }
+
+            heap = heap->next;
         }
     }
 }

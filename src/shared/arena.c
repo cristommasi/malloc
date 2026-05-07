@@ -58,7 +58,7 @@ t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
 
 int		bin_idx(size_t size) {
 
-	if (size == 8)
+	if (size == 16)
 		return (0);
 	int index = ((int)size - FASTBIN_MIN_CHUNK) / ALIGNMENT;
 	if (index >= 64)
@@ -98,7 +98,6 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	if (index == -1) return ;
 
-	printf("siize = %zu\n", size);
 	unset_flags(freed_chunk, IN_USE);
 	freed_chunk->prev = NULL;
 	freed_chunk->next = g_arena.fastbin[index];
@@ -117,12 +116,9 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
 	if (prev)
 		set_nextsize(prev, get_size(freed_chunk));
-	
-	printf("HERE\n");
+
 	if (has_perturb())
 		chunk_perturb(freed_chunk, FREE_PERTURB);
-	printf("HERE222\n");
-
 }
 
 void		arena_fastbin_unlink(t_chunk *chunk) {

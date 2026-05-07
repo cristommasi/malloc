@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdint.h>
 
-/* ── swap between your impl and system malloc ───────────────── */
+
 #ifdef USE_SYSTEM
 #  define MY_MALLOC  malloc
 #  define MY_FREE    free
@@ -20,7 +20,7 @@ void  ft_free(void *);
 void *ft_realloc(void *, size_t);
 #endif
 
-/* ── tiny helper ─────────────────────────────────────────────── */
+
 static int g_pass = 0, g_fail = 0;
 
 #define CHECK(cond, msg) \
@@ -32,9 +32,7 @@ static int g_pass = 0, g_fail = 0;
 #define ALIGNED(p) (((uintptr_t)(p) & 7) == 0)
 #define SECTION(s) printf("\n── %s ──\n", s)
 
-/* ════════════════════════════════════════════════════════════
-**  1. malloc
-** ════════════════════════════════════════════════════════════ */
+
 static void test_malloc_basic(void)
 {
     SECTION("malloc – basic");
@@ -115,9 +113,6 @@ static void test_malloc_stress(void)
     for (int i = 0; i < 8;   i++) MY_FREE(large[i]);
 }
 
-/* ════════════════════════════════════════════════════════════
-**  2. free
-** ════════════════════════════════════════════════════════════ */
 static void test_free(void)
 {
     SECTION("free");
@@ -154,9 +149,6 @@ static void test_free(void)
     MY_FREE(fresh);
 }
 
-/* ════════════════════════════════════════════════════════════
-**  3. realloc
-** ════════════════════════════════════════════════════════════ */
 static void test_realloc(void)
 {
     SECTION("realloc – corner cases");
@@ -211,9 +203,7 @@ static void test_realloc(void)
     MY_FREE(same2);
 }
 
-/* ════════════════════════════════════════════════════════════
-**  4. interleaved alloc / free / realloc
-** ════════════════════════════════════════════════════════════ */
+
 static void test_interleaved(void)
 {
     SECTION("interleaved – alloc/free/realloc mix");
@@ -259,9 +249,7 @@ static void test_interleaved(void)
     for (int i = 0; i < N; i++) if (ptrs[i]) MY_FREE(ptrs[i]);
 }
 
-/* ════════════════════════════════════════════════════════════
-**  5. boundary sizes (exercise zone transitions)
-** ════════════════════════════════════════════════════════════ */
+
 static void test_boundaries(void)
 {
     SECTION("boundary sizes");
@@ -286,18 +274,23 @@ static void test_boundaries(void)
     for (int i = 0; i < n; i++) MY_FREE(ptrs[i]);
 }
 
-/* ════════════════════════════════════════════════════════════
-**  main
-** ════════════════════════════════════════════════════════════ */
-int main(void)
-{
+
+int main(void) {
+
+    
     printf("=== ft_malloc test suite ===\n");
     test_malloc_basic();
+
     test_malloc_stress();
+
     test_free();
+
     test_realloc();
+
     test_interleaved();
+
     test_boundaries();
+
     printf("\n=== results: %d passed, %d failed ===\n", g_pass, g_fail);
     return (g_fail ? 1 : 0);
 }

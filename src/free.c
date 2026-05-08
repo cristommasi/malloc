@@ -27,7 +27,6 @@ int    free_internal(void *ptr) {
 				heap = heap->next;
 				continue;
 			}
-			printf("%zu\n", heap_free_size(heap));
 			printf("chunk_belongs_to_heap\n");
 			if (!has_flags(chunk, IN_USE) && !has_flags(chunk, IS_CIS)) {
 				printf("free_internal is FREE\n");
@@ -40,25 +39,20 @@ int    free_internal(void *ptr) {
 			if (heap->blocks >= 1) {
 
 				if (i == 0) {
-					printf("arena_fastbin_set\n");	
 					arena_fastbin_set(heap, chunk);
 				}
 				else if (i == 1) {
-					printf("arena_smallbin_set\n");	
 					arena_smallbin_set(heap, chunk);
 				}
 				else if (i == 2) {
-					printf("heap->blocks\n");	
 					heap->blocks = 0;
 				}
-			}
-			if (heap->blocks == 0) {
-				printf("arena_heap_munmap\n");	
-				return arena_heap_munmap(heap, heads[i]);
+				if (heap->blocks == 0)
+					return arena_heap_munmap(heap, heads[i]);
 			}
 			heap = heap->next;
 		}
 	}
-	return F_INV_PTR_ERROR;
+	return F_NO_ERROR;
 }
 

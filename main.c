@@ -256,6 +256,7 @@ static void test_realloc_cross_type(void) {
 
     // small → large
     p = ft_malloc(512);
+    
     memset(p, 0x22, 512);
     r = ft_realloc(p, 2048);         // 2048 > SMALL_CHUNK_MAX → large
     EXPECT_NOT_NULL("realloc small→large", r);
@@ -426,6 +427,6 @@ int main(void) {
     // test_mallopt();
     // test_stress();
 
-    print_summary();
+    // print_summary();
     return (g_fail > 0) ? 1 : 0;
 }

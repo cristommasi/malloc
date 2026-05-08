@@ -15,25 +15,39 @@ t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags) {
 	return (new_chunk);
 }
 
-void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need) {
+void	chunk_split_center(t_heap *heap, t_chunk *chunk, size_t new_size) {
+	
+	t_chunk	*next;
+	t_chunk	*new_free;
+	size_t	old_size;
+	size_t	free_size;
 
-	t_chunk	*next         = get_next_chunk(heap, chunk);
+	old_size = get_size(chunk);
 
-	set_size(chunk, need);
+	if (old_size <= new_size + CHUNK_INUSE_SIZE)
+		return ;
 
+	free_size = old_size - new_size - CHUNK_INUSE_SIZE;
 
-	size_t	new_free_size = get_size(chunk) - CHUNK_INUSE_SIZE - need;
-	t_chunk *new_free     = chunk_new( 
-		(char*)chunk + CHUNK_INUSE_SIZE + need, 
-		0, 
-		new_free_size, 
+	set_size(chunk, new_size);
+
+	new_free = (t_chunk *)(
+		(char *)chunk + CHUNK_INUSE_SIZE + new_size
+	);
+
+	chunk_new(
+		(char *)new_free,
+		new_size,
+		free_size,
 		NO_FLAGS
 	);
 
-	if (next) {
-		set_prevsize(next, get_size(new_free));
-	}
-	arena_fastbin_set(heap, new_free);
+	next = get_next_chunk(heap, new_free);
+
+	if (next)
+		set_prevsize(next, free_size);
+
+	arena_smallbin_set(heap, new_free);
 }
 
 void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
@@ -55,8 +69,8 @@ void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need
 		return ;
 	}
 
-	arena_fastbin_unlink(next);
-	if (has_perturb()) ft_memset(chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), need);
+	arena_smallbin_unlink(next);
+	if (has_perturb()) ft_memset((char*)chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), need);
 	
 	if (next_total > new_size) {
 
@@ -64,7 +78,7 @@ void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need
 		set_prevsize(new_free, new_size);
 		if (has_perturb()) ft_memset(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
 		chunk_relink(chunk, new_free, nnc);
-		arena_fastbin_set(heap, new_free);
+		arena_smallbin_set(heap, new_free);
 		return ;
 	}
 	chunk_relink(chunk, new_free, nnc);
@@ -102,7 +116,6 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
 
 
         if (next) {
-
 
             set_prevsize(next, get_size(center));
         }
@@ -183,10 +196,10 @@ t_chunk    *data_to_chunk(void *data_addr) {
 
 void		chunk_perturb(t_chunk *chunk, int FLAGS) {
 
+
 	if (!chunk) return ;
 
-	void *data = chunk_to_data(chunk);
-
+	void *data = (char*)chunk + ((FLAGS == FREE_PERTURB ) ? CHUNK_FREE_SIZE : CHUNK_INUSE_SIZE);
 
 	int perturb_type;
 	
@@ -197,5 +210,5 @@ void		chunk_perturb(t_chunk *chunk, int FLAGS) {
 	else
 		return ;
 	
-	ft_memset(data, perturb_type, get_size(chunk));
+	ft_memset(data, perturb_type, get_size(chunk) - ((FLAGS == FREE_PERTURB ) ? 16 : 0));
 }

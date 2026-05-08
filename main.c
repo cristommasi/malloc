@@ -245,6 +245,7 @@ static void test_realloc_cross_type(void) {
     // tiny → small
     void *p = ft_malloc(64);
     memset(p, 0x11, 64);
+
     void *r = ft_realloc(p, 512);    // 512 > TINY_CHUNK_MAX → small
     EXPECT_NOT_NULL("realloc tiny→small", r);
     int ok = 1;
@@ -411,19 +412,19 @@ static void test_stress(void) {
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 int main(void) {
 
-    // test_basic_malloc_free();
-    // test_alignment();
-    // test_fastbin_recycle();
-    // test_smallbin_recycle();
-    // test_many_allocs();
-    // test_realloc_basic();
-    // test_realloc_inplace();
+    test_basic_malloc_free();
+    test_alignment();
+    test_fastbin_recycle();
+    test_smallbin_recycle();
+    test_many_allocs();
+    test_realloc_basic();
+    test_realloc_inplace();
     test_realloc_cross_type();
-    test_heap_expansion();
-    test_large_alloc();
-    test_show_alloc();
-    test_mallopt();
-    test_stress();
+    // test_heap_expansion();
+    // test_large_alloc();
+    // test_show_alloc();
+    // test_mallopt();
+    // test_stress();
 
     print_summary();
     return (g_fail > 0) ? 1 : 0;

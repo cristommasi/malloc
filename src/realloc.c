@@ -8,7 +8,6 @@ void    *realloc_internal(void *ptr, size_t size) {
     size_t      p_new_size   = ALIGN(size);
     size_t      cur_size     = 0;
 
-    
     if (ptr == NULL) {
 
 		pthread_mutex_unlock(&g_lock);
@@ -35,12 +34,12 @@ void    *realloc_internal(void *ptr, size_t size) {
 		
         return (ptr);
 	}
-    if (heap_is_different_type(p_new_size, cur_size)) {
-		printf("headiffsize\n");
+    if (heap_is_different_type(p_new_size, cur_size) || heap_type(p_new_size) == HEAP_TINY) {
+
         return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
 	}
-	else if (p_new_size != cur_size) {
-		
+	else if (p_new_size != cur_size && heap_type(p_new_size) == HEAP_SMALL) {
+
 		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
 			return (chunk_to_data(chunk));
 	}

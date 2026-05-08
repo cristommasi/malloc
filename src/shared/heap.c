@@ -10,15 +10,15 @@ t_heap		*heap_new_and_append(size_t size) {
 		return (MAP_FAILED);
 	}
 	if (size >= get_mmap_threshold()) {
-		printf("largeheap\n");
+
 		heap_append(&g_arena.large, new_heap);
 	}
 	else if (zone_size == TINY_HEAP_SIZE) {
-		printf("tinyheap\n");
+
 		heap_append(&g_arena.tiny, new_heap);
 	}
 	else if (zone_size == SMALL_HEAP_SIZE) {
-		printf("smallheap\n");
+
 		heap_append(&g_arena.small, new_heap);
 	}
 	return (new_heap);
@@ -127,7 +127,7 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 	t_chunk *next 	  = get_next_chunk(heap, chunk);
 	t_chunk *prev     = get_prev_chunk(heap, chunk);
   	size_t   cur_size = get_size(chunk);
-    size_t   need     = size - cur_size;
+    size_t   need     = cur_size - size;
 
 
 
@@ -143,7 +143,7 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 	}
 	else if (prev && prev_chunk_suffices(prev, need)) {
 
-		arena_fastbin_unlink(prev);
+		arena_smallbin_unlink(prev);
 		chunk_split_left(heap, chunk, prev, need);
 		return (prev);
 	}
@@ -171,10 +171,12 @@ bool		heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
     return (heap_cis_mem_size(heap) >= to_add);
 }
 
-t_chunk		*heap_to_chunk(t_heap *heap_addr) {
+t_chunk *heap_to_chunk(t_heap *heap) {
 
-	if (!heap_addr) return (NULL);
-    return ((t_chunk *)((char *)heap_addr + sizeof(t_heap)));
+	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
+	addr = ALIGN(addr);
+
+	return ((t_chunk *)addr);
 }
 
 bool		heap_is_different_type(size_t sizeA, size_t sizeB) {

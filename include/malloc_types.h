@@ -16,6 +16,13 @@ typedef struct s_chunk {
 	struct s_chunk	*prev;
 }                   t_chunk;
 
+typedef enum e_heap_type
+{
+	HEAP_TINY,
+	HEAP_SMALL,
+	HEAP_LARGE
+}	t_heap_type;
+
 // can be 64
 typedef struct s_heap {
 

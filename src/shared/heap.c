@@ -10,15 +10,15 @@ t_heap		*heap_new_and_append(size_t size) {
 		return (MAP_FAILED);
 	}
 	if (size >= get_mmap_threshold()) {
-
+		printf("largeheap\n");
 		heap_append(&g_arena.large, new_heap);
 	}
 	else if (zone_size == TINY_HEAP_SIZE) {
-
+		printf("tinyheap\n");
 		heap_append(&g_arena.tiny, new_heap);
 	}
 	else if (zone_size == SMALL_HEAP_SIZE) {
-
+		printf("smallheap\n");
 		heap_append(&g_arena.small, new_heap);
 	}
 	return (new_heap);
@@ -83,9 +83,9 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	if (has_perturb())
 		chunk_perturb(new_inuse_chunk, ALLOC_PERTURB);
 
-	if (remaining > size + (2 * CHUNK_INUSE_SIZE)) {
+	if (remaining > size + CHUNK_INUSE_SIZE + CHUNK_FREE_SIZE) {
 
-		size_t	new_free_size = remaining - size - (2 * CHUNK_INUSE_SIZE);
+		size_t	new_free_size = remaining - size - CHUNK_INUSE_SIZE - CHUNK_FREE_SIZE;
 
 		t_chunk *new_free_chunk = chunk_new( 
 			(char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, 
@@ -93,9 +93,6 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 			new_free_size, 
 			IS_CIS
 		);
-
-		if (has_perturb())
-			chunk_perturb(new_free_chunk, FREE_PERTURB);
 
 		heap->free_cis_start = new_free_chunk;
 	}
@@ -113,13 +110,10 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 
 
 	while (*cur != NULL) {
-
-
+		
 		if (heap_free_size(*cur) >= size + CHUNK_INUSE_SIZE) {
-
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
-
 			(*cur)->blocks += 1;
 			return (chunk);
 		}
@@ -185,7 +179,7 @@ t_chunk		*heap_to_chunk(t_heap *heap_addr) {
 
 bool		heap_is_different_type(size_t sizeA, size_t sizeB) {
 
-	return (heap_chunk_size(sizeA) != heap_chunk_size(sizeB));
+	return (heap_type(sizeA) != heap_type(sizeB));
 
 }
 
@@ -203,18 +197,17 @@ size_t		heap_page_size(size_t size) {
 	return (0);
 }
 
-size_t		heap_type(size_t size) {
+t_heap_type		heap_type(size_t size)
+{
+	size = ALIGN(size);
 
-	if (size > get_mmap_threshold()) {
-		return (LARGE_CHUNK_MIN);
-	}
-	else if (size <= TINY_CHUNK_MAX) {
-		return (TINY_CHUNK_MAX);
-	}
-	else if (size <= SMALL_CHUNK_MAX) {
-		return (SMALL_CHUNK_MAX); 
-	}
-	return (0);
+	if (size <= TINY_CHUNK_MAX)
+		return (HEAP_TINY);
+
+	if (size <= SMALL_CHUNK_MAX)
+		return (HEAP_SMALL);
+
+	return (HEAP_LARGE);
 }
 
 size_t		heap_chunk_size(size_t size) {

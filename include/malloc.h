@@ -65,7 +65,7 @@ bool		heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add);
 t_chunk		*heap_to_chunk(t_heap *heap_addr);
 size_t		heap_page_size(size_t size);
 size_t		heap_chunk_size(size_t size);
-size_t		heap_type(size_t size);
+t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
 
 

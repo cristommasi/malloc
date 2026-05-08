@@ -70,7 +70,7 @@
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32
 
- // 8, 16, 32, 48, 64, 80, 96, 112, 128
+ //  16, 32, 48, 64, 80, 96, 112, 128
 #define FASTBIN_MIN_CHUNK 16
 
 #define SMALLBIN_MIN_CHUNK 160

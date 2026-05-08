@@ -122,13 +122,14 @@ bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 
 	if (!heap || !chunk)
 		return (false);
-	char *start = (char*)(heap + 1);
+	char *start = (char*)heap + sizeof(t_heap);
 	char *end = start + heap->total_size;
 
 	return ((char *)chunk >= start && (char *)chunk <= end);
 }
 
 t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
+
 
 	char *addr = ((char*)chunk + CHUNK_INUSE_SIZE + get_size(chunk));
 
@@ -185,7 +186,7 @@ void		chunk_perturb(t_chunk *chunk, int FLAGS) {
 	if (!chunk) return ;
 
 	void *data = chunk_to_data(chunk);
-	if ((char *)data == NULL) return ;
+
 
 	int perturb_type;
 	

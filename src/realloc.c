@@ -36,7 +36,7 @@ void    *realloc_internal(void *ptr, size_t size) {
         return (ptr);
 	}
     if (heap_is_different_type(p_new_size, cur_size)) {
-		
+		printf("headiffsize\n");
         return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
 	}
 	else if (p_new_size != cur_size) {

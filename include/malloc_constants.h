@@ -119,7 +119,8 @@ int		SBIN_IDX(size_t size);
 #define _M_MMAP_T_DEFAULT               (size_t)1017
 
  // mallopt()
-#define M_PARAM_ERROR                   1
+#define M_PARAM_ERROR                   0
+#define M_PARAM_SUCCESS                 1
 #define M_ARENA_MAX_EXCEEDED_ERROR     ((void*)-2)
 #define F_MUMMAP_ERROR                 -1
 #define F_NO_ERROR                      0

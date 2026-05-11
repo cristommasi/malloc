@@ -26,6 +26,9 @@ typedef enum e_heap_type
 // can be 64
 typedef struct s_heap {
 
+	size_t        	p1;
+	size_t        	p2;
+	size_t        	p3;
 	size_t        	blocks;
 	size_t          total_size;
 	t_chunk         *free_cis_start;

@@ -13,7 +13,7 @@ void    free_internal(void *ptr) {
 	if (ptr == NULL)
 		return free_exit(F_NO_ERROR);
 
-
+	
 	if ((chunk = data_to_chunk(ptr)) == NULL)
 		return free_exit(F_INV_PTR_ERROR);
 	
@@ -47,8 +47,10 @@ void    free_internal(void *ptr) {
 				else if (i == 2) {
 					heap->blocks = 0;
 				}
-				if (heap->blocks == 0)
+				if (heap->blocks == 0) {
+
 					return free_exit(arena_heap_munmap(heap, heads[i]));
+				}
 
 	
 			}

@@ -98,18 +98,7 @@ int     ft_mallopt(int param, int value) {
     pthread_mutex_lock(&g_lock);
 
     int ret = mallopt_internal(param, value);
-    if (ret == M_PARAM_ERROR) {
-        uint8_t check = get_check();
-
-        if (check == 1)
-            write(2, M_PARAM_ERR_MSG, sizeof(M_PARAM_ERR_MSG));
-        if (check == 2)
-            abort();
-        else if (check == 3) {
-            write(2, M_PARAM_ERR_MSG, sizeof(M_PARAM_ERR_MSG));
-            abort();
-        }
-    }
+    
     pthread_mutex_unlock(&g_lock);
     return (ret);
 }

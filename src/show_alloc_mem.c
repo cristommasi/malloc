@@ -35,8 +35,6 @@ void    show_alloc_mem_internal(void) {
                 else
                     heap_addr = heap_addr + CHUNK_INUSE_SIZE;
             }
-                ft_putstr_fd("Blocks: ", STDOUT_FILENO);
-    printf("%d\n", blocks);
             cur_heap = cur_heap->next;
         }
     }

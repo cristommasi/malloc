@@ -45,7 +45,7 @@ t_heap		*heap_new(size_t zone_size) {
 	size_t flags = (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) ? (IS_LARGE | IS_CIS) : IS_CIS;
 
 	t_chunk *new_chunk = chunk_new((char*)new_heap->free_cis_start, 0, zone_size - CHUNK_INUSE_SIZE, flags);
-
+	
 	if (has_perturb())
 		chunk_perturb(new_chunk, FREE_PERTURB);
 	return (new_heap);
@@ -132,7 +132,7 @@ t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 
 
 	if (size < cur_size && size >= MIN_TRIM) {
-
+		
         chunk_split_center(heap, chunk, need);
         return (chunk);
     }
@@ -174,7 +174,7 @@ bool		heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
 t_chunk *heap_to_chunk(t_heap *heap) {
 
 	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
-	addr = ALIGN(addr);
+	// addr = ALIGN(addr);
 
 	return ((t_chunk *)addr);
 }

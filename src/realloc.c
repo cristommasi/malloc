@@ -10,9 +10,7 @@ void    *realloc_internal(void *ptr, size_t size) {
 
     if (ptr == NULL) {
 
-		pthread_mutex_unlock(&g_lock);
         ptr = malloc_internal(size);
-        pthread_mutex_lock(&g_lock);
         return (ptr);
 	}
     if ((chunk = data_to_chunk(ptr)) == NULL) {

@@ -224,7 +224,7 @@ static void test_realloc_inplace(void) {
         if (((unsigned char*)r)[i] != 0xAB) ok = 0;
     ok ? pass("data preserved after grow") : fail("grow", "data not preserved");
     ft_free(r);
-
+    // show_alloc_mem();
     // shrink small → still small
     p = ft_malloc(512);
     memset(p, 0xCD, 512);
@@ -252,6 +252,8 @@ static void test_realloc_cross_type(void) {
     for (int i = 0; i < 64 && ok; i++)
         if (((unsigned char*)r)[i] != 0x11) ok = 0;
     ok ? pass("data preserved tiny→small") : fail("tiny→small", "data not preserved");
+
+
     ft_free(r);
 
     // small → large
@@ -421,12 +423,12 @@ int main(void) {
     test_realloc_basic();
     test_realloc_inplace();
     test_realloc_cross_type();
-    // test_heap_expansion();
-    // test_large_alloc();
-    // test_show_alloc();
-    // test_mallopt();
-    // test_stress();
+    test_heap_expansion();
+    test_large_alloc();
+    test_show_alloc();
+    test_mallopt();
+    test_stress();
 
-    // print_summary();
+    print_summary();
     return (g_fail > 0) ? 1 : 0;
 }

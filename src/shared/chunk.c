@@ -31,17 +31,15 @@ void	chunk_split_center(t_heap *heap, t_chunk *chunk, size_t new_size) {
 
 	set_size(chunk, new_size);
 
-	new_free = (t_chunk *)(
-		(char *)chunk + CHUNK_INUSE_SIZE + new_size
-	);
 
-	chunk_new(
-		(char *)new_free,
-		new_size,
+
+	new_free = chunk_new(
+		(char *)chunk + CHUNK_INUSE_SIZE + new_size,
+		0,
 		free_size,
 		NO_FLAGS
 	);
-
+	heap->blocks += 1;
 	next = get_next_chunk(heap, new_free);
 
 	if (next)
@@ -145,9 +143,12 @@ t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
 
 	char *addr = ((char*)chunk + CHUNK_INUSE_SIZE + get_size(chunk));
+	char *end = (char*)heap_to_chunk(heap) + heap->total_size;
 
-	if (addr >= (char*)heap + sizeof(t_heap) + heap->total_size)
+	if (addr >= end) {
+
 		return (NULL);
+	}
 	return ( (t_chunk *)((char*)chunk + CHUNK_INUSE_SIZE + get_size(chunk)) );
 }
 

@@ -11,7 +11,7 @@ void    *realloc_internal(void *ptr, size_t size) {
     if (ptr == NULL) {
 
 		pthread_mutex_unlock(&g_lock);
-        ptr = ft_malloc(size);
+        ptr = malloc_internal(size);
         pthread_mutex_lock(&g_lock);
         return (ptr);
 	}
@@ -25,9 +25,7 @@ void    *realloc_internal(void *ptr, size_t size) {
 	}
     if (size == 0) {
 		
-		pthread_mutex_unlock(&g_lock);
-        ft_free(ptr);
-        pthread_mutex_lock(&g_lock);
+        free_internal(ptr);
         return (NULL);
 	}
     if ((cur_size = get_size(chunk)) == p_new_size) {
@@ -35,11 +33,11 @@ void    *realloc_internal(void *ptr, size_t size) {
         return (ptr);
 	}
     if (heap_is_different_type(p_new_size, cur_size) || heap_type(p_new_size) == HEAP_TINY) {
-        printf("heap_is_different_type\n");
+
         return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
 	}
 	else if (p_new_size != cur_size && heap_type(p_new_size) == HEAP_SMALL) {
-        printf("heap_realloc_in_place\n");
+
 		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
 			return (chunk_to_data(chunk));
 	}

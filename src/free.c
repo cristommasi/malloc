@@ -2,7 +2,7 @@
 
 
 
-int    free_internal(void *ptr) {
+void    free_internal(void *ptr) {
 	
 	t_chunk *chunk        = NULL;
 	t_heap *groups[3]     = { g_arena.tiny, g_arena.small, g_arena.large };
@@ -11,11 +11,11 @@ int    free_internal(void *ptr) {
 
 
 	if (ptr == NULL)
-		return F_NO_ERROR;
+		return free_exit(F_NO_ERROR);
 
 
 	if ((chunk = data_to_chunk(ptr)) == NULL)
-		return F_INV_PTR_ERROR;
+		return free_exit(F_INV_PTR_ERROR);
 	
 	for (int i = 0; i < 3; i++) {
 
@@ -30,11 +30,11 @@ int    free_internal(void *ptr) {
 
 			if (!has_flags(chunk, IN_USE) && !has_flags(chunk, IS_CIS)) {
 
-				return F_DOUBLE_FREE_ERROR;
+				return free_exit(F_DOUBLE_FREE_ERROR);
 			}
 			else if (!has_flags(chunk, IN_USE) && has_flags(chunk, IS_CIS)) {
 
-				return F_INV_PTR_ERROR;
+				return free_exit(F_INV_PTR_ERROR);
 			}
 			if (heap->blocks >= 1) {
 
@@ -48,11 +48,52 @@ int    free_internal(void *ptr) {
 					heap->blocks = 0;
 				}
 				if (heap->blocks == 0)
-					return arena_heap_munmap(heap, heads[i]);
+					return free_exit(arena_heap_munmap(heap, heads[i]));
+
+	
 			}
 			heap = heap->next;
 		}
 	}
-	return F_NO_ERROR;
+	return free_exit(F_NO_ERROR);
 }
 
+
+void	free_exit(int err) {
+
+    uint8_t check = get_check();
+    if (err == -1) {
+
+        if (check == 1)
+            write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_MUNMAP_MSG, sizeof(F_MUNMAP_MSG));
+            abort();
+        }
+    }
+	if (err == F_DOUBLE_FREE_ERROR) {
+
+        if (check == 1)
+            write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_DOUBLE_FREE_MSG, sizeof(F_DOUBLE_FREE_MSG));
+            abort();
+        }
+	}
+	else if (err == F_INV_PTR_ERROR) {
+
+        if (check == 1)
+            write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
+        if (check == 2)
+            abort();
+        else if (check == 3) {
+            write(2, F_INV_PTR_MSG, sizeof(F_INV_PTR_MSG));
+            abort();
+        }
+	}
+
+}

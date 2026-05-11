@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-// ─── color helpers ────────────────────────────────────────────────────────────
+
 #define RED     "\033[0;31m"
 #define GREEN   "\033[0;32m"
 #define YELLOW  "\033[0;33m"
@@ -46,16 +46,16 @@ static void print_summary(void) {
 }
 
 
-// ─── 1. BASIC MALLOC / FREE ───────────────────────────────────────────────────
+
 static void test_basic_malloc_free(void) {
     print_section("Basic malloc / free");
 
-    // malloc(0) must return a usable non-NULL pointer per your impl (size = 16)
+
     void *p0 = ft_malloc(0);
     EXPECT_NOT_NULL("malloc(0) non-NULL", p0);
     ft_free(p0);
 
-    // Tiny allocation (≤ TINY_CHUNK_MAX = 144)
+
     void *p1 = ft_malloc(1);
     EXPECT_NOT_NULL("malloc(1) tiny", p1);
     *(char*)p1 = 'A';

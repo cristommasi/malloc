@@ -15,17 +15,12 @@ int			arena_heap_munmap(t_heap *to_free, t_heap **head) {
 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 
-	pthread_mutex_unlock(&g_lock);
-	void *new_ptr = ft_malloc(p_new_size);
-	pthread_mutex_lock(&g_lock);
-
+	void *new_ptr = malloc_internal(p_new_size);
 	if (!new_ptr) {
 		return (NULL);
 	}
 	ft_memmove(new_ptr, ptr, get_min(p_new_size, cur_size));
-	pthread_mutex_unlock(&g_lock);
-	ft_free(ptr);
-	pthread_mutex_lock(&g_lock);
+	free_internal(ptr);
 	return (new_ptr);
 }
 

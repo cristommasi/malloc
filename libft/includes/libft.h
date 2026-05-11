@@ -6,7 +6,7 @@
 /*   By: ctommasi <ctommasi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 16:41:22 by ctommasi          #+#    #+#             */
-/*   Updated: 2026/05/05 15:28:39 by ctommasi         ###   ########.fr       */
+/*   Updated: 2026/05/11 11:56:55 by ctommasi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
 /// @brief Returns a new allocated string which is s1 trimmed by set.
 char	*ft_strtrim(char const *s1, char const *set);
-/// @brief Split a string by char into a array of strings.
-char	**ft_split(char const *s, char c);
 /// @brief Converts an int into a str.
 char	*ft_itoa(int n);
 /// @brief writes a size_t address in hex with trailing 0s to fd.

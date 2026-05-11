@@ -116,13 +116,14 @@ void        print_data_bytes_ascii(char *data);
 void		*ft_malloc(size_t size);
 void		 ft_free(void *ptr);
 void    	*ft_realloc(void *ptr, size_t size);
-int		    free_internal(void *ptr);
+void		 free_internal(void *ptr);
 void		*malloc_internal(size_t size);
 void		*realloc_internal(void *ptr, size_t size);
 void		show_alloc_mem(void);
 void		show_alloc_mem_internal(void);
 int         ft_mallopt(int param, int value);
 int		    mallopt_internal(int param, int value);
+void	    free_exit(int err);
 
 void		show_alloc_mem_ex(int show_free_zones);
 void		show_alloc_mem_ex_internal(int show_free_zones);

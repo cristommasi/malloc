@@ -51,8 +51,6 @@ void    free_internal(void *ptr) {
 
 					return free_exit(arena_heap_munmap(heap, heads[i]));
 				}
-
-	
 			}
 			heap = heap->next;
 		}

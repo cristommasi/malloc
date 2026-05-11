@@ -10,8 +10,6 @@ t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags) {
 	set_prevsize(new_chunk, prev_s);
 	set_size(new_chunk, size);
 	set_flags(new_chunk, flags);
-	// new_chunk->next = NULL;
-	// new_chunk->prev = NULL;
 	return (new_chunk);
 }
 

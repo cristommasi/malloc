@@ -72,7 +72,7 @@ bool		heap_is_different_type(size_t sizeA, size_t sizeB);
 void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need);
 void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
 void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
-t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
+t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
 bool		chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk);
 bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
 t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk);
@@ -84,6 +84,7 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk		*data_to_chunk(void *data_addr);
 void        chunk_perturb(t_chunk *chunk, int FLAGS);
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
+int		    chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
 
 
 void		set_size(t_chunk *chunk, size_t size);
@@ -109,9 +110,9 @@ size_t      get_mmap_threshold(void);
 
 void		print_heap_type(int index, t_heap *cur);
 void		print_chunk(char *start, char *end, size_t bytes);
-size_t      print_data_in_chunk(t_chunk *cur_chunk, int show_free_zones);
-void        print_data_bytes_hex(char *data);
-void        print_data_bytes_ascii(char *data);
+size_t      print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size);
+void        print_data_bytes_ascii(char *data, size_t len);
+void        print_data_bytes_hex(char *data, size_t len);
 
 void		*ft_malloc(size_t size);
 void		 ft_free(void *ptr);

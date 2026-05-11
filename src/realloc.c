@@ -36,7 +36,7 @@ void    *realloc_internal(void *ptr, size_t size) {
 	}
 	else if (p_new_size != cur_size && heap_type(p_new_size) == HEAP_SMALL) {
 
-		if ((chunk = heap_realloc_in_place(heap, chunk, p_new_size)) != NULL)
+		if ((chunk = chunk_realloc_in_place(heap, chunk, p_new_size)) != NULL)
 			return (chunk_to_data(chunk));
 	}
     return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));

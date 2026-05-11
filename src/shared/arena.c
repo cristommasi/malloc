@@ -86,7 +86,7 @@ t_chunk     *arena_fastbin_get(size_t size) {
 	set_flags(chunk, IN_USE);
 
 	if (has_perturb())
-		chunk_perturb(chunk, ALLOC_PERTURB);
+		ft_memset((char*)chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(chunk));
 
 	return (chunk);
 }
@@ -114,7 +114,7 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 		heap->blocks -= 1;
 
 	if (has_perturb())
-		chunk_perturb(freed_chunk, FREE_PERTURB);
+		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
 
 	if (heap->blocks == 0)
 		arena_fastbin_drain(heap);
@@ -183,7 +183,7 @@ t_chunk		*arena_smallbin_get(size_t size) {
 		head->prev = NULL;
 		set_flags(head, IN_USE);
 		if (has_perturb())
-			chunk_perturb(head, ALLOC_PERTURB);
+			ft_memset((char*)head + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(head));
 		return (head);
 	}
 
@@ -195,31 +195,29 @@ t_chunk		*arena_smallbin_get(size_t size) {
 	set_flags(tail, IN_USE);
 
 	if (has_perturb())
-		chunk_perturb(tail, ALLOC_PERTURB);
+		ft_memset((char*)tail + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(tail));
 
 	return (tail);
 }
 
+
 void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	size_t		size = get_size(freed_chunk);
+	unset_flags(freed_chunk, IN_USE);
+	// if (chunk_coalesce(heap, freed_chunk))
+	// 	return ;
+
+	size_t		size  = get_size(freed_chunk);
 	int			index = SBIN_IDX(size);
 	t_chunk		*head;
 	t_chunk		*tail;
-	t_chunk		*next;
-
 
 	if (index == -1) {
-
 		return ;
 	}
-
-	unset_flags(freed_chunk, IN_USE);
-
-	if ((next = get_next_chunk(heap, freed_chunk)) != NULL) {
-		set_prevsize(next, size);
+	if (has_perturb()) {
+		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
 	}
-
 
 	if (!g_arena.smallbin[index]) {
 
@@ -237,14 +235,7 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 		g_arena.smallbin[index] = freed_chunk;
 	}
 
-	if (heap->blocks >= 1) {
-		heap->blocks -= 1;
-	}
-
-	if (has_perturb()) {
-		chunk_perturb(freed_chunk, FREE_PERTURB);
-	}
-
+	heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
 	if (heap->blocks == 0) {
 		arena_smallbin_drain(heap);
 	}

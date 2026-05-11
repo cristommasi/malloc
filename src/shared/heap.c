@@ -47,7 +47,8 @@ t_heap		*heap_new(size_t zone_size) {
 	t_chunk *new_chunk = chunk_new((char*)new_heap->free_cis_start, 0, zone_size - CHUNK_INUSE_SIZE, flags);
 	
 	if (has_perturb())
-		chunk_perturb(new_chunk, FREE_PERTURB);
+		ft_memset(((char*)new_chunk + CHUNK_FREE_SIZE), get_perturb_free(), get_size(new_chunk) - 16);
+		// chunk_perturb(new_chunk, FREE_PERTURB);
 	return (new_heap);
 }
 
@@ -78,23 +79,21 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	unset_flags(new_inuse_chunk, IS_CIS);
 	set_size(new_inuse_chunk, size);
 	set_flags(new_inuse_chunk, IN_USE);
-	new_inuse_chunk->next = NULL;
-	new_inuse_chunk->prev = NULL;
+
 	if (has_perturb())
-		chunk_perturb(new_inuse_chunk, ALLOC_PERTURB);
+		ft_memset((char*)new_inuse_chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), size);
+
 
 	if (remaining > size + CHUNK_INUSE_SIZE + CHUNK_FREE_SIZE) {
 
 		size_t	new_free_size = remaining - size - CHUNK_INUSE_SIZE - CHUNK_FREE_SIZE;
 
-		t_chunk *new_free_chunk = chunk_new( 
-			(char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, 
-			0,
-			new_free_size, 
-			IS_CIS
-		);
-
+		t_chunk *new_free_chunk = chunk_new( (char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, 0, new_free_size, IS_CIS);
 		heap->free_cis_start = new_free_chunk;
+		new_free_chunk->next = NULL;
+		new_free_chunk->prev = NULL;
+		if (has_perturb())
+			ft_memset((char*)heap->free_cis_start + CHUNK_FREE_SIZE, get_perturb_free(), new_free_size - 16);
 	}
 	else {
 
@@ -122,33 +121,6 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 	return (NULL);
 }
 
-t_chunk		*heap_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
-
-	t_chunk *next 	  = get_next_chunk(heap, chunk);
-	t_chunk *prev     = get_prev_chunk(heap, chunk);
-  	size_t   cur_size = get_size(chunk);
-    size_t   need     = cur_size - size;
-
-
-
-	if (size < cur_size && size >= MIN_TRIM) {
-		
-        chunk_split_center(heap, chunk, need);
-        return (chunk);
-    }
-	else if (next && next_chunk_suffices(next, need)) {
-
-		chunk_split_right(heap, chunk, next, need);
-		return (chunk);
-	}
-	else if (prev && prev_chunk_suffices(prev, need)) {
-
-		arena_smallbin_unlink(prev);
-		chunk_split_left(heap, chunk, prev, need);
-		return (prev);
-	}
-	return (NULL);
-}
 
 bool		heap_has_remaining_cis(t_heap *heap, size_t size) {
 
@@ -174,7 +146,6 @@ bool		heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
 t_chunk *heap_to_chunk(t_heap *heap) {
 
 	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
-	// addr = ALIGN(addr);
 
 	return ((t_chunk *)addr);
 }

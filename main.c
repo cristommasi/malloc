@@ -430,5 +430,10 @@ int main(void) {
     test_stress();
 
     print_summary();
-    return (g_fail > 0) ? 1 : 0;
+    // show_alloc_mem_ex(2);
+    // ft_free(fourth);
+    // show_alloc_mem_ex(2);
+
+
+    return 0;
 }

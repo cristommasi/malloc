@@ -39,7 +39,6 @@ void    free_internal(void *ptr) {
 			if (heap->blocks >= 1) {
 
 				if (i == 0) {
-					
 					arena_fastbin_set(heap, chunk);
 				}
 				else if (i == 1) {
@@ -48,10 +47,15 @@ void    free_internal(void *ptr) {
 				else if (i == 2) {
 					heap->blocks = 0;
 				}
-				if (heap->blocks == 0) {
-
-					return free_exit(arena_heap_munmap(heap, heads[i]));
+			}
+			if (heap->blocks == 0) {
+				if (i == 0) {
+					arena_fastbin_drain(heap);
 				}
+				else if (i == 1) {
+					arena_smallbin_drain(heap);
+				}
+				return free_exit(arena_heap_munmap(heap, heads[i]));
 			}
 			heap = heap->next;
 		}

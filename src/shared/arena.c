@@ -116,8 +116,8 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	if (has_perturb())
 		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
 
-	if (heap->blocks == 0)
-		arena_fastbin_drain(heap);
+	// if (heap->blocks == 0)
+	// 	arena_fastbin_drain(heap);
 
 }
 
@@ -144,21 +144,17 @@ void		arena_fastbin_unlink(t_chunk *chunk) {
 void		arena_fastbin_drain(t_heap *heap) {
 
 	char		*cur = (char*)heap_to_chunk(heap);
-	char		*end = cur + heap->total_size;
+	char		*end = cur + heap->total_size - heap_free_size(heap);
 
 	while (cur < end)
 	{
 
 		t_chunk *chunk = (t_chunk*)cur;
-
-		if (has_flags(chunk, IS_CIS))
+		if (chunk && has_flags(chunk, IS_CIS)) {
 			break ;
-		if (!has_flags(chunk, IN_USE)) {
-			arena_fastbin_unlink(chunk);
-			cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
 		}
-		else
-			cur = cur + 16;
+		arena_fastbin_unlink(chunk);
+		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
 		
 	}
 }
@@ -184,7 +180,7 @@ t_chunk		*arena_smallbin_get(size_t size) {
 		set_flags(head, IN_USE);
 		if (has_perturb())
 			ft_memset((char*)head + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(head));
-
+		printf("used smallbin for size %zu\n", get_size(head));
 		return (head);
 	}
 
@@ -197,7 +193,7 @@ t_chunk		*arena_smallbin_get(size_t size) {
 
 	if (has_perturb())
 		ft_memset((char*)tail + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(tail));
-
+	printf("used smallbin for size%zu\n", get_size(tail));
 	return (tail);
 }
 
@@ -209,10 +205,10 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	int			index;
 	t_chunk		*head;
 	t_chunk		*tail;
-
+	printf("size before %zu\n", get_size(freed_chunk));
 	if ((freed_chunk = chunk_coalesce(heap, freed_chunk)) == NULL)
 		return ;
-
+	printf("size after %zu\n", get_size(freed_chunk));
 	size = get_size(freed_chunk);
 	if ((index = SBIN_IDX(size)) == -1)
 		return ;
@@ -235,11 +231,12 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 		head->prev = freed_chunk;
 		g_arena.smallbin[index] = freed_chunk;
 	}
-
+	
 	heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
-	if (heap->blocks == 0) {
-		arena_smallbin_drain(heap);
-	}
+	// if (heap->blocks == 0) {
+	
+	// 	arena_smallbin_drain(heap);
+	// }
 }
 
 void		arena_smallbin_unlink(t_chunk *chunk) {
@@ -263,24 +260,17 @@ void		arena_smallbin_unlink(t_chunk *chunk) {
 void		arena_smallbin_drain(t_heap *heap) {
 
 	char		*cur = (char*)heap_to_chunk(heap);
-	char		*end = cur + heap->total_size;
+	char		*end = cur + heap->total_size - heap_free_size(heap);
 
 	while (cur < end)
 	{
 		t_chunk *chunk = (t_chunk*)cur;
-
 		if (chunk && has_flags(chunk, IS_CIS)) {
-
 			break ;
 		}
-		if (chunk && !has_flags(chunk, IN_USE)) {
-
-			arena_smallbin_unlink(chunk);
-			cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
-		}
-		else
-			cur = cur + 16;
-	}
+		arena_smallbin_unlink(chunk);
+		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
+	}	
 }
 
 void		arena_heap_unlink(t_heap *heap, t_heap **head) {

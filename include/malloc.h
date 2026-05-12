@@ -84,7 +84,7 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk		*data_to_chunk(void *data_addr);
 void        chunk_perturb(t_chunk *chunk, int FLAGS);
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
-int		    chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
+t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
 
 
 void		set_size(t_chunk *chunk, size_t size);

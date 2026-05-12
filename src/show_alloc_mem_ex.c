@@ -4,7 +4,7 @@
 void    show_alloc_mem_ex_internal(int show_free_zones) {
 
 	t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large};
-
+	(void)show_free_zones;
 	write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
 
 	for (int i = 0; i < 3; i++) {

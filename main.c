@@ -415,25 +415,32 @@ static void test_stress(void) {
 // ─── MAIN ─────────────────────────────────────────────────────────────────────
 int main(void) {
 
-    test_basic_malloc_free();
-    test_alignment();
-    test_fastbin_recycle();
-    test_smallbin_recycle();
-    test_many_allocs();
-    test_realloc_basic();
-    test_realloc_inplace();
-    test_realloc_cross_type();
-    test_heap_expansion();
-    test_large_alloc();
-    test_show_alloc();
-    test_mallopt();
-    test_stress();
+    // test_basic_malloc_free();
+    // test_alignment();
+    // test_fastbin_recycle();
+    // test_smallbin_recycle();
+    // test_many_allocs();
+    // test_realloc_basic();
+    // test_realloc_inplace();
+    // test_realloc_cross_type();
+    // test_heap_expansion();
+    // test_large_alloc();
+    // test_show_alloc();
+    // test_mallopt();
+    // test_stress();
 
-    print_summary();
+    // print_summary();
     // show_alloc_mem_ex(2);
     // ft_free(fourth);
     // show_alloc_mem_ex(2);
 
+    char *s1 = ft_malloc(160);
+    char *s2 = ft_malloc(160);
+    char *s3 = ft_malloc(160);
+    char *s4 = ft_malloc(160);
 
+    
+
+    ft_free(s2);
     return 0;
 }

@@ -184,6 +184,7 @@ t_chunk		*arena_smallbin_get(size_t size) {
 		set_flags(head, IN_USE);
 		if (has_perturb())
 			ft_memset((char*)head + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(head));
+
 		return (head);
 	}
 
@@ -203,22 +204,22 @@ t_chunk		*arena_smallbin_get(size_t size) {
 
 void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	unset_flags(freed_chunk, IN_USE);
-	// if (chunk_coalesce(heap, freed_chunk))
-	// 	return ;
-
-	size_t		size  = get_size(freed_chunk);
-	int			index = SBIN_IDX(size);
+	
+	size_t		size;
+	int			index;
 	t_chunk		*head;
 	t_chunk		*tail;
 
-	if (index == -1) {
+	if ((freed_chunk = chunk_coalesce(heap, freed_chunk)) == NULL)
 		return ;
-	}
+
+	size = get_size(freed_chunk);
+	if ((index = SBIN_IDX(size)) == -1)
+		return ;
 	if (has_perturb()) {
 		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
 	}
-
+	unset_flags(freed_chunk, IN_USE);
 	if (!g_arena.smallbin[index]) {
 
 		g_arena.smallbin[index] = freed_chunk;

@@ -150,47 +150,60 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
     }
 }
 
-int		chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
+t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 
-	t_chunk *next = get_next_chunk(heap, freed_chunk);
-	t_chunk *prev = get_prev_chunk(heap, freed_chunk);
+	t_chunk *next;
+	t_chunk *nnc;
+	t_chunk *prev;
 
+	if (!freed_chunk)
+		return (NULL);
+	prev = get_prev_chunk(heap, freed_chunk);
+	next = get_next_chunk(heap, freed_chunk);
 
-	if (prev != NULL) {
+	if (prev != NULL && !has_flags(prev, IS_CIS) && !has_flags(prev, IN_USE)) {
 
-		size_t prev_size = get_size(prev);
-		if (!has_flags(prev, IS_CIS) && !has_flags(next, IN_USE)) {
+		size_t new_size = get_size(prev) + get_size(freed_chunk) + CHUNK_INUSE_SIZE;
+		if (new_size  <= SMALL_CHUNK_MAX) {
 
-			size_t new_size = get_size(freed_chunk) + CHUNK_INUSE_SIZE + prev_size;
-			if (prev_size  <= SMALL_CHUNK_MAX) {
-				arena_smallbin_unlink(prev);
-				set_size(prev, new_size);
-				freed_chunk = prev;
-			}
+			arena_smallbin_unlink(prev);
+			set_size(prev, new_size);
+			if (next)
+				set_prevsize(next, new_size);
+			return (prev);
 		}
 	}
-	if (next != NULL) {
+	if (next != NULL && !has_flags(next, IS_CIS) && !has_flags(next, IN_USE)) {
 
-		size_t next_size = get_size(next);
-		size_t new_size = get_size(freed_chunk) + CHUNK_INUSE_SIZE + next_size;
+		size_t new_size = get_size(next) + get_size(freed_chunk) + CHUNK_INUSE_SIZE;
+		if (new_size  <= SMALL_CHUNK_MAX) {
 
-		if (!has_flags(next, IS_CIS) && !has_flags(next, IN_USE)) {
-
-			if (new_size  <= SMALL_CHUNK_MAX) {
-				arena_smallbin_unlink(next);
-				set_size(freed_chunk, new_size);
-			}
-		}
-		else if (has_flags(next, IS_CIS)) {
-
+			nnc = get_next_chunk(heap, next);
+			arena_smallbin_unlink(next);
 			set_size(freed_chunk, new_size);
-			heap->free_cis_start = freed_chunk;
-			heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
-			return (1);
+			if (nnc)
+				set_prevsize(nnc, new_size);
+			return (freed_chunk);
+
 		}
-		else if (has_flags(next, IN_USE)) {
-			set_prevsize(next,  get_size(freed_chunk));
-		}
+	}
+	else if (next != NULL && has_flags(next, IS_CIS)) {
+
+		size_t cis_size = get_size(heap->free_cis_start);
+		size_t chunk_size = get_size(freed_chunk);
+	
+		set_size(freed_chunk, cis_size + chunk_size + CHUNK_INUSE_SIZE);
+		if (has_perturb())
+			ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), cis_size + chunk_size);
+
+		heap->free_cis_start = freed_chunk;
+		heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
+		return (NULL);
+	}
+	else if (next != NULL && has_flags(next, IN_USE)) {
+
+		set_prevsize(next,  get_size(freed_chunk));
+		return (freed_chunk);
 	}
 	return (0);
 }

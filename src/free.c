@@ -39,6 +39,7 @@ void    free_internal(void *ptr) {
 			if (heap->blocks >= 1) {
 
 				if (i == 0) {
+					
 					arena_fastbin_set(heap, chunk);
 				}
 				else if (i == 1) {

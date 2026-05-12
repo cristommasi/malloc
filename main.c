@@ -104,6 +104,7 @@ static void test_coalesce(void)
         char *a = ft_malloc(160);
         char *b = ft_malloc(320);
         char *c = ft_malloc(160);
+        show_alloc_mem_ex();
         ft_free(a);
         ft_free(b);
         char *big = ft_malloc(496);

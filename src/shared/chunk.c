@@ -42,7 +42,7 @@ t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 	return (NULL);
 }
 
-void	chunk_split_center(t_heap *heap, t_chunk *chunk, size_t new_size) {
+void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t new_size) {
 	
 	t_chunk	*next;
 	t_chunk	*new_free;
@@ -202,11 +202,6 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 	return (NULL);
 }
 
-bool		chunk_covers_entire_heap(t_heap *heap, t_chunk *chunk) {
-
-	return (heap->total_size == (get_size(chunk) + CHUNK_INUSE_SIZE + heap_cis_mem_size(heap)));
-}
-
 bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 
 	if (!heap || !chunk)
@@ -276,23 +271,4 @@ t_chunk    *data_to_chunk(void *data_addr) {
 	return ((t_chunk *)((char*)data_addr - CHUNK_INUSE_SIZE));
 }
 
-void		chunk_perturb(t_chunk *chunk, int FLAGS) {
 
-
-	if (!chunk) return ;
-	size_t size = get_size(chunk);
-	if (!size) return ;
-
-
-	if (FLAGS == FREE_PERTURB) {
-		if (size < 16) return ;
-		void *data = (char*)chunk + CHUNK_FREE_SIZE;
-        ft_memset(data, get_perturb_free(), size - CHUNK_INUSE_SIZE);
-	}
-    else if (FLAGS == ALLOC_PERTURB) {
-
-        void *data = (char*)chunk + CHUNK_INUSE_SIZE;
-        ft_memset(data, get_perturb_alloc(), size);
-    }
-
-}

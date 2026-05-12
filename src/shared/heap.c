@@ -121,29 +121,16 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 	return (NULL);
 }
 
+size_t		heap_free_size(t_heap *heap) {
 
-bool		heap_has_remaining_cis(t_heap *heap, size_t size) {
-
-	if (heap->free_cis_start == NULL)
-		return (false);
-	return (((char*)heap->free_cis_start + size + CHUNK_INUSE_SIZE) <= (char *)heap_to_chunk(heap) + heap->total_size);
-}
-
-size_t		heap_cis_mem_size(t_heap *heap) {
-
-	if (heap->free_cis_start == NULL)
+	if (!heap || !heap->free_cis_start)
 		return (0);
-	char *end = (char *)(heap + 1) + heap->total_size;
 
+	char *end = (char *)heap + sizeof(t_heap) + heap->total_size;
 	return ((size_t)(end - (char *)heap->free_cis_start));
 }
 
-bool		heap_cis_mem_fits_chunk(t_heap *heap, size_t to_add) {
-
-    return (heap_cis_mem_size(heap) >= to_add);
-}
-
-t_chunk *heap_to_chunk(t_heap *heap) {
+t_chunk 	*heap_to_chunk(t_heap *heap) {
 
 	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
 
@@ -170,8 +157,8 @@ size_t		heap_page_size(size_t size) {
 	return (0);
 }
 
-t_heap_type		heap_type(size_t size)
-{
+t_heap_type	heap_type(size_t size) {
+
 	size = ALIGN(size);
 
 	if (size <= TINY_CHUNK_MAX)

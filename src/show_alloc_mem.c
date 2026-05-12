@@ -11,7 +11,7 @@ void    show_alloc_mem_internal(void) {
 
         t_heap *cur_heap = HEAP_TYPES[i];
         while (cur_heap != NULL) {
-            int blocks = 0;
+            
 			print_heap_type(i, cur_heap);
             char *heap_addr = (char *)heap_to_chunk(cur_heap);
             char *heap_end   = heap_addr + cur_heap->total_size;
@@ -30,7 +30,6 @@ void    show_alloc_mem_internal(void) {
                     print_chunk(data_addr, addr_end, total_chunk_size);
                     total_size += total_chunk_size;
                     heap_addr = heap_addr + total_chunk_size;
-                    blocks += 1;
                 }
                 else
                     heap_addr = heap_addr + CHUNK_INUSE_SIZE;

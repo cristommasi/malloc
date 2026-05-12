@@ -53,14 +53,14 @@ t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
    return (NULL);
 }
 
-int		FBIN_IDX(size_t size) {
+int			FBIN_IDX(size_t size) {
 
 	if (size >= SMALLBIN_MIN_CHUNK) return (-1);
 	if (size == FASTBIN_MIN_CHUNK) return (0);
 	return (((int)size - FASTBIN_MIN_CHUNK) / ALIGNMENT);
 }
 
-int		SBIN_IDX(size_t size) {
+int			SBIN_IDX(size_t size) {
 
 	if (size < SMALLBIN_MIN_CHUNK) return (-1);
 	if (size == SMALLBIN_MIN_CHUNK) return (0);
@@ -115,9 +115,6 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 	if (has_perturb())
 		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
-
-	// if (heap->blocks == 0)
-	// 	arena_fastbin_drain(heap);
 
 }
 
@@ -180,7 +177,6 @@ t_chunk		*arena_smallbin_get(size_t size) {
 		set_flags(head, IN_USE);
 		if (has_perturb())
 			ft_memset((char*)head + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(head));
-		printf("used smallbin for size %zu\n", get_size(head));
 		return (head);
 	}
 
@@ -193,10 +189,8 @@ t_chunk		*arena_smallbin_get(size_t size) {
 
 	if (has_perturb())
 		ft_memset((char*)tail + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(tail));
-	printf("used smallbin for size%zu\n", get_size(tail));
 	return (tail);
 }
-
 
 void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
@@ -205,10 +199,10 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	int			index;
 	t_chunk		*head;
 	t_chunk		*tail;
-	printf("size before %zu\n", get_size(freed_chunk));
+
+
 	if ((freed_chunk = chunk_coalesce(heap, freed_chunk)) == NULL)
 		return ;
-	printf("size after %zu\n", get_size(freed_chunk));
 	size = get_size(freed_chunk);
 	if ((index = SBIN_IDX(size)) == -1)
 		return ;
@@ -290,7 +284,6 @@ void		arena_heap_unlink(t_heap *heap, t_heap **head) {
 	heap->next = NULL;
 	heap->prev = NULL;
 }
-
 
 t_heap      **arena_heap_group_by_chunk(size_t size) {
 

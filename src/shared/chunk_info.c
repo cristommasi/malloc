@@ -1,11 +1,5 @@
 #include "../../include/malloc.h"
 
-bool	is_large(t_chunk *chunk) {
-
-	if (!chunk)
-		return (false);
-	return (chunk->size & IS_LARGE) != 0;
-}
 
 bool	has_flags(t_chunk *chunk, size_t flag) {
 
@@ -58,19 +52,6 @@ void	set_size(t_chunk *chunk, size_t size) {
 	chunk->size = (size & L_SIZE_MASK) | flags;
 }
 
-bool	heap_end(t_heap *heap, void *addr) {
-
-	return ((char *)heap + sizeof(t_heap) + heap->total_size == (char *)addr);
-}
-
-size_t	heap_free_size(t_heap *heap) {
-
-	if (!heap || !heap->free_cis_start)
-		return (0);
-
-	char *end = (char *)heap + sizeof(t_heap) + heap->total_size;
-	return ((size_t)(end - (char *)heap->free_cis_start));
-}
 
 size_t get_min(size_t a, size_t b) {
 

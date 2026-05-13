@@ -9,12 +9,10 @@ void    *malloc_internal(size_t size) {
 	if (size == 0) size = 16;
 	size = ALIGN(size);
 	if ((chunk = arena_fastbin_get(size)) != NULL) {
-
 		if ((heap = arena_heap_find_by_chunk(chunk)) == NULL)
 			return (NULL);
 
 		heap->blocks += 1;
-
 		return (chunk_to_data(chunk));
 	}
 	else if ((chunk = arena_smallbin_get(size)) != NULL) {
@@ -27,7 +25,6 @@ void    *malloc_internal(size_t size) {
 		return (chunk_to_data(chunk));
 	}
 	else if ((chunk = heap_find_cis_mem_chunk(size)) == NULL) {
-
 
 		if ((heap = heap_new_and_append(size)) == MAP_FAILED)
 			return (NULL);

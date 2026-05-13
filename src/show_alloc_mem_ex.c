@@ -3,10 +3,14 @@
 
 void    show_alloc_mem_ex_internal(int show_type) {
 
+	printf("1111\n");
 	t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large };
+	printf("222222\n");
+	if (!HEAP_TYPES[0] && !HEAP_TYPES[1] && !HEAP_TYPES[2]) {
 
-	if (!HEAP_TYPES[0] && !HEAP_TYPES[1] && !HEAP_TYPES[2])
+		printf("3333333\n");
 		return;
+	}
 	for (int i = 0; i < 3; i++) {
 
 		t_heap *heap = HEAP_TYPES[i];

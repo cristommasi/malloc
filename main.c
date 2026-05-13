@@ -282,11 +282,11 @@ static void test_show(void)
     void *s  = ft_malloc(500);                  /* small  */
     void *l  = ft_malloc(50000);                /* large  */
     void *t2 = ft_malloc(80);                   /* tiny   */
+    printf("hehehe\n");
     void *s2 = ft_malloc(900);                  /* small  */
 
 
     INFO("─── show_alloc_mem (in-use only) ───");
-    
     show_alloc_mem();
 
     INFO("─── show_alloc_mem_ex(M_SHOW_INUSE) ───");

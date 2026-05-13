@@ -70,9 +70,11 @@ int			SBIN_IDX(size_t size) {
 }
 
 t_chunk     *arena_fastbin_get(size_t size) {
-
-	int  index        = FBIN_IDX(size);
-	if (index == -1) return (NULL);
+	
+	int  index= FBIN_IDX(size);
+	if (index == -1) {
+		return (NULL);
+	}
 
 	t_chunk	*chunk       = g_arena.fastbin[index];
 	if (chunk == NULL) return (NULL);
@@ -145,29 +147,33 @@ void		arena_fastbin_drain(t_heap *heap) {
 
 	while (cur < end)
 	{
-
 		t_chunk *chunk = (t_chunk*)cur;
-		if (chunk && has_flags(chunk, IS_CIS)) {
+		if (has_flags(chunk, IS_CIS)) {
 			break ;
 		}
-		arena_fastbin_unlink(chunk);
-		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
+		if (!has_flags(chunk, IN_USE)) {
+			arena_fastbin_unlink(chunk);
+		}
+		cur += CHUNK_INUSE_SIZE + get_size(chunk);
 		
 	}
 }
 
+
 t_chunk		*arena_smallbin_get(size_t size) {
 
 	int		index;
-	t_chunk	*head;
-	t_chunk	*tail;
+	t_chunk	*head = NULL;
+	t_chunk	*tail = NULL;
 
 	index = SBIN_IDX(size);
 	if (index == -1)
 		return (NULL);
-	
-	if (!g_arena.smallbin[index])
+
+	if (!g_arena.smallbin[index]) {
+
 		return (NULL);
+	}
 	head = g_arena.smallbin[index];
 	if (head->next == head) {
 
@@ -260,11 +266,11 @@ void		arena_smallbin_drain(t_heap *heap) {
 		if (has_flags(chunk, IS_CIS)) {
 			break ;
 		}
-		if (has_flags(chunk, IN_USE)) {
+		if (!has_flags(chunk, IN_USE)) {
 			arena_smallbin_unlink(chunk);
 		}
 		cur += CHUNK_INUSE_SIZE + get_size(chunk);
-	}	
+	}
 }
 
 void		arena_heap_unlink(t_heap *heap, t_heap **head) {

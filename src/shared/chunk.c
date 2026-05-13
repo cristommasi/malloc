@@ -152,9 +152,10 @@ void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next) {
 
 t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 
-	t_chunk *next;
-	t_chunk *nnc;
-	t_chunk *prev;
+	t_chunk *next = NULL;
+	t_chunk *nnc = NULL;
+	t_chunk *prev = NULL;
+
 
 	if (!freed_chunk)
 		return (NULL);
@@ -163,23 +164,27 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 	if (prev != NULL && !has_flags(prev, IS_CIS) && !has_flags(prev, IN_USE)) {
 
 		size_t new_size = get_size(prev) + get_size(freed_chunk) + CHUNK_INUSE_SIZE;
+	
 		if (new_size  <= SMALL_CHUNK_MAX) {
 			arena_smallbin_unlink(prev);
 			set_size(prev, new_size);
-			if (next)
+			if (next) {
 				set_prevsize(next, new_size);
+			}
 			return (prev);
 		}
 	}
 	if (next != NULL && !has_flags(next, IS_CIS) && !has_flags(next, IN_USE)) {
 
 		size_t new_size = get_size(next) + get_size(freed_chunk) + CHUNK_INUSE_SIZE;
+		
 		if (new_size  <= SMALL_CHUNK_MAX) {
 			nnc = get_next_chunk(heap, next);
 			arena_smallbin_unlink(next);
 			set_size(freed_chunk, new_size);
-			if (nnc)
+			if (nnc) {
 				set_prevsize(nnc, new_size);
+			}
 			return (freed_chunk);
 		}
 	}
@@ -187,6 +192,7 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 
 		size_t cis_size = get_size(heap->free_cis_start);
 		size_t chunk_size = get_size(freed_chunk);
+		
 		set_size(freed_chunk, cis_size + chunk_size + CHUNK_INUSE_SIZE);
 		if (has_perturb())
 			ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), cis_size + chunk_size);
@@ -214,7 +220,7 @@ bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 
 t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
 
-
+	if (!chunk) return (NULL);
 	char *addr = ((char*)chunk + CHUNK_INUSE_SIZE + get_size(chunk));
 	char *end = (char*)heap_to_chunk(heap) + heap->total_size;
 

@@ -13,17 +13,17 @@ void    *realloc_internal(void *ptr, size_t size) {
         ptr = malloc_internal(size);
         return (ptr);
 	}
+    if (size == 0) {
+		
+        free_internal(ptr);
+        return (NULL);
+	}
     if ((chunk = data_to_chunk(ptr)) == NULL) {
 		
         return (NULL);
 	}
     if ((heap = arena_heap_find_by_chunk(chunk)) == NULL) {
 		
-        return (NULL);
-	}
-    if (size == 0) {
-		
-        free_internal(ptr);
         return (NULL);
 	}
     if ((cur_size = get_size(chunk)) == p_new_size) {

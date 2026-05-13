@@ -1,6 +1,6 @@
 #include "../include/malloc.h"
 
-pthread_mutex_t	g_lock;
+pthread_mutex_t	g_lock = PTHREAD_MUTEX_INITIALIZER;
 t_arena         g_arena = {0};
 
 __attribute__((constructor))
@@ -18,16 +18,16 @@ static void malloc_ctor(void) {
     char *val = NULL;
 
 	if ((val = getenv("MALLOC_CHECK_")) != NULL) {
-		ft_mallopt(_MALLOC_CHECK_PARAM_, ft_atoi(val));
+		mallopt_internal(_MALLOC_CHECK_PARAM_, ft_atoi(val));
 	}
 	if ((val = getenv("MALLOC_PERTURB_")) != NULL) {
-		ft_mallopt(_MALLOC_PERTURB_PARAM_, ft_atoi(val));
+		mallopt_internal(_MALLOC_PERTURB_PARAM_, ft_atoi(val));
 	}
 	if ((val = getenv("MALLOC_ARENA_MAX")) != NULL) {
-		ft_mallopt(_MALLOC_ARENA_MAX_PARAM_, ft_atoi(val));
+		mallopt_internal(_MALLOC_ARENA_MAX_PARAM_, ft_atoi(val));
 	}
 	if ((val = getenv("MALLOC_MMAP_THRESHOLD_")) != NULL) {
-		ft_mallopt(_MALLOC_MMAP_THRESHOLD_PARAM_, ft_atoi(val));
+		mallopt_internal(_MALLOC_MMAP_THRESHOLD_PARAM_, ft_atoi(val));
 	}
 }
 

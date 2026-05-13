@@ -194,24 +194,23 @@ t_chunk		*arena_smallbin_get(size_t size) {
 
 void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	
 	size_t		size;
 	int			index;
-	t_chunk		*head;
-	t_chunk		*tail;
+	t_chunk		*head = NULL;
+	t_chunk		*tail = NULL;
 
+
+	if (!heap || !freed_chunk)
+		return ;
 
 	if ((freed_chunk = chunk_coalesce(heap, freed_chunk)) == NULL)
 		return ;
+
 	size = get_size(freed_chunk);
 	if ((index = SBIN_IDX(size)) == -1)
 		return ;
-	if (has_perturb()) {
-		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
-	}
 	unset_flags(freed_chunk, IN_USE);
 	if (!g_arena.smallbin[index]) {
-
 		g_arena.smallbin[index] = freed_chunk;
 		freed_chunk->next = freed_chunk;
 		freed_chunk->prev = freed_chunk;
@@ -227,26 +226,25 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	}
 	
 	heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
-	// if (heap->blocks == 0) {
-	
-	// 	arena_smallbin_drain(heap);
-	// }
+	if (has_perturb()) {
+		ft_memset((char*)freed_chunk + CHUNK_FREE_SIZE, get_perturb_free(), get_size(freed_chunk) - 16);
+	}
 }
 
 void		arena_smallbin_unlink(t_chunk *chunk) {
 
 	if (!chunk) return ;
+	size_t size = get_size(chunk);
 	if (chunk->next == chunk) {
 
 		chunk->next = NULL;
 		chunk->prev = NULL;
-		size_t size = get_size(chunk);
 		g_arena.smallbin[SBIN_IDX(size)] = NULL;
 		return ;
 	}
-
 	chunk->prev->next = chunk->next;
 	chunk->next->prev = chunk->prev;
+	g_arena.smallbin[SBIN_IDX(size)] = chunk->next;
 	chunk->next = NULL;
 	chunk->prev = NULL;
 }
@@ -259,11 +257,13 @@ void		arena_smallbin_drain(t_heap *heap) {
 	while (cur < end)
 	{
 		t_chunk *chunk = (t_chunk*)cur;
-		if (chunk && has_flags(chunk, IS_CIS)) {
+		if (has_flags(chunk, IS_CIS)) {
 			break ;
 		}
-		arena_smallbin_unlink(chunk);
-		cur = cur + CHUNK_INUSE_SIZE + get_size(chunk);
+		if (has_flags(chunk, IN_USE)) {
+			arena_smallbin_unlink(chunk);
+		}
+		cur += CHUNK_INUSE_SIZE + get_size(chunk);
 	}	
 }
 

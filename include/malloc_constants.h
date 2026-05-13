@@ -43,23 +43,21 @@
 #define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
 
 
-
  // BLOCK ALIGNMENT MULTIPLES OF 8
 #define ALIGNMENT (2 * sizeof(size_t))
 
  // MACRO FN TO ALIGN
 #define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
 
- // 102 allocs of 160
- // max bytes for a tiny request
-#define TINY_CHUNK_MAX 144
 
+ // max bytes for a tiny request
+#define TINY_CHUNK_MAX 112
 
  // max bytes for a small request
-#define SMALL_CHUNK_MAX 1016
+#define SMALL_CHUNK_MAX 1008
 
  // min default bytes for large request
-#define LARGE_CHUNK_MIN 1017
+#define LARGE_CHUNK_MIN 1009
 
 
 #define CHUNK_INUSE_SIZE (size_t)16
@@ -73,10 +71,10 @@
  //  16, 32, 48, 64, 80, 96, 112, 128
 #define FASTBIN_MIN_CHUNK 16
 
-#define SMALLBIN_MIN_CHUNK 160
+#define SMALLBIN_MIN_CHUNK 128
 
  // 0, 1, 2, 3, 4, 5, 6, 7
-#define FASTBIN_COUNT 10
+#define FASTBIN_COUNT 7
 
 #define SMALLBIN_COUNT 56
 
@@ -116,7 +114,7 @@ int		SBIN_IDX(size_t size);
 
  // _MALLOC_MMAP_THRESHOLD_
 #define _MALLOC_MMAP_THRESHOLD_PARAM_   0x3
-#define _M_MMAP_T_DEFAULT               (size_t)1017
+#define _M_MMAP_T_DEFAULT               (size_t)1009
 
  // mallopt()
 #define M_PARAM_ERROR                   0
@@ -129,8 +127,7 @@ int		SBIN_IDX(size_t size);
 
  // show_alloc_mem_ex params
 #define M_SHOW_INUSE 0
-#define M_SHOW_INUSE_FREE 1
-#define M_SHOW_ALL 2
+#define M_SHOW_ALL 1
 
  // error messages for free and mallopt()
 #define M_PARAM_ERR_MSG "mallopt(): parameter out of bounds\n"

@@ -104,7 +104,7 @@ static void test_coalesce(void)
         char *a = ft_malloc(160);
         char *b = ft_malloc(320);
         char *c = ft_malloc(160);
-        show_alloc_mem_ex();
+
         ft_free(a);
         ft_free(b);
         char *big = ft_malloc(496);
@@ -117,6 +117,13 @@ static void test_coalesce(void)
 
 int main(void)
 {
-    test_coalesce();
-    return (failed > 0 ? 1 : 0);
+    char *tiny[128];
+    int i = 0;
+
+    for (; i < 128; i++) {
+
+        tiny[i] = ft_malloc(112);
+    }
+    show_alloc_mem_ex(1);
+    return 0;
 }

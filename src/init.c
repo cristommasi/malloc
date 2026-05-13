@@ -84,11 +84,11 @@ void    show_alloc_mem(void) {
 }
 
 
-void    show_alloc_mem_ex() {
+void    show_alloc_mem_ex(int show_type) {
 
     pthread_mutex_lock(&g_lock);
 
-    show_alloc_mem_ex_internal();
+    show_alloc_mem_ex_internal(show_type);
 
     pthread_mutex_unlock(&g_lock);
 }

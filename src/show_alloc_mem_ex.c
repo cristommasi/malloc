@@ -1,40 +1,61 @@
 #include "../include/malloc.h"
 
 
-void    show_alloc_mem_ex_internal() {
+void    show_alloc_mem_ex_internal(int show_type) {
 
 	t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large };
 
 	if (!HEAP_TYPES[0] && !HEAP_TYPES[1] && !HEAP_TYPES[2])
 		return;
-
-	write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
 	for (int i = 0; i < 3; i++) {
 
 		t_heap *heap = HEAP_TYPES[i];
 		while (heap != NULL) {
-
-			print_heap_type(i, heap);
+			
+			print_heap_info(i, heap);
 			char *heap_addr = (char *)heap_to_chunk(heap);
-			char *heap_end  = (char*)heap_addr + heap->total_size;
-	
+			char *heap_end  = (char*)heap_addr + heap->total_size - CHUNK_INUSE_SIZE;
+			if (show_type)
+				heap_addr -= 16;
 			while (heap_addr < heap_end) {
 
 
                 t_chunk *cur_chunk = (t_chunk*)heap_addr;
-                size_t  chunk_size = get_size(cur_chunk);
+                
+				if (show_type) {
 
-				if (chunk_size != 0 && has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS)) {
-					print_data_in_chunk(cur_chunk, chunk_size);
-					heap_addr = heap_addr + CHUNK_INUSE_SIZE + chunk_size;
+					print_data_in_chunk(cur_chunk, 16);
 				}
-				else
-					heap_addr = heap_addr + CHUNK_INUSE_SIZE;
+				else if (!show_type) {
+
+					size_t  chunk_size = get_size(cur_chunk);
+
+					if (chunk_size != 0 && has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS)) {
+						print_data_in_chunk(cur_chunk, chunk_size);
+						heap_addr = heap_addr + CHUNK_INUSE_SIZE + chunk_size;
+						continue;
+					}
+				}
+				heap_addr = heap_addr + CHUNK_INUSE_SIZE;
 			}
+
 			heap = heap->next;
 		}
 
 	}
+}
+
+void	print_heap_info(int i, t_heap *heap) {
+
+	if (!heap) return;
+
+	write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
+	print_heap_type(i, heap);
+	ft_putstr_fd("\t\tCIS MEM : ", STDOUT_FILENO);
+	ft_puthexaddr_fd((uintptr_t)heap->free_cis_start, STDOUT_FILENO, HEX_UPPER_CASE);
+	write(STDOUT_FILENO, " (", 3);
+	ft_putul_fd(heap_free_size(heap), STDOUT_FILENO);
+	ft_putstr_fd(" bytes)\n", STDOUT_FILENO);
 }
 
 size_t  print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size) {

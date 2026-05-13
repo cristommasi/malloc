@@ -48,7 +48,6 @@ t_heap		*heap_new(size_t zone_size) {
 	
 	if (has_perturb())
 		ft_memset(((char*)new_chunk + CHUNK_FREE_SIZE), get_perturb_free(), get_size(new_chunk) - 16);
-		// chunk_perturb(new_chunk, FREE_PERTURB);
 	return (new_heap);
 }
 

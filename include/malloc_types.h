@@ -55,7 +55,7 @@ typedef struct s_arena {
 	t_heap  			*tiny;
 	t_heap  			*small;
 	t_heap  			*large;
-	t_chunk 			*fastbin[10];
+	t_chunk 			*fastbin[7];
 	t_chunk 			*smallbin[56];
 	uint32_t			count;
 

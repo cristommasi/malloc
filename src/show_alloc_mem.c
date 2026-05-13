@@ -13,6 +13,7 @@ void    show_alloc_mem_internal(void) {
         while (cur_heap != NULL) {
             
 			print_heap_type(i, cur_heap);
+            write(STDOUT_FILENO, "\n", 1);
             char *heap_addr = (char *)heap_to_chunk(cur_heap);
             char *heap_end   = heap_addr + cur_heap->total_size;
 
@@ -56,7 +57,6 @@ void print_heap_type(int index, t_heap *cur) {
         ft_putstr_fd("LARGE : ", STDOUT_FILENO);
 
 	ft_puthexaddr_fd((uintptr_t)cur, STDOUT_FILENO, 1);
-	write(STDOUT_FILENO, "\n", 1);
 }
 
 void print_chunk(char *start, char *end, size_t bytes) {

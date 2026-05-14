@@ -102,7 +102,8 @@ uint32_t    get_arena_max(void);
 bool        has_mmap_threshold(void);
 size_t      get_mmap_threshold(void); 
 
-void	    print_heap_total(t_heap *heap, size_t alloc_size, size_t free_size);
+size_t      print_data_and_chunk(char *cur_chunk, size_t chunk_size);
+void	    print_heap_total(size_t alloc_size, size_t free_size);
 void        print_total_size(size_t size);
 void        print_heap_info(int i, t_heap *heap);
 size_t      print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size); 

@@ -1,6 +1,8 @@
-#include "../include/malloc.h"
+#include "../../include/malloc.h"
 
-void	print_heap_total(t_heap *heap, size_t alloc_size, size_t free_size) {
+void	print_heap_total(size_t alloc_size, size_t free_size) {
+
+
 
 	ft_putstr_fd("ALLOC : ", STDOUT_FILENO);
 	ft_putul_fd(alloc_size, STDOUT_FILENO);
@@ -10,9 +12,6 @@ void	print_heap_total(t_heap *heap, size_t alloc_size, size_t free_size) {
 	ft_putul_fd(free_size, STDOUT_FILENO);
 	ft_putstr_fd(" bytes\n", STDOUT_FILENO);
 
-	ft_putstr_fd("CIS   : ", STDOUT_FILENO);
-	ft_putul_fd(heap_free_size(heap), STDOUT_FILENO);
-	ft_putstr_fd(" bytes\n", STDOUT_FILENO);
 }
 
 void	print_total_size(size_t size) {
@@ -28,7 +27,24 @@ void	print_heap_info(int i, t_heap *heap) {
 
 	print_heap_type(i, heap);
 	
-	write(1, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
+	write(STDOUT_FILENO, HEX_DUMP_HEADER_TXT, sizeof(HEX_DUMP_HEADER_TXT));
+}
+
+size_t  print_data_and_chunk(char *cur_chunk, size_t chunk_size) {
+
+	char    *data_addr = (char *)cur_chunk;
+	char    *data_end  = data_addr + chunk_size;
+
+	while (data_addr < data_end) {
+
+		ft_puthexaddr_fd((uintptr_t)data_addr, STDOUT_FILENO, HEX_LOWER_CASE);
+		ft_putstr_fd(": ", STDOUT_FILENO);
+		print_data_bytes_hex(data_addr, 16);
+		print_data_bytes_ascii(data_addr, 16);
+		write(STDOUT_FILENO, "\n", 1);
+		data_addr = data_addr + 16;
+	}
+	return (0);  
 }
 
 size_t  print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size) {

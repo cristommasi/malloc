@@ -126,6 +126,8 @@ size_t		heap_free_size(t_heap *heap) {
 		return (0);
 
 	char *end = (char *)heap + sizeof(t_heap) + heap->total_size;
+	if ((char *)heap->free_cis_start > end)
+        return (0);
 	return ((size_t)(end - (char *)heap->free_cis_start));
 }
 

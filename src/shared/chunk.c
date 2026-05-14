@@ -171,6 +171,8 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 			if (next) {
 				set_prevsize(next, new_size);
 			}
+			if (has_perturb())
+				ft_memset((char*)prev + CHUNK_FREE_SIZE, get_perturb_free(), new_size - 16);
 			return (prev);
 		}
 	}

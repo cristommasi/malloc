@@ -21,32 +21,38 @@ void    show_alloc_mem_ex_internal(int show_type) {
 			size_t  free_size = 0;
 
 			print_heap_info(i, heap);
-			if (show_type) heap_addr -= 16;
-
 			while (heap_addr < heap_end) {
-
-                t_chunk *cur_chunk = (t_chunk*)heap_addr;
-				size_t  chunk_size = get_size(cur_chunk);
-                
-				if (chunk_size != 0 && !has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS)) {
-
-					if (show_type)
-						print_data_in_chunk(cur_chunk, 16);
-					free_size += chunk_size;
-				}
-				else if (chunk_size != 0 && has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS)) {
-
-					if (!show_type)
-						print_data_in_chunk(cur_chunk, chunk_size);
-					else
-						print_data_in_chunk(cur_chunk, 16);
-					alloc_size += chunk_size;
-					heap_addr += chunk_size;
-				}
-				heap_addr += CHUNK_INUSE_SIZE;
+			    t_chunk *cur_chunk  = (t_chunk*)heap_addr;
+			    size_t   chunk_size = get_size(cur_chunk);
+			
+			    if (chunk_size == 0) {
+			        heap_addr += CHUNK_INUSE_SIZE;
+			        continue;
+			    }
+			    if (has_flags(cur_chunk, IN_USE) && !has_flags(cur_chunk, IS_CIS))
+			    {
+			        if (show_type)
+			            print_data_and_chunk((char*)cur_chunk, chunk_size + CHUNK_INUSE_SIZE);
+			        else
+			            print_data_in_chunk(cur_chunk, chunk_size);
+			        alloc_size += chunk_size;
+			    }
+			    else if (has_flags(cur_chunk, IS_CIS))
+			    {
+			        if (show_type)
+			            print_data_and_chunk((char*)cur_chunk, chunk_size + CHUNK_INUSE_SIZE);
+					free_size += chunk_size + 16;
+			    }
+			    else
+			    {
+			        if (show_type)
+			            print_data_and_chunk((char*)cur_chunk, chunk_size + CHUNK_INUSE_SIZE);
+					free_size += chunk_size + 16;
+			    }
+			    heap_addr += chunk_size + CHUNK_INUSE_SIZE;
 			}
 			total_size += alloc_size;
-			print_heap_total(heap, alloc_size, free_size);
+			print_heap_total(alloc_size, free_size);
 			heap = heap->next;
 		}
 	}

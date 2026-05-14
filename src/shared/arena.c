@@ -95,13 +95,17 @@ t_chunk     *arena_fastbin_get(size_t size) {
 
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
-	size_t  size  = get_size(freed_chunk);
-	int		index = FBIN_IDX(size);
-	t_chunk *next;
+	size_t  size;
+	int		index;
+	t_chunk *next = NULL;
 
+
+	if (!freed_chunk)
+		return ;
+	size = get_size(freed_chunk);
+	index =  FBIN_IDX(size);
 	if (index == -1)
 		return ;
-
 	unset_flags(freed_chunk, IN_USE);
 	if ((next = get_next_chunk(heap, freed_chunk)) != NULL)
 		set_prevsize(next, size);

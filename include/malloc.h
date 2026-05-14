@@ -102,12 +102,14 @@ uint32_t    get_arena_max(void);
 bool        has_mmap_threshold(void);
 size_t      get_mmap_threshold(void); 
 
-void	    print_heap_info(int i, t_heap *heap);
-void		print_heap_type(int index, t_heap *cur);
-void		print_chunk(char *start, char *end, size_t bytes);
-size_t      print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size);
-void        print_data_bytes_ascii(char *data, size_t len);
+void	    print_heap_total(t_heap *heap, size_t alloc_size, size_t free_size);
+void        print_total_size(size_t size);
+void        print_heap_info(int i, t_heap *heap);
+size_t      print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size); 
 void        print_data_bytes_hex(char *data, size_t len);
+void        print_data_bytes_ascii(char *data, size_t len);
+void        print_heap_type(int index, t_heap *cur);
+void        print_chunk_addr(t_chunk *cur_chunk, size_t chunk_size);
 
 void		*ft_malloc(size_t size);
 void		 ft_free(void *ptr);

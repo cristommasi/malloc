@@ -26,7 +26,8 @@ SRCS		=	main.c \
 				src/shared/heap.c \
 				src/shared/chunk.c \
 				src/shared/chunk_info.c \
-				src/shared/ops_info.c
+				src/shared/ops_info.c \
+				src/shared/show_info.c
 
 OBJDIR		= objs
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)

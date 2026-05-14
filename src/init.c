@@ -43,11 +43,9 @@ void	*ft_malloc(size_t size) {
 	pthread_mutex_lock(&g_lock);
 
 	void *ptr = malloc_internal(size);
-    if (!ptr) {
-        pthread_mutex_unlock(&g_lock);
-        return (NULL);
-    }
+
 	pthread_mutex_unlock(&g_lock);
+
 	return (ptr);
 }
 
@@ -65,12 +63,9 @@ void	*ft_realloc(void *ptr, size_t size) {
     pthread_mutex_lock(&g_lock);
 
     void *new_ptr = realloc_internal(ptr, size);
-    if (!new_ptr) {
-        pthread_mutex_unlock(&g_lock);
-        return (NULL);
-    }
 
     pthread_mutex_unlock(&g_lock);
+
     return (new_ptr);
 }
 
@@ -100,5 +95,6 @@ int     ft_mallopt(int param, int value) {
     int ret = mallopt_internal(param, value);
     
     pthread_mutex_unlock(&g_lock);
+    
     return (ret);
 }

@@ -1,16 +1,36 @@
 #ifndef MALLOC_CONSTANTS_H
 #   define MALLOC_CONSTANTS_H
 
+// MAP_ANON & MAP_ANONYMOUS FLAGS
+#define _GNU_SOURCE
+
+
  // size_t
+#include <stddef.h>
 #include <stdint.h>
-
- // getpagesize / sysconf(_SC_PAGESIZE) / write()
-#include <unistd.h>
-
 
 #if SIZE_MAX != 0xFFFFFFFFFFFFFFFFULL
 #	error "size_t must be 8 bytes (64-bit platform required)"
 #endif
+
+ // valgrind macros
+#include <valgrind/valgrind.h>
+#include <valgrind/memcheck.h>
+
+
+extern void abort(void) __attribute__((__noreturn__));
+
+
+ //getrlimit(2)
+#include <sys/resource.h>
+
+#define USERSPACE_MAX ((size_t)0x7FFFFFFFFFFF)
+
+int     size_exceeds_rlimit(size_t aligned_size);
+
+
+ // getpagesize / sysconf(_SC_PAGESIZE) / write()
+#include <unistd.h>
 
  // SYSTEM DEFAULT PAGE_SIZE (4096)
 #ifdef __APPLE__
@@ -18,6 +38,10 @@
 #else
 #   define PAGE_SIZE (size_t)sysconf(_SC_PAGESIZE)
 #endif
+
+
+ // mmap(2) munmap(2)
+#include <sys/mman.h>
 
  // SYSTEM DEFAULT PROT FLAGS
 #define PROT_FLAGS (PROT_READ | PROT_WRITE)
@@ -35,7 +59,6 @@
 // NO OFFSET FLAG
 #define NO_OFFSET 0
 
-
  // 16384 - fits 128 tiny allocs
 #define TINY_HEAP_SIZE (4 * PAGE_SIZE)
 
@@ -43,12 +66,12 @@
 #define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
 
 
+
  // BLOCK ALIGNMENT MULTIPLES OF 8
 #define ALIGNMENT (2 * sizeof(size_t))
 
  // MACRO FN TO ALIGN
-#define ALIGN(size) (((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1))
-
+size_t		ALIGN(size_t size);
 
  // max bytes for a tiny request
 #define TINY_CHUNK_MAX 112
@@ -59,18 +82,19 @@
  // min default bytes for large request
 #define LARGE_CHUNK_MIN 1009
 
-
+ // size of chunk header when in use (prev_size + size)
 #define CHUNK_INUSE_SIZE (size_t)16
 
+ // size of chunk header when free (prev_size + size + next + prev)
 #define CHUNK_FREE_SIZE (size_t)32
-
 
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32
 
- //  16, 32, 48, 64, 80, 96, 112, 128
+ //  16, 32, 48, 64, 80, 96, 112
 #define FASTBIN_MIN_CHUNK 16
 
+ //  128, 144, 160, 176, ...
 #define SMALLBIN_MIN_CHUNK 128
 
  // 0, 1, 2, 3, 4, 5, 6, 7
@@ -78,9 +102,10 @@
 
 #define SMALLBIN_COUNT 56
 
-
 int		FBIN_IDX(size_t size);
 int		SBIN_IDX(size_t size);
+
+
 
  // masks
 #define NO_FLAGS     ((size_t)0)
@@ -99,7 +124,6 @@ int		SBIN_IDX(size_t size);
 #define _M_CHECK_ABORT                  (uint8_t)2
 #define _M_CHECK_PRINT_ABORT            (uint8_t)3
 #define _M_CHECK_DEFAULT				(uint8_t)3
-
 
  // _MALLOC_PERTURB_
 #define _MALLOC_PERTURB_PARAM_          0x1

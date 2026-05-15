@@ -160,8 +160,6 @@ size_t		heap_page_size(size_t size) {
 
 t_heap_type	heap_type(size_t size) {
 
-	size = ALIGN(size);
-
 	if (size <= TINY_CHUNK_MAX)
 		return (HEAP_TINY);
 
@@ -171,18 +169,3 @@ t_heap_type	heap_type(size_t size) {
 	return (HEAP_LARGE);
 }
 
-size_t		heap_chunk_size(size_t size) {
-
-	size = ALIGN(size);
-
-	if (get_mmap_threshold() >= size) {
-		return (size);
-	}
-	else if (size <= TINY_CHUNK_MAX) {
-		return (TINY_CHUNK_MAX);
-	}
-	else if (size <= SMALL_CHUNK_MAX) {
-		return (SMALL_CHUNK_MAX); 
-	}
-	return (0);
-}

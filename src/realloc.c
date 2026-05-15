@@ -5,7 +5,6 @@ void    *realloc_internal(void *ptr, size_t size) {
     
     t_chunk     *chunk       = NULL;
     t_heap      *heap        = NULL;
-    size_t      p_new_size   = ALIGN(size);
     size_t      cur_size     = 0;
 
     if (ptr == NULL) {
@@ -18,6 +17,11 @@ void    *realloc_internal(void *ptr, size_t size) {
         free_internal(ptr);
         return (NULL);
 	}
+    if (ALIGN(size) < size) {
+        
+        return (NULL);
+    }
+    size = ALIGN(size);
     if ((chunk = data_to_chunk(ptr)) == NULL) {
 		
         return (NULL);
@@ -26,20 +30,25 @@ void    *realloc_internal(void *ptr, size_t size) {
 		
         return (NULL);
 	}
-    if ((cur_size = get_size(chunk)) == p_new_size) {
+    cur_size = get_size(chunk);
+    if (cur_size == size) {
 		
         return (ptr);
 	}
-    if (heap_is_different_type(p_new_size, cur_size) || heap_type(p_new_size) == HEAP_TINY) {
+    if (size > cur_size && size_exceeds_rlimit(size - cur_size)) {
 
-        return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
+		return (NULL);
 	}
-	else if (p_new_size != cur_size && heap_type(p_new_size) == HEAP_SMALL) {
+    if (heap_is_different_type(size, cur_size) || heap_type(size) == HEAP_TINY) {
 
-		if ((chunk = chunk_realloc_in_place(heap, chunk, p_new_size)) != NULL)
+        return (arena_get_new_chunk_type(ptr, size, cur_size));
+	}
+	else if (size != cur_size && heap_type(size) == HEAP_SMALL) {
+
+		if ((chunk = chunk_realloc_in_place(heap, chunk, size)) != NULL)
 			return (chunk_to_data(chunk));
 	}
-    return (arena_get_new_chunk_type(ptr, p_new_size, cur_size));
+    return (arena_get_new_chunk_type(ptr, size, cur_size));
 }
 
 

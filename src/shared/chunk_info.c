@@ -1,5 +1,22 @@
 #include "../../include/malloc.h"
 
+int     size_exceeds_rlimit(size_t aligned_size) {
+
+    struct rlimit   rl;
+
+    if (getrlimit(RLIMIT_AS, &rl) == -1)
+        return (0);
+
+    if (rl.rlim_cur == RLIM_INFINITY)
+        return (aligned_size > USERSPACE_MAX);
+
+    return ((rlim_t)aligned_size > rl.rlim_cur);
+}
+
+size_t		ALIGN(size_t size) {
+
+    return ( ((size) + ALIGNMENT - 1) & ~(ALIGNMENT - 1) );
+}
 
 bool	has_flags(t_chunk *chunk, size_t flag) {
 

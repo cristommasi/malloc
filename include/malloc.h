@@ -1,43 +1,29 @@
 #ifndef MALLOC_H
 #   define MALLOC_H
 
-// MAP_ANON & MAP_ANONYMOUS FLAGS
-#define _GNU_SOURCE
-
-
-
- // mmap(2)
-#include <sys/mman.h>
-
- // munmap(2)
-#include <sys/time.h>
-
- //getrlimit(2)
-#include <sys/resource.h>
-
- // bool type
-#include <stdbool.h>
-
- // thread functions
-#include <pthread.h>
-
  // self defined PREPROC
 #include "./malloc_constants.h"
-
- // ft_put_ul, ft_put_hex, ft_memmove
-#include "../libft/includes/libft.h"
 
  // structs for arena, chunk, heap, enums
 #include "./malloc_types.h"
 
+ // ft_put_ul, ft_put_hex, ft_memmove
+#include "../libft/includes/libft.h"
+
+ // bool type
+#include <stdbool.h>
+
  // printf delete after
 #include <stdio.h> 
+
+ // thread functions
+#include <pthread.h>
 
 extern t_arena			g_arena;
 extern pthread_mutex_t	g_lock;
 
 
-bool		arena_heap_uninitialized_or_large(size_t size);
+
 void		arena_fastbin_unlink(t_chunk *chunk); 
 t_chunk		*arena_fastbin_get(size_t size);
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
@@ -61,7 +47,6 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) ;
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
 t_chunk		*heap_to_chunk(t_heap *heap_addr);
 size_t		heap_page_size(size_t size);
-size_t		heap_chunk_size(size_t size);
 t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
 

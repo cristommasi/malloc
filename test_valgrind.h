@@ -2,8 +2,7 @@
 # define TEST_VALGRIND_MALLOC_PROJECT
 
 #include "../include/malloc.h"
-#include <valgrind/valgrind.h>
-#include <valgrind/memcheck.h>
+
 #include <assert.h>
 
 void    *ft_malloc_vg(size_t size)

@@ -25,17 +25,7 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	return (new_ptr);
 }
 
-bool		arena_heap_uninitialized_or_large(size_t size) {
 
-	t_heap_type type = heap_type(size);
-	if (type == HEAP_LARGE)
-		return (true);
-	else if (!g_arena.tiny && type == HEAP_TINY)
-		return (true);
-	else if (!g_arena.small && type == HEAP_SMALL)
-		return (true);
-	return (false);
-}
 
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
 

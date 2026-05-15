@@ -1,8 +1,6 @@
 #ifndef MALLOC_TYPES_H
 #   define MALLOC_TYPES_H
 
- // abort() - size_t
-#include <stdlib.h>
 
  // uint(bits)_t types
 #include <stdint.h>

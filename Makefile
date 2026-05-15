@@ -2,18 +2,16 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-NAME_REAL   = libmalloc_$(HOSTTYPE).so
-NAME		= malloc
-SYMLINK     = libmalloc.so
+NAME        = libft_malloc_$(HOSTTYPE).so
+SYMLINK     = libft_malloc.so
 
 CC			= cc -std=c17
-CFLAGS		= -Wall -Wextra -fvisibility=hidden
+CFLAGS		= -Wall -Wextra -Werror -fPIC -fvisibility=hidden
 LDFLAGS		= -shared
 RM			= rm -f
 
 
-SRCS		=	main.c \
-				src/public.c \
+SRCS		=	src/public.c \
 				src/internal/malloc.c \
 				src/internal/free.c \
 				src/internal/realloc.c \
@@ -31,14 +29,14 @@ OBJDIR		= objs
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 
-all: $(NAME) #$(SYMLINK)
+all: $(NAME) $(SYMLINK)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(LDFLAGS) $(OBJS) -o $(NAME)
 
 #$(LDFLAGS)
-# $(SYMLINK): $(NAME)
-#     ln -sf $(NAME) $(SYMLINK)
+$(SYMLINK): $(NAME)
+	ln -sf $(NAME) $(SYMLINK)
 
 $(OBJDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -48,11 +46,8 @@ clean:
 	$(RM) -r $(OBJDIR)
 
 fclean: clean
-	$(RM) $(NAME) 
-
+	$(RM) $(NAME) $(SYMLINK)
 
 re: fclean all
 
-
-
-.PHONY: all clean fclean
+.PHONY: all clean fclean re

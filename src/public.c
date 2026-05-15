@@ -43,7 +43,6 @@ DESTRUCTOR static void malloc_dtor(void) {
 PUBLIC void	*malloc(size_t size) {
 
 	pthread_mutex_lock(&g_lock);
-
 	void *ptr = malloc_internal(size);
 
     if (ptr != NULL) {

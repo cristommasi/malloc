@@ -1,116 +1,48 @@
 #ifndef MALLOC_H
-#   define MALLOC_H
+# define MALLOC_H
 
- // self defined PREPROC
-#include "./malloc_constants.h"
+# define PUBLIC __attribute__((visibility("default")))
 
- // structs for arena, chunk, heap, enums
-#include "./malloc_types.h"
+# include <stddef.h>
 
- // ft_put_ul, ft_put_hex, ft_memmove
-#include "../libft/includes/libft.h"
+// Allocate SIZE bytes of memory.
+PUBLIC void     *malloc(size_t size);
+// Free a block allocated by malloc or realloc.
+PUBLIC void      free(void *ptr);
+//Re-allocate the previously allocated block in PTR, making the new block SIZE bytes long.
+PUBLIC void     *realloc(void *ptr, size_t size);
+// Show allocated addresses and heap type.
+PUBLIC void      show_alloc_mem(void);
+// Show hex dump and ASCII representation of allocated zones.
+// MALLOC_SHOW_INFO may be set to view free zones.
+PUBLIC void      show_alloc_mem_ex(void);
+// General interface to tunable parameters.
+// 
+// MALLOC_CHECK: M_CHECK_SILENT | M_CHECK_PRINT | M_CHECK_ABORT (uint8_t)
+// MALLOC_PERTURB: M_PERTURB_NONE - UCHAR_MAX (uint8_t)
+// MALLOC_ARENA_MAX: M_ARENA_MAX_DEFAULT - UINT_MAX (uint32_t)
+// MALLOC_SHOW_INFO: M_SHOW_INUSE | M_SHOW_ALL
+PUBLIC int       mallopt(int param, int value);
 
- // bool type
-#include <stdbool.h>
+ // MALLOC_ZERO
+#define MALLOC_SHOW_INFO    0x0
+#define M_SHOW_INUSE        (uint8_t)0
+#define M_SHOW_ALL          (uint8_t)1
+#define M_SHOW_DEFAULT      (uint8_t)0
 
- // printf delete after
-#include <stdio.h> 
+ // _MALLOC_CHECK_
+#define MALLOC_CHECK        0x1
+#define M_CHECK_SILENT     (uint8_t)0
+#define M_CHECK_PRINT      (uint8_t)1
+#define M_CHECK_ABORT      (uint8_t)2
+#define M_CHECK_DEFAULT    (uint8_t)3
 
- // thread functions
-#include <pthread.h>
+ // _MALLOC_PERTURB_
+#define MALLOC_PERTURB      0x2
+#define M_PERTURB_NONE   (uint8_t)0
 
-extern t_arena			g_arena;
-extern pthread_mutex_t	g_lock;
-
-
-
-void		arena_fastbin_unlink(t_chunk *chunk); 
-t_chunk		*arena_fastbin_get(size_t size);
-void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
-void		arena_fastbin_drain(t_heap *heap); 
-t_chunk		*arena_smallbin_get(size_t size);
-void        arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk);
-void        arena_smallbin_unlink(t_chunk *chunk);
-void		arena_smallbin_drain(t_heap *heap);
-int			arena_heap_munmap(t_heap *cur, t_heap **head);
-t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
-t_heap		**arena_heap_group_by_chunk(size_t size); 
-void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
-void		arena_heap_unlink(t_heap *heap, t_heap **head);
-
-
-t_heap		*heap_new_and_append(size_t size);
-size_t		heap_free_size(t_heap *heap);
-t_heap		*heap_new(size_t zone_size); 
-void		heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
-t_chunk		*heap_find_cis_mem_chunk(size_t size) ;
-t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
-t_chunk		*heap_to_chunk(t_heap *heap_addr);
-size_t		heap_page_size(size_t size);
-t_heap_type heap_type(size_t size);
-bool		heap_is_different_type(size_t sizeA, size_t sizeB);
-
-
-void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need);
-void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
-void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
-t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
-bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
-t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk);
-t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk);
-bool		prev_chunk_suffices(t_chunk *prev, size_t need);
-bool		next_chunk_suffices(t_chunk *next, size_t need);
-void		*chunk_to_data(t_chunk *chunk_addr);
-void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
-t_chunk		*data_to_chunk(void *data_addr);
-t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
-t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
-
-
-void		set_size(t_chunk *chunk, size_t size);
-size_t		get_size(t_chunk *chunk);
-void		set_prevsize(t_chunk *chunk, size_t size);
-size_t		get_prevsize(t_chunk *chunk); 
-void		set_flags(t_chunk *chunk, size_t flag);
-void		unset_flags(t_chunk *chunk, size_t flag);
-bool		has_flags(t_chunk *chunk, size_t flag);
-size_t		get_min(size_t a, size_t b);
-
-
-uint8_t     get_check(void);
-bool        has_perturb(void);
-int         get_perturb_alloc(void);
-int         get_perturb_free(void);
-bool        has_check(void); 
-bool        has_arena_max(void); 
-uint32_t    get_arena_max(void);
-bool        has_mmap_threshold(void);
-size_t      get_mmap_threshold(void); 
-
-size_t      print_data_and_chunk(char *cur_chunk, size_t chunk_size);
-void	    print_heap_total(size_t alloc_size, size_t free_size);
-void        print_total_size(size_t size);
-void        print_heap_info(int i, t_heap *heap);
-size_t      print_data_in_chunk(t_chunk *cur_chunk, size_t chunk_size); 
-void        print_data_bytes_hex(char *data, size_t len);
-void        print_data_bytes_ascii(char *data, size_t len);
-void        print_heap_type(int index, t_heap *cur);
-void        print_chunk_addr(t_chunk *cur_chunk, size_t chunk_size);
-
-void		*ft_malloc(size_t size);
-void		 ft_free(void *ptr);
-void    	*ft_realloc(void *ptr, size_t size);
-void		 free_internal(void *ptr);
-void		*malloc_internal(size_t size);
-void		*realloc_internal(void *ptr, size_t size);
-void		show_alloc_mem(void);
-void		show_alloc_mem_internal(void);
-int         ft_mallopt(int param, int value);
-int		    mallopt_internal(int param, int value);
-void	    free_exit(int err);
-
-void		show_alloc_mem_ex(int show_type);
-void		show_alloc_mem_ex_internal(int show_type);
-
+ // _MALLOC_ARENA_MAX_
+#define MALLOC_ARENA_MAX     0x3
+#define M_ARENA_MAX_DEFAULT  (uint32_t)65530
 
 #endif

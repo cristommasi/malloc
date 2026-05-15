@@ -2,45 +2,39 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-NAME_REAL   = libft_malloc_$(HOSTTYPE).so
+NAME_REAL   = libmalloc_$(HOSTTYPE).so
 NAME		= malloc
-SYMLINK     = libft_malloc.so
+SYMLINK     = libmalloc.so
 
 CC			= cc -std=c17
-CFLAGS		= -Wall -Wextra -I./libft
+CFLAGS		= -Wall -Wextra -fvisibility=hidden
 LDFLAGS		= -shared
 RM			= rm -f
 
-LIBFT_DIR	= ./libft
-LIBFT		= $(LIBFT_DIR)/libft.a
 
 SRCS		=	main.c \
-				src/init.c \
-				src/malloc.c \
-				src/free.c \
-				src/realloc.c \
-				src/show_alloc_mem.c \
-				src/show_alloc_mem_ex.c \
-				src/mallopt.c \
-				src/shared/arena.c \
-				src/shared/heap.c \
-				src/shared/chunk.c \
-				src/shared/chunk_info.c \
-				src/shared/ops_info.c \
-				src/shared/show_info.c
+				src/public.c \
+				src/internal/malloc.c \
+				src/internal/free.c \
+				src/internal/realloc.c \
+				src/internal/show_alloc_mem.c \
+				src/internal/show_alloc_mem_ex.c \
+				src/internal/mallopt.c \
+				src/internal/shared/arena.c \
+				src/internal/shared/heap.c \
+				src/internal/shared/chunk.c \
+				src/internal/shared/chunk_utils.c \
+				src/internal/shared/ops_utils.c \
+				src/internal/shared/show_utils.c
 
 OBJDIR		= objs
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 
-
-#----------------------------------------------------------------------
-#			   MALLOC
-#----------------------------------------------------------------------
-all: $(LIBFT) $(NAME) #$(SYMLINK)
+all: $(NAME) #$(SYMLINK)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
 #$(LDFLAGS)
 # $(SYMLINK): $(NAME)
@@ -58,22 +52,7 @@ fclean: clean
 
 
 re: fclean all
-#----------------------------------------------------------------------
-#				LIBFT
-#----------------------------------------------------------------------
-libft: $(LIBFT)
-
-$(LIBFT):
-	make -C $(LIBFT_DIR)
-
-libft_clean:
-	make -C $(LIBFT_DIR) clean
-
-libft_fclean:
-	make -C $(LIBFT_DIR) fclean
-
-libft_re:
-	make -C $(LIBFT_DIR) re
 
 
-.PHONY: all clean fclean libft clean_libft fclean_libft
+
+.PHONY: all clean fclean

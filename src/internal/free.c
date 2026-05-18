@@ -36,25 +36,27 @@ int    free_internal(void *ptr) {
 			if (type == HEAP_TINY && heap->blocks >= 1) {
 
 				arena_fastbin_set(heap, chunk);
-				if (heap->blocks == 0)
+				if (heap->blocks == 0) {
 					arena_fastbin_drain(heap);
+					return (arena_heap_munmap(heap, heads[type]));
+				}
+				return (F_NO_ERROR);
 			}
 			else if (type == HEAP_SMALL && heap->blocks >= 1) {
 
 				arena_smallbin_set(heap, chunk);
-				if (heap->blocks == 0)
+				if (heap->blocks == 0) {
 					arena_smallbin_drain(heap);
+					return (arena_heap_munmap(heap, heads[type]));
+				}
 			}
 			else if (type == HEAP_LARGE && heap->blocks >= 1) {
 
 				heap->blocks = 0;
-			}
-			if (heap->blocks == 0) {
-
 				return (arena_heap_munmap(heap, heads[type]));
 			}
 			heap = heap->next;
 		}
 	}
-	return (F_NO_ERROR);
+	return (F_INV_PTR_ERROR);
 }

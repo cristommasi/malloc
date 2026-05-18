@@ -79,6 +79,8 @@ int     	asciitoint(const char *str);
 #define M_ARENA_MAX_EXCEEDED_MSG "malloc(): max number of arenas exceeded \n"
 #define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
 #define F_INV_PTR_MSG "free(): invalid pointer                 \n"
+#define F_INV_PTR_MSG3 "fre3(): invalid pointer                 \n"
+#define F_INV_PTR_MSG4 "fre4(): invalid pointer                 \n"
 #define F_MUNMAP_MSG "free(): munmap failed!                  \n"
 #define F_ABORT_MSG "abort()                                 \n"
 

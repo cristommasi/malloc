@@ -47,7 +47,7 @@ int    free_internal(void *ptr) {
 			}
 			else if (type == HEAP_LARGE && heap->blocks >= 1) {
 
-				heap->blocks -= 1;
+				heap->blocks = 0;
 			}
 			if (heap->blocks == 0) {
 
@@ -56,5 +56,5 @@ int    free_internal(void *ptr) {
 			heap = heap->next;
 		}
 	}
-	return (F_INV_PTR_ERROR);
+	return (F_NO_ERROR);
 }

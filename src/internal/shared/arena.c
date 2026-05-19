@@ -151,7 +151,6 @@ void		arena_fastbin_drain(t_heap *heap) {
 	}
 }
 
-
 t_chunk		*arena_smallbin_get(size_t size) {
 
 	int		index;
@@ -235,7 +234,7 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 
 }
 
-void	arena_smallbin_unlink(t_chunk *chunk) {
+void		arena_smallbin_unlink(t_chunk *chunk) {
 
     if (!chunk) return;
 

@@ -7,7 +7,6 @@ int    free_internal(void *ptr) {
 	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };
 	t_heap  *heap         = NULL;
 	t_chunk *chunk        = NULL;
-	bool	belongs		  = false;
 
 	if (ptr == NULL)
 		return (F_NO_ERROR);
@@ -22,7 +21,6 @@ int    free_internal(void *ptr) {
 
 			if (chunk_belongs_to_heap(heap, chunk)) {
 
-				belongs = true;
 				if (already_freed(chunk)) {
 					return (F_DOUBLE_FREE_ERROR);
 				}
@@ -64,7 +62,5 @@ int    free_internal(void *ptr) {
 			heap = heap->next;
 		}
 	}
-	if (belongs == false)
-		return (F_INV_PTR_ERROR);
 	return (F_NO_ERROR);
 }

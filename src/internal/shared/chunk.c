@@ -26,6 +26,13 @@ t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
         chunk_split_center(heap, chunk, cur_size, size);
         return (chunk);
     }
+	else if (next && next_chunk_suffices(next, need) && heap->free_cis_start && heap->free_cis_start == next) {
+		t_chunk *new_free = heap_split_cis_mem(heap, need);
+		if (has_perturb())
+			do_perturb((char*)new_free, get_perturb_alloc(), get_size(new_free) + CHUNK_INUSE_SIZE);
+		set_size(chunk, size);
+		return (chunk);
+	}
 	else if (next && next_chunk_suffices(next, need)) {
 
 		chunk_split_right(heap, chunk, next, need);
@@ -63,34 +70,32 @@ void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need
 
 	size_t	new_size   = get_size(chunk) + need;
 	size_t	next_total = get_size(next) + CHUNK_INUSE_SIZE;
-	t_chunk *new_free  = (t_chunk*)((char*)chunk + CHUNK_INUSE_SIZE + new_size);
-	t_chunk	*nnc       = get_next_chunk(heap, next);
-
+	t_chunk	*nnc       = NULL;
+	size_t leftover = next_total - need;
 	
 
 	set_size(chunk, new_size);
 
-	if (has_flags(next, IS_CIS)) {
-
-		t_chunk *new_free = heap_split_cis_mem(heap, need);
-		if (has_perturb()) do_perturb((char*)new_free, get_perturb_alloc(), get_size(new_free) + CHUNK_INUSE_SIZE);
-		new_free = NULL;
-		return ;
-	}
-
 	arena_smallbin_unlink(next);
-	if (has_perturb()) do_perturb((char*)chunk_to_data(chunk) + get_size(chunk), get_perturb_alloc(), need);
+	set_flags(chunk, IN_USE);
 	
-	if (next_total > new_size) {
-
-		set_size(new_free, next_total - need - CHUNK_INUSE_SIZE);
-		set_prevsize(new_free, new_size);
-		if (has_perturb()) do_perturb((char*)new_free + CHUNK_FREE_SIZE , get_perturb_free(), get_size(new_free) - 16);
-		chunk_relink(chunk, new_free, nnc);
+	if (leftover >= CHUNK_INUSE_SIZE + MIN_TRIM){
+		do_perturb((char*)chunk + CHUNK_INUSE_SIZE + new_size, 0, leftover - CHUNK_INUSE_SIZE);
+		t_chunk *new_free = chunk_new(
+        	(char*)chunk + CHUNK_INUSE_SIZE + new_size,
+        	0,
+        	leftover - CHUNK_INUSE_SIZE,
+        	NO_FLAGS
+   	 	);
+		if (has_perturb())
+			do_perturb((char*)new_free + CHUNK_FREE_SIZE , get_perturb_free(), get_size(new_free) - 16);
+		if ((nnc = get_next_chunk(heap, next)) != NULL)
+			set_prevsize(nnc, get_size(new_free));
 		arena_smallbin_set(heap, new_free);
 		return ;
 	}
-	chunk_relink(chunk, new_free, nnc);
+	if ((nnc = get_next_chunk(heap, next)) != NULL)
+		set_prevsize(nnc, 0);
 }
 
 void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need) {

@@ -174,6 +174,7 @@ t_chunk		*heap_to_chunk(t_heap *heap_addr);
 size_t		heap_page_size(size_t size);
 t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
+void		update_heap_blocks(t_heap *heap, int block);
 
  //getrlimit(2)
 #include <sys/resource.h>

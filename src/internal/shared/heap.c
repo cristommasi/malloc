@@ -167,3 +167,10 @@ t_heap_type	heap_type(size_t size) {
 	return (HEAP_LARGE);
 }
 
+void	update_heap_blocks(t_heap *heap, int block) {
+
+	if (block == -1)
+		heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
+	else if (block == 1)
+		heap->blocks++;
+}

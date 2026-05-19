@@ -29,24 +29,27 @@ int    free_internal(void *ptr) {
 				else if (is_invalid_memory(chunk)) {
 					return (F_INV_PTR_ERROR);
 				}
-				
 				if (type == HEAP_TINY && heap->blocks >= 1) {
         		    arena_fastbin_set(heap, chunk);
+					update_heap_blocks(heap, -1);
 				}
         		else if (type == HEAP_SMALL && heap->blocks >= 1) {
 					
         		    arena_smallbin_set(heap, chunk);
+					update_heap_blocks(heap, -1);
 				}
         		else if (type == HEAP_LARGE && heap->blocks >= 1) {
-        		    heap->blocks = 0;
+
+					update_heap_blocks(heap, -1);
 				}
         		if (heap->blocks == 0) {
 
-
         		    if (type == HEAP_TINY) {
+						
         		        arena_fastbin_drain(heap);
 					}
         		    else if (type == HEAP_SMALL) {
+
         		        arena_smallbin_drain(heap);
 					}
         		    return (arena_heap_munmap(heap, heads[type]));

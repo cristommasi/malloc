@@ -56,8 +56,7 @@ void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t old_size, size_t n
 		free_size,
 		IN_USE
 	);
-	heap->blocks += 1;
-	free_internal(chunk_to_data(new_free));
+	arena_smallbin_set(heap, new_free);
 }
 
 void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need) {
@@ -115,6 +114,7 @@ void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need)
 		if (has_perturb()) {
 			do_perturb(chunk_to_data(new_free) , get_perturb_free(), get_size(new_free));
 		}
+		arena_smallbin_set(heap, new_free);
 	}
 
 	chunk_relink(prev, new_free, nnc);
@@ -161,8 +161,6 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 
 		if (has_perturb())
 			do_perturb((char*)heap->free_cis_start + CHUNK_FREE_SIZE, get_perturb_free(), new_size - 16);
-		heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
-
 		return (NULL);
 	}
 	if (prev != NULL && !has_flags(prev, IS_CIS) && !has_flags(prev, IN_USE)) {
@@ -232,7 +230,7 @@ bool		next_chunk_suffices(t_chunk *next, size_t need) {
 
 	size_t next_size = get_size(next) + CHUNK_INUSE_SIZE;
 
-	if (!has_flags(next, IN_USE) && next_size >= need && next_size >= MIN_TRIM) {
+	if (!has_flags(next, IN_USE) && next_size >= need && next_size >= 128) {
 
 		return (true);
 	}
@@ -243,7 +241,7 @@ bool		prev_chunk_suffices(t_chunk *prev, size_t need) {
 
 	size_t prev_total = get_size(prev) + CHUNK_INUSE_SIZE;
 
-	if (!has_flags(prev, IN_USE) && prev_total >= need && prev_total >= MIN_TRIM) {
+	if (!has_flags(prev, IN_USE) && prev_total >= need && prev_total >= 128) {
 
 		return (true);
 	}

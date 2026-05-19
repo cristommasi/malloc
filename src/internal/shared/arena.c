@@ -197,10 +197,12 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	int			index;
 	t_chunk		*head = NULL;
 	t_chunk		*tail = NULL;
+	t_chunk		*next = NULL;
 
 
 	if (!heap || !freed_chunk)
 		return ;
+
 
 	if ((freed_chunk = chunk_coalesce(heap, freed_chunk)) == NULL)
 		return ;
@@ -209,6 +211,9 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	if ((index = SBIN_IDX(size)) == -1)
 		return ;
 	unset_flags(freed_chunk, IN_USE);
+	next = get_next_chunk(heap, freed_chunk);
+	if (next)
+		set_prevsize(next, size);
 	if (!g_arena.smallbin[index]) {
 		g_arena.smallbin[index] = freed_chunk;
 		freed_chunk->next = freed_chunk;
@@ -230,22 +235,26 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	}
 }
 
-void		arena_smallbin_unlink(t_chunk *chunk) {
+void	arena_smallbin_unlink(t_chunk *chunk) {
 
-	if (!chunk) return ;
-	size_t size = get_size(chunk);
-	if (chunk->next == chunk) {
+    if (!chunk) return;
 
-		chunk->next = NULL;
-		chunk->prev = NULL;
-		g_arena.smallbin[SBIN_IDX(size)] = NULL;
-		return ;
-	}
-	chunk->prev->next = chunk->next;
-	chunk->next->prev = chunk->prev;
-	g_arena.smallbin[SBIN_IDX(size)] = chunk->next;
-	chunk->next = NULL;
-	chunk->prev = NULL;
+    size_t  size  = get_size(chunk);
+    int     index = SBIN_IDX(size);
+
+    if (index == -1) return;
+    if (chunk->next == chunk) {
+        g_arena.smallbin[index] = NULL;
+        chunk->next = NULL;
+        chunk->prev = NULL;
+        return;
+    }
+    chunk->prev->next = chunk->next;
+    chunk->next->prev = chunk->prev;
+    if (g_arena.smallbin[index] == chunk)
+        g_arena.smallbin[index] = chunk->next;
+    chunk->next = NULL;
+    chunk->prev = NULL;
 }
 
 void		arena_smallbin_drain(t_heap *heap) {
@@ -253,8 +262,8 @@ void		arena_smallbin_drain(t_heap *heap) {
 	char		*cur = (char*)heap_to_chunk(heap);
 	char		*end = cur + heap->total_size - heap_free_size(heap);
 
-	while (cur < end)
-	{
+	while (cur < end) {
+
 		t_chunk *chunk = (t_chunk*)cur;
 		if (has_flags(chunk, IS_CIS)) {
 			break ;

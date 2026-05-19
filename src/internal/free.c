@@ -9,54 +9,52 @@ int    free_internal(void *ptr) {
 	t_chunk *chunk        = NULL;
 
 
+
 	if (ptr == NULL)
 		return (F_NO_ERROR);
 
-	if ((chunk = data_to_chunk(ptr)) == NULL)
+	if ((chunk = data_to_chunk(ptr)) == NULL) {
 		return (F_INV_PTR_ERROR);
-
+	}
 	for (t_heap_type type = HEAP_TINY; type < HEAP_TYPE_COUNT; type++) {
 
 		heap = groups[type];
 		while (heap != NULL) {
 
-			if (!chunk_belongs_to_heap(heap, chunk)) {
+			if (chunk_belongs_to_heap(heap, chunk)) {
 
-				heap = heap->next;
-				continue;
-			}
-			if (already_freed(chunk)) {
-
-				return (F_DOUBLE_FREE_ERROR);
-			}
-			else if (is_invalid_memory(chunk)) {
-
-				return (F_INV_PTR_ERROR);
-			}
-			if (type == HEAP_TINY && heap->blocks >= 1) {
-
-				arena_fastbin_set(heap, chunk);
-				if (heap->blocks == 0) {
-					arena_fastbin_drain(heap);
-					return (arena_heap_munmap(heap, heads[type]));
+				if (already_freed(chunk)) {
+					return (F_DOUBLE_FREE_ERROR);
 				}
-				return (F_NO_ERROR);
-			}
-			else if (type == HEAP_SMALL && heap->blocks >= 1) {
-
-				arena_smallbin_set(heap, chunk);
-				if (heap->blocks == 0) {
-					arena_smallbin_drain(heap);
-					return (arena_heap_munmap(heap, heads[type]));
+				else if (is_invalid_memory(chunk)) {
+					return (F_INV_PTR_ERROR);
 				}
-			}
-			else if (type == HEAP_LARGE && heap->blocks >= 1) {
+				
+				if (type == HEAP_TINY && heap->blocks >= 1) {
+        		    arena_fastbin_set(heap, chunk);
+				}
+        		else if (type == HEAP_SMALL && heap->blocks >= 1) {
+					
+        		    arena_smallbin_set(heap, chunk);
+				}
+        		else if (type == HEAP_LARGE && heap->blocks >= 1) {
+        		    heap->blocks = 0;
+				}
+        		if (heap->blocks == 0) {
 
-				heap->blocks = 0;
-				return (arena_heap_munmap(heap, heads[type]));
+
+        		    if (type == HEAP_TINY) {
+        		        arena_fastbin_drain(heap);
+					}
+        		    else if (type == HEAP_SMALL) {
+        		        arena_smallbin_drain(heap);
+					}
+        		    return (arena_heap_munmap(heap, heads[type]));
+        		}
+        		return (F_NO_ERROR);
 			}
 			heap = heap->next;
 		}
 	}
-	return (F_INV_PTR_ERROR);
+	return (F_NO_ERROR);
 }

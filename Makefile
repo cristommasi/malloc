@@ -7,7 +7,7 @@ SYMLINK     = libft_malloc.so
 
 CC			= cc -std=c17
 CFLAGS		= -Wall -Wextra -Werror -fPIC -fvisibility=hidden
-LDFLAGS		= -shared
+LDFLAGS		= -shared -pthread
 RM			= rm -f
 
 

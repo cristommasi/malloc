@@ -7,6 +7,8 @@
 
 #include "./malloc.h"
 
+
+
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR  __attribute__((destructor))
 
@@ -227,7 +229,7 @@ typedef struct s_chunk {
 	struct s_chunk	*prev;
 }                   t_chunk;
 
-void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t need);
+void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t old_size, size_t new_size);
 void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
 void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
 t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);

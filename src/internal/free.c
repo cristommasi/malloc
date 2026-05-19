@@ -7,8 +7,7 @@ int    free_internal(void *ptr) {
 	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };
 	t_heap  *heap         = NULL;
 	t_chunk *chunk        = NULL;
-
-
+	bool	belongs		  = false;
 
 	if (ptr == NULL)
 		return (F_NO_ERROR);
@@ -23,41 +22,49 @@ int    free_internal(void *ptr) {
 
 			if (chunk_belongs_to_heap(heap, chunk)) {
 
+				belongs = true;
 				if (already_freed(chunk)) {
 					return (F_DOUBLE_FREE_ERROR);
 				}
 				else if (is_invalid_memory(chunk)) {
 					return (F_INV_PTR_ERROR);
 				}
-				if (type == HEAP_TINY && heap->blocks >= 1) {
-        		    arena_fastbin_set(heap, chunk);
-					update_heap_blocks(heap, -1);
-				}
-        		else if (type == HEAP_SMALL && heap->blocks >= 1) {
-					
-        		    arena_smallbin_set(heap, chunk);
-					update_heap_blocks(heap, -1);
-				}
-        		else if (type == HEAP_LARGE && heap->blocks >= 1) {
+				if (heap->alloc_chunks >= 1) {
 
-					update_heap_blocks(heap, -1);
+					if (type == HEAP_TINY) {
+
+        			    arena_fastbin_set(heap, chunk);
+						heap_update_alloc_chunks(heap, -1);
+					}
+        			else if (type == HEAP_SMALL) {
+
+        			    arena_smallbin_set(heap, chunk);
+						heap_update_alloc_chunks(heap, -1);
+					}
+        			else if (type == HEAP_LARGE) {
+
+						heap_update_alloc_chunks(heap, -1);
+					}
 				}
-        		if (heap->blocks == 0) {
+        		if (heap->alloc_chunks == 0) {
 
         		    if (type == HEAP_TINY) {
-						
+
         		        arena_fastbin_drain(heap);
 					}
         		    else if (type == HEAP_SMALL) {
 
         		        arena_smallbin_drain(heap);
 					}
-        		    return (arena_heap_munmap(heap, heads[type]));
+					arena_heap_unlink(heap, heads[type]);
+        		    return (arena_heap_munmap(heap));
         		}
         		return (F_NO_ERROR);
 			}
 			heap = heap->next;
 		}
 	}
+	if (belongs == false)
+		return (F_INV_PTR_ERROR);
 	return (F_NO_ERROR);
 }

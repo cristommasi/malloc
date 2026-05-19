@@ -1,16 +1,16 @@
 
 #include "../../../include/malloc_internal.h"
 
-int			arena_heap_munmap(t_heap *to_free, t_heap **head) {
+int			arena_heap_munmap(t_heap *to_free) {
 
-	arena_heap_unlink(to_free, head);
-	 
 	size_t total = to_free->total_size + sizeof(t_heap);
+
 	if (has_perturb()) {
 		do_perturb(to_free, get_perturb_free(), total);
 	}
+
 	int ret = munmap((void*)to_free, total);
-	g_arena.count  = (g_arena.count >= 1) ? g_arena.count - 1 : 0;
+	update_arena_heap_count(-1);
 	return (ret);
 }
 
@@ -332,5 +332,11 @@ int     size_exceeds_rlimit(size_t aligned_size) {
     return ((rlim_t)aligned_size > rl.rlim_cur);
 }
 
+void	update_arena_heap_count(int count) {
 
+	if (count == -1)
+		g_arena.heap_count  = (g_arena.heap_count >= 1) ? g_arena.heap_count - 1 : 0;
+	else if (count == 1)
+		g_arena.heap_count += 1;
+}
 

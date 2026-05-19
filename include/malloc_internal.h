@@ -100,7 +100,7 @@ typedef struct s_arena {
 	t_heap  			*large;
 	t_chunk 			*fastbin[7];
 	t_chunk 			*smallbin[56];
-	uint32_t			count;
+	uint32_t			heap_count;
 
 }               t_arena;
 
@@ -119,11 +119,12 @@ t_chunk		*arena_smallbin_get(size_t size);
 void        arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk);
 void        arena_smallbin_unlink(t_chunk *chunk);
 void		arena_smallbin_drain(t_heap *heap);
-int			arena_heap_munmap(t_heap *cur, t_heap **head);
+int			arena_heap_munmap(t_heap *cur);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group_by_chunk(size_t size); 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
 void		arena_heap_unlink(t_heap *heap, t_heap **head);
+void		update_arena_heap_count(int count);
 
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32
@@ -154,7 +155,7 @@ typedef struct s_heap {
 	size_t        	p1;
 	size_t        	p2;
 	size_t        	p3;
-	size_t        	blocks;
+	size_t        	alloc_chunks;
 	size_t          total_size;
 	t_chunk         *free_cis_start;
 	struct s_heap   *next;
@@ -174,7 +175,7 @@ t_chunk		*heap_to_chunk(t_heap *heap_addr);
 size_t		heap_page_size(size_t size);
 t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
-void		update_heap_blocks(t_heap *heap, int block);
+void		heap_update_alloc_chunks(t_heap *heap, int block);
 
  //getrlimit(2)
 #include <sys/resource.h>

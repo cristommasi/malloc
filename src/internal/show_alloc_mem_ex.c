@@ -7,7 +7,7 @@ void    show_alloc_mem_ex_internal(void) {
 
 	t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large };
 	size_t  total_size    = 0;
-	int     show_type = get_show_info();
+	int     show_type     = get_show_info();
 
 	if (!HEAP_TYPES[0] && !HEAP_TYPES[1] && !HEAP_TYPES[2])
 		return;

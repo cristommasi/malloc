@@ -17,7 +17,7 @@ void    *malloc_internal(size_t size) {
 		if ((heap = arena_heap_find_by_chunk(chunk)) == NULL)
 			return (NULL);
 
-		update_heap_blocks(heap, 1);
+		heap_update_alloc_chunks(heap, 1);
 
 		return (chunk_to_data(chunk));
 	}
@@ -26,7 +26,7 @@ void    *malloc_internal(size_t size) {
 		if ((heap = arena_heap_find_by_chunk(chunk)) == NULL)
 			return (NULL);
 
-		update_heap_blocks(heap, 1);
+		heap_update_alloc_chunks(heap, 1);
 
 		return (chunk_to_data(chunk));
 	}
@@ -38,7 +38,7 @@ void    *malloc_internal(size_t size) {
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
 
-		update_heap_blocks(heap, 1);
+		heap_update_alloc_chunks(heap, 1);
 
 		return (chunk_to_data(chunk));
 	}

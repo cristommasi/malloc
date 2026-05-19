@@ -27,7 +27,7 @@ t_heap		*heap_new_and_append(size_t size) {
 
 t_heap		*heap_new(size_t zone_size) {
 
-	if (has_arena_max() && g_arena.count + 1 >= get_arena_max()) {
+	if (has_arena_max() && g_arena.heap_count + 1 >= get_arena_max()) {
 		return (MAP_FAILED);
 	}
 	t_heap  *new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
@@ -35,9 +35,9 @@ t_heap		*heap_new(size_t zone_size) {
 	if (new_heap == MAP_FAILED) {
 		return (MAP_FAILED);
 	}
-	g_arena.count += 1;
+	update_arena_heap_count(1);
 
-	new_heap->blocks         = 0;
+	new_heap->alloc_chunks   = 0;
 	new_heap->total_size     = zone_size;
 	new_heap->free_cis_start = heap_to_chunk(new_heap);
 	new_heap->next           = NULL;
@@ -113,7 +113,7 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 		if (heap_free_size(*cur) >= size + CHUNK_INUSE_SIZE) {
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
-			(*cur)->blocks += 1;
+			(*cur)->alloc_chunks += 1;
 			return (chunk);
 		}
 		cur = &(*cur)->next;
@@ -167,10 +167,13 @@ t_heap_type	heap_type(size_t size) {
 	return (HEAP_LARGE);
 }
 
-void	update_heap_blocks(t_heap *heap, int block) {
+void	heap_update_alloc_chunks(t_heap *heap, int block) {
 
 	if (block == -1)
-		heap->blocks = (heap->blocks >= 1) ? heap->blocks - 1 : 0;
+		heap->alloc_chunks = (heap->alloc_chunks >= 1) ? heap->alloc_chunks - 1 : 0;
 	else if (block == 1)
-		heap->blocks++;
+		heap->alloc_chunks++;
 }
+	
+	
+

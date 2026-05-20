@@ -72,14 +72,15 @@ void		heap_append(t_heap **HEAP_TYPE, t_heap *new_heap) {
 
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
-    t_chunk *new_inuse_chunk = heap->free_cis_start;
 	size_t	remaining		 = heap_free_size(heap);
 
 
-	unset_flags(new_inuse_chunk, IS_CIS);
-	set_size(new_inuse_chunk, size);
-	set_flags(new_inuse_chunk, IN_USE);
-
+	t_chunk *new_inuse_chunk = chunk_new(
+		(char*)heap->free_cis_start,
+		0,
+		size,
+		IN_USE
+	);
 	if (has_perturb())
 		do_perturb((char*)new_inuse_chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), size);
 

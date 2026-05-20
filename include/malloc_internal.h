@@ -230,9 +230,10 @@ typedef struct s_chunk {
 	struct s_chunk	*prev;
 }                   t_chunk;
 
-void		chunk_split_center(t_heap *heap, t_chunk *chunk, size_t old_size, size_t new_size);
-void		chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
-void		chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
+t_chunk		*chunk_split_center(t_heap *heap, t_chunk *chunk, size_t old_size, size_t new_size);
+t_chunk		*chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t need);
+t_chunk		*chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t need);
+t_chunk		*chunk_split_cis(t_heap *heap, t_chunk *chunk, size_t need, size_t size);
 t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
 bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
 t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk);
@@ -245,8 +246,15 @@ t_chunk		*data_to_chunk(void *data_addr);
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
 t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
 
+
+ // min bytes for a tiny request
+#define TINY_CHUNK_MIN 16
+
  // max bytes for a tiny request
 #define TINY_CHUNK_MAX 112
+
+ // min bytes for a small request
+#define SMALL_CHUNK_MIN 128
 
  // max bytes for a small request
 #define SMALL_CHUNK_MAX 1008

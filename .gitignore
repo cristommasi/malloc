@@ -1,6 +1,5 @@
 *.o
 *.a
 malloc
-.vscode
 a.out
 out.txt

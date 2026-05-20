@@ -11,7 +11,8 @@ LDFLAGS		= -shared -pthread
 RM			= rm -f
 
 
-SRCS		=	src/init.c \
+SRCS		=	src/public.c \
+				src/internal/init.c \
 				src/internal/malloc.c \
 				src/internal/free.c \
 				src/internal/realloc.c \

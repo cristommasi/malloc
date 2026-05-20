@@ -8,7 +8,6 @@
 #include "./malloc.h"
 
 
-
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR  __attribute__((destructor))
 
@@ -91,8 +90,12 @@ int     	asciitoint(const char *str);
 typedef struct s_heap t_heap;
 typedef struct s_chunk t_chunk;
 
+ // thread functions
+#include <pthread.h>
+
 typedef struct s_arena {
 
+	pthread_mutex_t		lock;
 	MALLOC_OPS			OPS;
 	
 	t_heap  			*tiny;
@@ -104,10 +107,6 @@ typedef struct s_arena {
 
 }               t_arena;
 
- // thread functions
-#include <pthread.h>
- // global lock
-extern pthread_mutex_t	g_lock;
  // global var
 extern t_arena			g_arena;
 
@@ -303,3 +302,4 @@ void        print_chunk_addr(t_chunk *cur_chunk, size_t chunk_size);
 
 
 #endif
+

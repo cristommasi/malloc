@@ -1,17 +1,61 @@
 
 #include "../../../include/malloc_internal.h"
 
+
 int			arena_heap_munmap(t_heap *to_free) {
 
 	size_t total = to_free->total_size + sizeof(t_heap);
-
+	
 	if (has_perturb()) {
 		do_perturb(to_free, get_perturb_free(), total);
 	}
-
+	
 	int ret = munmap((void*)to_free, total);
-	update_arena_heap_count(-1);
+	if (ret != -1) {
+
+		update_arena_heap_count(-1);
+	}
 	return (ret);
+}
+
+int			arena_heap_cache_or_munmap(t_heap *to_free, t_heap_type type) {
+
+	if (type == HEAP_TINY) {
+
+		arena_fastbin_drain(to_free);
+		if (g_arena.tiny_cache == NULL) {
+			g_arena.tiny_cache = to_free;
+			return (F_NO_ERROR);
+		}
+	}
+	else if (type == HEAP_SMALL) {
+
+		arena_smallbin_drain(to_free);
+		if (g_arena.small_cache == NULL) {
+			g_arena.small_cache = to_free;
+			return (F_NO_ERROR);
+		}
+	}
+	return (arena_heap_munmap(to_free));
+
+}
+
+void		arena_bin_set(t_heap *heap, t_chunk *chunk, t_heap_type type) {
+
+	if (type == HEAP_TINY) {
+
+        arena_fastbin_set(heap, chunk);
+		heap_update_alloc_chunks(heap, -1);
+	}
+    else if (type == HEAP_SMALL) {
+
+        arena_smallbin_set(heap, chunk);
+		heap_update_alloc_chunks(heap, -1);
+	}
+	else if (type == HEAP_LARGE) {
+
+		heap_update_alloc_chunks(heap, -1);
+	}
 }
 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {

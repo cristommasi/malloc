@@ -22,40 +22,21 @@ int    free_internal(void *ptr) {
 			if (chunk_belongs_to_heap(heap, chunk)) {
 
 				if (already_freed(chunk)) {
+					
 					return (F_DOUBLE_FREE_ERROR);
 				}
 				else if (is_invalid_memory(chunk)) {
+
 					return (F_INV_PTR_ERROR);
 				}
 				if (heap->alloc_chunks >= 1) {
 
-					if (type == HEAP_TINY) {
-
-        			    arena_fastbin_set(heap, chunk);
-						heap_update_alloc_chunks(heap, -1);
-					}
-        			else if (type == HEAP_SMALL) {
-
-        			    arena_smallbin_set(heap, chunk);
-						heap_update_alloc_chunks(heap, -1);
-					}
-        			else if (type == HEAP_LARGE) {
-
-						heap_update_alloc_chunks(heap, -1);
-					}
+					arena_bin_set(heap, chunk, type);
 				}
         		if (heap->alloc_chunks == 0) {
 
-        		    if (type == HEAP_TINY) {
-
-        		        arena_fastbin_drain(heap);
-					}
-        		    else if (type == HEAP_SMALL) {
-
-        		        arena_smallbin_drain(heap);
-					}
 					arena_heap_unlink(heap, heads[type]);
-        		    return (arena_heap_munmap(heap));
+					return (arena_heap_cache_or_munmap(heap, type));
         		}
         		return (F_NO_ERROR);
 			}

@@ -15,6 +15,8 @@ t_arena g_arena = {
 	.large         = NULL,
 	.fastbin       = {0},
 	.smallbin      = {0},
+	.tiny_cache	   = NULL,
+	.small_cache   = NULL,
 	.heap_count    = 0
 };
 
@@ -47,5 +49,15 @@ CONSTRUCTOR static void malloc_ctor(void) {
 
 DESTRUCTOR static void malloc_dtor(void) {
 
+    if (g_arena.tiny_cache != NULL) {
+
+        arena_heap_munmap(g_arena.tiny_cache);
+        g_arena.tiny_cache = NULL;
+    }
+    if (g_arena.small_cache != NULL) {
+		
+        arena_heap_munmap(g_arena.small_cache);
+        g_arena.small_cache = NULL;
+    }
     pthread_mutex_destroy(&g_arena.lock);
 }

@@ -76,12 +76,13 @@ int     	asciitoint(const char *str);
 #define F_DOUBLE_FREE_ERROR             2
 
  // error messages for free and mallopt()
-#define M_PARAM_ERR_MSG "mallopt(): parameter out of bounds      \n"
-#define M_ARENA_MAX_EXCEEDED_MSG "malloc(): max number of arenas exceeded \n"
-#define F_DOUBLE_FREE_MSG "free(): double free detected in tcache 2\n"
-#define F_INV_PTR_MSG "free(): invalid pointer                 \n"
-#define F_MUNMAP_MSG "free(): munmap failed!                  \n"
-#define F_ABORT_MSG "abort()                                 \n"
+#define M_ERR_MSG_SIZE 42
+#define M_PARAM_ERR_MSG "_mallopt(): parameter out of bounds      \n"
+#define M_ARENA_MAX_EXCEEDED_MSG "_malloc(): max number of arenas exceeded \n"
+#define F_DOUBLE_FREE_MSG "_free(): double free detected in tcache 2\n"
+#define F_INV_PTR_MSG "_free(): invalid pointer                 \n"
+#define F_MUNMAP_MSG "_free(): munmap failed!                  \n"
+#define F_ABORT_MSG "_abort()                                 \n"
 
 
 
@@ -89,6 +90,7 @@ int     	asciitoint(const char *str);
  // fw declaration
 typedef struct s_heap t_heap;
 typedef struct s_chunk t_chunk;
+typedef enum e_heap_type t_heap_type;
 
  // thread functions
 #include <pthread.h>
@@ -103,6 +105,8 @@ typedef struct s_arena {
 	t_heap  			*large;
 	t_chunk 			*fastbin[7];
 	t_chunk 			*smallbin[56];
+	t_heap				*tiny_cache;
+	t_heap				*small_cache;
 	uint32_t			heap_count;
 
 }               t_arena;
@@ -119,6 +123,8 @@ void        arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk);
 void        arena_smallbin_unlink(t_chunk *chunk);
 void		arena_smallbin_drain(t_heap *heap);
 int			arena_heap_munmap(t_heap *cur);
+int			arena_heap_cache_or_munmap(t_heap *to_free, t_heap_type type);
+void		arena_bin_set(t_heap *heap, t_chunk *chunk, t_heap_type type);
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group_by_chunk(size_t size); 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);

@@ -35,7 +35,7 @@ PUBLIC void	free(void *ptr) {
     
     if (check == M_CHECK_PRINT || check == M_CHECK_DEFAULT) {
 
-        write(STDERR_FILENO, msg, 41);
+        write(STDERR_FILENO, msg, M_ERR_MSG_SIZE);
     }
     if (check == M_CHECK_ABORT || check == M_CHECK_DEFAULT) {
 

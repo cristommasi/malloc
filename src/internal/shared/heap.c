@@ -27,15 +27,27 @@ t_heap		*heap_new_and_append(size_t size) {
 
 t_heap		*heap_new(size_t zone_size) {
 
-	if (has_arena_max() && g_arena.heap_count + 1 >= get_arena_max()) {
-		return (MAP_FAILED);
+	t_heap  *new_heap = NULL;
+
+
+	if (zone_size == TINY_HEAP_SIZE && g_arena.tiny_cache != NULL) {
+		new_heap = g_arena.tiny_cache;
+		g_arena.tiny_cache = NULL;
 	}
-	t_heap  *new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET);
-	
-	if (new_heap == MAP_FAILED) {
-		return (MAP_FAILED);
+	else if (zone_size == SMALL_HEAP_SIZE && g_arena.small_cache != NULL) {
+		new_heap = g_arena.small_cache;
+		g_arena.small_cache = NULL;
 	}
-	update_arena_heap_count(1);
+	else {
+
+		if (has_arena_max() && g_arena.heap_count + 1 > get_arena_max()) {
+			return (MAP_FAILED);
+		}
+		if ((new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET)) == MAP_FAILED) {
+			return (MAP_FAILED);
+		}
+		update_arena_heap_count(1);
+	}
 
 	new_heap->alloc_chunks   = 0;
 	new_heap->total_size     = zone_size;
@@ -49,6 +61,7 @@ t_heap		*heap_new(size_t zone_size) {
 	
 	if (has_perturb())
 		do_perturb(((char*)new_chunk + CHUNK_FREE_SIZE), get_perturb_free(), get_size(new_chunk) - 16);
+	
 	return (new_heap);
 }
 

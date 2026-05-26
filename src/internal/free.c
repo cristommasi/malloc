@@ -1,19 +1,12 @@
 
 #include "../../include/malloc_internal.h"
 
-int    free_internal(void *ptr) {
+int    free_internal(t_chunk *chunk) {
 	
 	t_heap  *groups[3]    = { g_arena.tiny,   g_arena.small,  g_arena.large };
 	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };
 	t_heap  *heap         = NULL;
-	t_chunk *chunk        = NULL;
 
-	if (ptr == NULL)
-		return (F_NO_ERROR);
-
-	if ((chunk = data_to_chunk(ptr)) == NULL) {
-		return (F_INV_PTR_ERROR);
-	}
 	for (t_heap_type type = HEAP_TINY; type < HEAP_TYPE_COUNT; type++) {
 
 		heap = groups[type];

@@ -31,9 +31,16 @@ size_t		ALIGN(size_t size);
 
 extern void abort(void) __attribute__((__noreturn__));
 
+
+ // fw declaration
+typedef struct s_heap t_heap;
+typedef struct s_chunk t_chunk;
+typedef enum e_heap_type t_heap_type;
+
+
 void			*malloc_internal(size_t size);
-int				free_internal(void *ptr);
-void			*realloc_internal(void *ptr, size_t size);
+int				free_internal(t_chunk *chunk);
+void    		*realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t size);
 void			show_alloc_mem_internal(void);
 void			show_alloc_mem_ex_internal(void);
 int		        mallopt_internal(int param, int value);
@@ -74,23 +81,23 @@ int     	asciitoint(const char *str);
 #define F_NO_ERROR                      0
 #define F_INV_PTR_ERROR                 1
 #define F_DOUBLE_FREE_ERROR             2
+#define R_INV_PTR_ERROR                 3
 
- // error messages for free and mallopt()
-#define M_ERR_MSG_SIZE 42
-#define M_PARAM_ERR_MSG "_mallopt(): parameter out of bounds      \n"
-#define M_ARENA_MAX_EXCEEDED_MSG "_malloc(): max number of arenas exceeded \n"
-#define F_DOUBLE_FREE_MSG "_free(): double free detected in tcache 2\n"
-#define F_INV_PTR_MSG "_free(): invalid pointer                 \n"
-#define F_MUNMAP_MSG "_free(): munmap failed!                  \n"
-#define F_ABORT_MSG "_abort()                                 \n"
+ // error messages for free and realloc()
+#define M_REALLOC_HEADER		"_realloc(): "
+#define M_FREE_HEADER		    "_free():    "
+#define M_ERR_MSG_SIZE			 40
+#define M_PARAM_ERR_MSG			 "_free(): parameter out of bounds      \n"
+#define M_ARENA_MAX_EXCEEDED_MSG "_free(): max number of arenas exceeded\n"
+#define F_DOUBLE_FREE_MSG		 "_free(): double free detected         \n"
+#define F_INV_PTR_MSG			 "_free(): invalid pointer              \n"
+#define R_INV_PTR_MSG			 "_realloc(): invalid pointer           \n"
+#define F_MUNMAP_MSG			 "_free(): munmap failed!               \n"
+#define M_UNKNOWN_MSG			 "Unknown error                         \n"
 
 
 
 
- // fw declaration
-typedef struct s_heap t_heap;
-typedef struct s_chunk t_chunk;
-typedef enum e_heap_type t_heap_type;
 
  // thread functions
 #include <pthread.h>
@@ -130,6 +137,7 @@ t_heap		**arena_heap_group_by_chunk(size_t size);
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
 void		arena_heap_unlink(t_heap *heap, t_heap **head);
 void		update_arena_heap_count(int count);
+void    	arena_error_exit(int err);
 
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32

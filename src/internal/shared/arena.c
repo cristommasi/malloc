@@ -1,6 +1,42 @@
 
 #include "../../../include/malloc_internal.h"
 
+void    arena_error_exit(int err) {
+
+    char *msg;
+
+    switch (err)
+    {
+        case F_MUMMAP_ERROR:
+            msg = F_MUNMAP_MSG;
+            break;
+        case F_NO_ERROR:
+            return ;
+        case F_INV_PTR_ERROR:
+            msg = F_INV_PTR_MSG;
+            break;
+        case F_DOUBLE_FREE_ERROR:
+            msg = F_DOUBLE_FREE_MSG;
+            break;
+		case R_INV_PTR_ERROR:
+            msg = R_INV_PTR_MSG;
+            break;
+        default:
+            msg = M_UNKNOWN_MSG;
+            break;
+    }
+    uint8_t check = get_check();
+    
+    if (check == M_CHECK_PRINT || check == M_CHECK_DEFAULT) {
+
+        write(STDERR_FILENO, msg, M_ERR_MSG_SIZE);
+    }
+    if (check == M_CHECK_ABORT || check == M_CHECK_DEFAULT) {
+
+        pthread_mutex_unlock(&g_arena.lock);
+        abort();
+    }
+}
 
 int			arena_heap_munmap(t_heap *to_free) {
 
@@ -65,7 +101,7 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 		return (NULL);
 	}
 	move_data(new_ptr, ptr, (p_new_size <= cur_size) ? p_new_size : cur_size);
-	free_internal(ptr);
+	free_internal(data_to_chunk(ptr));
 	return (new_ptr);
 }
 

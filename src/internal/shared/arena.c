@@ -25,7 +25,6 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	return (new_ptr);
 }
 
-
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
 
 	if (!chunk)

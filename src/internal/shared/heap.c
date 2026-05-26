@@ -168,7 +168,7 @@ t_heap_type	heap_type(size_t size) {
 	return (HEAP_LARGE);
 }
 
-void	heap_update_alloc_chunks(t_heap *heap, int block) {
+void		heap_update_alloc_chunks(t_heap *heap, int block) {
 
 	if (block == -1)
 		heap->alloc_chunks = (heap->alloc_chunks >= 1) ? heap->alloc_chunks - 1 : 0;

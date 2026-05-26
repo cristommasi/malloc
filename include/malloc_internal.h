@@ -241,7 +241,6 @@ t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk);
 bool		prev_chunk_suffices(t_chunk *prev, size_t need);
 bool		next_chunk_suffices(t_chunk *next, size_t need);
 void		*chunk_to_data(t_chunk *chunk_addr);
-void		chunk_relink(t_chunk *prev, t_chunk *center, t_chunk *next);
 t_chunk		*data_to_chunk(void *data_addr);
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
 t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);

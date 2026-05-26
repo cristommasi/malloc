@@ -24,10 +24,6 @@ CONSTRUCTOR static void malloc_ctor(void) {
 
     pthread_mutex_init(&g_arena.lock, NULL);
 
-    g_arena.OPS.SHOW_INFO       = M_SHOW_DEFAULT;
-    g_arena.OPS.PERTURB         = M_PERTURB_NONE;
-    g_arena.OPS.CHECK           = M_CHECK_DEFAULT;
-    g_arena.OPS.ARENA_MAX       = M_ARENA_MAX_DEFAULT;
     char *val = NULL;
 
 	if ((val = getenv("MALLOC_CHECK")) != NULL) {

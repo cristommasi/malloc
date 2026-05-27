@@ -32,9 +32,9 @@ void    *malloc_internal(size_t size) {
 	}
 	else if ((chunk = heap_find_cis_mem_chunk(size)) == NULL) {
 
-		if ((heap = heap_new_and_append(size)) == MAP_FAILED)
+		if ((heap = heap_new(size)) == MAP_FAILED)
 			return (NULL);
-
+		
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)
 			return (NULL);
 

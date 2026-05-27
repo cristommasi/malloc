@@ -97,8 +97,6 @@ int     	asciitoint(const char *str);
 
 
 
-
-
  // thread functions
 #include <pthread.h>
 
@@ -121,6 +119,7 @@ typedef struct s_arena {
  // global var
 extern t_arena			g_arena;
 
+t_heap		*arena_find_cached_heap(size_t zone_size);
 void		arena_fastbin_unlink(t_chunk *chunk); 
 t_chunk		*arena_fastbin_get(size_t size);
 void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk);
@@ -168,6 +167,7 @@ typedef struct s_heap {
 	size_t        	p1;
 	size_t        	p2;
 	size_t        	p3;
+	
 	size_t        	alloc_chunks;
 	size_t          total_size;
 	t_chunk         *free_cis_start;
@@ -178,7 +178,6 @@ typedef struct s_heap {
 
 typedef enum e_heap_type { HEAP_TINY, HEAP_SMALL, HEAP_LARGE }	t_heap_type;
 
-t_heap		*heap_new_and_append(size_t size);
 size_t		heap_free_size(t_heap *heap);
 t_heap		*heap_new(size_t zone_size); 
 void		heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
@@ -189,6 +188,8 @@ size_t		heap_page_size(size_t size);
 t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
 void		heap_update_alloc_chunks(t_heap *heap, int block);
+
+
 
  //getrlimit(2)
 #include <sys/resource.h>

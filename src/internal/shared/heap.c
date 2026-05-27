@@ -1,67 +1,35 @@
 #include "../../../include/malloc_internal.h"
 
+t_heap		*heap_new(size_t size) {
 
-t_heap		*heap_new_and_append(size_t size) {
-
-	size_t  zone_size = heap_page_size(size);
-	t_heap *new_heap  = heap_new(zone_size);
-	
-	if (new_heap == MAP_FAILED) {
-		
-		return (MAP_FAILED);
-	}
-	if (zone_size == TINY_HEAP_SIZE) {
-
-		heap_append(&g_arena.tiny, new_heap);
-	}
-	else if (zone_size == SMALL_HEAP_SIZE) {
-
-		heap_append(&g_arena.small, new_heap);
-	}
-	else {
-
-		heap_append(&g_arena.large, new_heap);
-	}
-	return (new_heap);
-}
-
-t_heap		*heap_new(size_t zone_size) {
-
-	t_heap  *new_heap = NULL;
+	t_heap_type  type  = heap_type(size);
+	size_t  zone_size  = heap_page_size(size);
+	t_heap  *new_heap  = NULL;
 
 
-	if (zone_size == TINY_HEAP_SIZE && g_arena.tiny_cache != NULL) {
-		new_heap = g_arena.tiny_cache;
-		g_arena.tiny_cache = NULL;
-	}
-	else if (zone_size == SMALL_HEAP_SIZE && g_arena.small_cache != NULL) {
-		new_heap = g_arena.small_cache;
-		g_arena.small_cache = NULL;
-	}
-	else {
+	new_heap = arena_find_cached_heap(zone_size);
+	if (!new_heap) {
 
 		if (has_arena_max() && g_arena.heap_count + 1 > get_arena_max()) {
 			return (MAP_FAILED);
 		}
-		if ((new_heap = (t_heap *)mmap(NULL, zone_size + sizeof(t_heap), PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET)) == MAP_FAILED) {
+		zone_size += (type == HEAP_LARGE) ? sizeof(t_heap) : 0;
+
+		if ((new_heap = (t_heap *)mmap(NULL, zone_size, PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET)) == MAP_FAILED) {
 			return (MAP_FAILED);
 		}
 		update_arena_heap_count(1);
 	}
-
 	new_heap->alloc_chunks   = 0;
-	new_heap->total_size     = zone_size;
-	new_heap->free_cis_start = heap_to_chunk(new_heap);
+	new_heap->total_size     = zone_size - sizeof(t_heap);
 	new_heap->next           = NULL;
 	new_heap->prev           = NULL;
-
-	size_t flags = (zone_size != TINY_HEAP_SIZE && zone_size != SMALL_HEAP_SIZE) ? (IS_LARGE | IS_CIS) : IS_CIS;
-
-	t_chunk *new_chunk = chunk_new((char*)new_heap->free_cis_start, 0, zone_size - CHUNK_INUSE_SIZE, flags);
+	new_heap->free_cis_start = chunk_new((char*)heap_to_chunk(new_heap), 0, new_heap->total_size - CHUNK_INUSE_SIZE, IS_CIS);
 	
 	if (has_perturb())
-		do_perturb(((char*)new_chunk + CHUNK_FREE_SIZE), get_perturb_free(), get_size(new_chunk) - 16);
-	
+		do_perturb(((char*)new_heap->free_cis_start + CHUNK_FREE_SIZE), get_perturb_free(), get_size(new_heap->free_cis_start) - 16);
+
+	heap_append(arena_heap_group_by_chunk(size), new_heap);
 	return (new_heap);
 }
 
@@ -88,24 +56,20 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 	size_t	remaining		 = heap_free_size(heap);
 
 
-	t_chunk *new_inuse_chunk = chunk_new(
-		(char*)heap->free_cis_start,
-		0,
-		size,
-		IN_USE
-	);
+	t_chunk *new_inuse_chunk = chunk_new((char*)heap->free_cis_start, 0, size, IN_USE);
+
 	if (has_perturb())
 		do_perturb((char*)new_inuse_chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), size);
 
 
-	if (remaining > size + CHUNK_INUSE_SIZE + CHUNK_FREE_SIZE) {
+	if (remaining > ((size + CHUNK_INUSE_SIZE) + (CHUNK_FREE_SIZE))) {
 
-		size_t	new_free_size = remaining - size - CHUNK_INUSE_SIZE - CHUNK_FREE_SIZE;
+		size_t	new_free_size = remaining - ((size + CHUNK_INUSE_SIZE) + CHUNK_INUSE_SIZE);
 
 		t_chunk *new_free_chunk = chunk_new( (char *)new_inuse_chunk + CHUNK_INUSE_SIZE + size, 0, new_free_size, IS_CIS);
-		heap->free_cis_start = new_free_chunk;
 		new_free_chunk->next = NULL;
 		new_free_chunk->prev = NULL;
+		heap->free_cis_start = new_free_chunk;
 		if (has_perturb())
 			do_perturb((char*)heap->free_cis_start + CHUNK_FREE_SIZE, get_perturb_free(), new_free_size - 16);
 	}
@@ -127,11 +91,13 @@ t_chunk		*heap_find_cis_mem_chunk(size_t size) {
 		if (heap_free_size(*cur) >= size + CHUNK_INUSE_SIZE) {
 			if ((chunk = heap_split_cis_mem(*cur, size)) == NULL)
 				return (NULL);
-			(*cur)->alloc_chunks += 1;
+
+			heap_update_alloc_chunks(*cur, 1);
 			return (chunk);
 		}
 		cur = &(*cur)->next;
 	}
+
 	return (NULL);
 }
 
@@ -188,6 +154,3 @@ void		heap_update_alloc_chunks(t_heap *heap, int block) {
 	else if (block == 1)
 		heap->alloc_chunks++;
 }
-	
-	
-

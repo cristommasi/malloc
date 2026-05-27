@@ -1,43 +1,6 @@
 
 #include "../../../include/malloc_internal.h"
 
-void    arena_error_exit(int err) {
-
-    char *msg;
-
-    switch (err)
-    {
-        case F_MUMMAP_ERROR:
-            msg = F_MUNMAP_MSG;
-            break;
-        case F_NO_ERROR:
-            return ;
-        case F_INV_PTR_ERROR:
-            msg = F_INV_PTR_MSG;
-            break;
-        case F_DOUBLE_FREE_ERROR:
-            msg = F_DOUBLE_FREE_MSG;
-            break;
-		case R_INV_PTR_ERROR:
-            msg = R_INV_PTR_MSG;
-            break;
-        default:
-            msg = M_UNKNOWN_MSG;
-            break;
-    }
-    uint8_t check = get_check();
-    
-    if (check == M_CHECK_PRINT || check == M_CHECK_DEFAULT) {
-
-        write(STDERR_FILENO, msg, M_ERR_MSG_SIZE);
-    }
-    if (check == M_CHECK_ABORT || check == M_CHECK_DEFAULT) {
-
-        pthread_mutex_unlock(&g_arena.lock);
-        abort();
-    }
-}
-
 int			arena_heap_munmap(t_heap *to_free) {
 
 	size_t total = to_free->total_size + sizeof(t_heap);
@@ -103,6 +66,23 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	move_data(new_ptr, ptr, (p_new_size <= cur_size) ? p_new_size : cur_size);
 	free_internal(data_to_chunk(ptr));
 	return (new_ptr);
+}
+
+t_heap		*arena_find_cached_heap(size_t zone_size) {
+
+	t_heap *cached_heap = NULL;
+
+	if (zone_size == TINY_HEAP_SIZE && g_arena.tiny_cache != NULL) {
+
+		cached_heap = g_arena.tiny_cache;
+		g_arena.tiny_cache = NULL;
+	}
+	else if (zone_size == SMALL_HEAP_SIZE && g_arena.small_cache != NULL) {
+
+		cached_heap = g_arena.small_cache;
+		g_arena.small_cache = NULL;
+	}
+	return (cached_heap);
 }
 
 t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
@@ -397,7 +377,7 @@ t_heap      **arena_heap_group_by_chunk(size_t size) {
 	return (NULL);
 }
 
-int     size_exceeds_rlimit(size_t aligned_size) {
+int     	size_exceeds_rlimit(size_t aligned_size) {
 
     struct rlimit   rl;
 
@@ -410,7 +390,7 @@ int     size_exceeds_rlimit(size_t aligned_size) {
     return ((rlim_t)aligned_size > rl.rlim_cur);
 }
 
-void	update_arena_heap_count(int count) {
+void		update_arena_heap_count(int count) {
 
 	if (count == -1)
 		g_arena.heap_count  = (g_arena.heap_count >= 1) ? g_arena.heap_count - 1 : 0;
@@ -418,3 +398,39 @@ void	update_arena_heap_count(int count) {
 		g_arena.heap_count += 1;
 }
 
+void    	arena_error_exit(int err) {
+
+    char *msg;
+
+    switch (err)
+    {
+        case F_MUMMAP_ERROR:
+            msg = F_MUNMAP_MSG;
+            break;
+        case F_NO_ERROR:
+            return ;
+        case F_INV_PTR_ERROR:
+            msg = F_INV_PTR_MSG;
+            break;
+        case F_DOUBLE_FREE_ERROR:
+            msg = F_DOUBLE_FREE_MSG;
+            break;
+		case R_INV_PTR_ERROR:
+            msg = R_INV_PTR_MSG;
+            break;
+        default:
+            msg = M_UNKNOWN_MSG;
+            break;
+    }
+    uint8_t check = get_check();
+    
+    if (check == M_CHECK_PRINT || check == M_CHECK_DEFAULT) {
+
+        write(STDERR_FILENO, msg, M_ERR_MSG_SIZE);
+    }
+    if (check == M_CHECK_ABORT || check == M_CHECK_DEFAULT) {
+
+        pthread_mutex_unlock(&g_arena.lock);
+        abort();
+    }
+}

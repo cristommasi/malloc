@@ -1,4 +1,5 @@
-#include "../../include/malloc_internal.h"
+
+#include "./malloc_internal.h"
 
 t_arena g_arena = {
 

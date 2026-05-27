@@ -1,4 +1,5 @@
-#include "../../include/malloc_internal.h"
+
+#include "../malloc_internal.h"
 
 
 void    *malloc_internal(size_t size) {
@@ -8,7 +9,8 @@ void    *malloc_internal(size_t size) {
 
 	
 	if (size_exceeds_rlimit(size)) {
-
+		
+		pthread_mutex_unlock(&g_arena.lock);
 		return (NULL);
 	}
 	size = (!size) ? 16 : ALIGN(size);

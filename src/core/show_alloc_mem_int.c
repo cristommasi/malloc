@@ -1,14 +1,11 @@
 
-#include "../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 void    show_alloc_mem_internal(void) {
 
     t_heap *HEAP_TYPES[3] = { g_arena.tiny, g_arena.small, g_arena.large};
     size_t  total_size    = 0;
 
-    if (!HEAP_TYPES[0] && !HEAP_TYPES[1] && !HEAP_TYPES[2]) {
-        return;
-    }
 
     for (int i = 0; i < HEAP_TYPE_COUNT; i++) {
 

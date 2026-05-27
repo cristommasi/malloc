@@ -1,5 +1,5 @@
 
-#include "../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 void    *realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t size) {
     
@@ -29,4 +29,5 @@ void    *realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t siz
 	}
     return (arena_get_new_chunk_type(ptr, size, old_size));
 }
+
 

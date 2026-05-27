@@ -1,56 +1,6 @@
-#include "../include/malloc_internal.h"
 
+#include "../malloc_internal.h"
 
-PUBLIC void	*malloc(size_t size) {
-
-	pthread_mutex_lock(&g_arena.lock);
-	void *ptr = malloc_internal(size);
-
-    if (ptr != NULL) {
-
-        VALGRIND_MALLOCLIKE_BLOCK(ptr, ALIGN(size), 0, 0);
-    }
-
-	pthread_mutex_unlock(&g_arena.lock);
-
-	return (ptr);
-}
-
-PUBLIC void	free(void *ptr) {
-
-	pthread_mutex_lock(&g_arena.lock);
-
-    t_chunk *chunk = NULL;
-
-    if (ptr == NULL) {
-        pthread_mutex_unlock(&g_arena.lock);
-        return ;
-    }
-    if ((uintptr_t)ptr % ALIGNMENT != 0) {
-		
-        arena_error_exit(F_INV_PTR_ERROR);
-        pthread_mutex_unlock(&g_arena.lock);
-        return ;
-	}
-    if ((chunk = data_to_chunk(ptr)) == NULL) {
-
-        arena_error_exit(F_INV_PTR_ERROR);
-        pthread_mutex_unlock(&g_arena.lock);
-        return ;
-	}
-
-	int err = free_internal(chunk);
-
-
-    if (err == F_NO_ERROR) {
-
-        VALGRIND_FREELIKE_BLOCK(ptr, 0);
-        pthread_mutex_unlock(&g_arena.lock);
-        return ;
-    }
-    arena_error_exit(err);
-    pthread_mutex_unlock(&g_arena.lock);
-}
 
 PUBLIC void	*realloc(void *ptr, size_t size) {
 
@@ -117,34 +67,4 @@ PUBLIC void	*realloc(void *ptr, size_t size) {
 
     pthread_mutex_unlock(&g_arena.lock);
     return (new_ptr);
-}
-
-PUBLIC void    show_alloc_mem(void) {
-
-    pthread_mutex_lock(&g_arena.lock);
-
-    show_alloc_mem_internal();
-
-    pthread_mutex_unlock(&g_arena.lock);
-}
-
-
-PUBLIC void    show_alloc_mem_ex() {
-
-    pthread_mutex_lock(&g_arena.lock);
-
-    show_alloc_mem_ex_internal();
-
-    pthread_mutex_unlock(&g_arena.lock);
-}
-
-PUBLIC int     mallopt(int param, int value) {
-
-    pthread_mutex_lock(&g_arena.lock);
-
-    int ret = mallopt_internal(param, value);
-    
-    pthread_mutex_unlock(&g_arena.lock);
-    
-    return (ret);
 }

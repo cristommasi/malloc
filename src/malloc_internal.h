@@ -5,7 +5,7 @@
 // MAP_ANON & MAP_ANONYMOUS FLAGS
 #define _GNU_SOURCE
 
-#include "./malloc.h"
+#include "../include/malloc.h"
 
 
 #define CONSTRUCTOR __attribute__((constructor))
@@ -42,7 +42,7 @@ void			*malloc_internal(size_t size);
 int				free_internal(t_chunk *chunk);
 void    		*realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t size);
 void			show_alloc_mem_internal(void);
-void			show_alloc_mem_ex_internal(void);
+void			show_alloc_mem_ex_internal(int show_type);
 int		        mallopt_internal(int param, int value);
 
 
@@ -74,6 +74,7 @@ bool        has_arena_max(void);
 uint32_t    get_arena_max(void);
 int     	asciitoint(const char *str);
 
+
  // mallopt()
 #define M_PARAM_ERROR                   0
 #define M_PARAM_SUCCESS                 1
@@ -84,16 +85,14 @@ int     	asciitoint(const char *str);
 #define R_INV_PTR_ERROR                 3
 
  // error messages for free and realloc()
-#define M_REALLOC_HEADER		"_realloc(): "
-#define M_FREE_HEADER		    "_free():    "
-#define M_ERR_MSG_SIZE			 40
-#define M_PARAM_ERR_MSG			 "_free(): parameter out of bounds      \n"
-#define M_ARENA_MAX_EXCEEDED_MSG "_free(): max number of arenas exceeded\n"
-#define F_DOUBLE_FREE_MSG		 "_free(): double free detected         \n"
-#define F_INV_PTR_MSG			 "_free(): invalid pointer              \n"
-#define R_INV_PTR_MSG			 "_realloc(): invalid pointer           \n"
-#define F_MUNMAP_MSG			 "_free(): munmap failed!               \n"
-#define M_UNKNOWN_MSG			 "Unknown error                         \n"
+#define M_ERR_MSG_SIZE			 38
+#define M_PARAM_ERR_MSG			 "free(): parameter out of bounds      \n"
+#define M_ARENA_MAX_EXCEEDED_MSG "free(): max number of arenas exceeded\n"
+#define F_DOUBLE_FREE_MSG		 "free(): double free detected         \n"
+#define F_INV_PTR_MSG			 "free(): invalid pointer              \n"
+#define R_INV_PTR_MSG			 "realloc(): invalid pointer           \n"
+#define F_MUNMAP_MSG			 "free(): munmap failed!               \n"
+#define M_UNKNOWN_MSG			 "Unknown error                        \n"
 
 
 
@@ -300,7 +299,6 @@ bool	    already_freed(t_chunk *chunk);
 #define NO_FLAGS     ((size_t)0)
 #define IN_USE       ((size_t)1)
 #define IS_CIS       ((size_t)2)
-#define IS_LARGE     ((size_t)4)
 #define L_FLAG_MASK  ((size_t)7)
 #define L_SIZE_MASK  ((size_t)18446744073709551608UL)
 

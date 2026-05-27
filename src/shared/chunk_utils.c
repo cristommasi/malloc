@@ -1,4 +1,4 @@
-#include "../../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 size_t		ALIGN(size_t size) {
 

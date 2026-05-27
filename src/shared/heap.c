@@ -1,4 +1,4 @@
-#include "../../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 t_heap		*heap_new(size_t size) {
 

@@ -1,5 +1,5 @@
 
-#include "../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 int		mallopt_internal(int param, int value) {
 

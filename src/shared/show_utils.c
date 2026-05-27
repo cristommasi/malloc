@@ -1,4 +1,4 @@
-#include "../../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 bool	printable_char(int c) {
 

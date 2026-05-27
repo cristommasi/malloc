@@ -1,7 +1,8 @@
 
-#include "../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
-int    free_internal(t_chunk *chunk) {
+
+int		free_internal(t_chunk *chunk) {
 	
 	t_heap  *groups[3]    = { g_arena.tiny,   g_arena.small,  g_arena.large };
 	t_heap **heads[3]     = { &g_arena.tiny, &g_arena.small, &g_arena.large };

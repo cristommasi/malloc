@@ -1,4 +1,4 @@
-#include "../../../include/malloc_internal.h"
+#include "../malloc_internal.h"
 
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags) {
 

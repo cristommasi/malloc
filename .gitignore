@@ -5,3 +5,7 @@ malloc
 a.out
 out.txt
 testing
+main.c
+*.txt
+*.out
+/bin

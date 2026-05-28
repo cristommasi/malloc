@@ -5,7 +5,6 @@ PUBLIC void	*malloc(size_t size) {
 
 	pthread_mutex_lock(&g_arena.lock);
 
-
 	void *ptr = malloc_internal(size);
 
     if (ptr != NULL) {

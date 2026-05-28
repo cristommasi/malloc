@@ -10,15 +10,11 @@ t_heap		*heap_new(size_t size) {
 	new_heap = arena_find_cached_heap(zone_size);
 	if (!new_heap) {
 
-		if (has_arena_max() && g_arena.heap_count + 1 > get_arena_max()) {
-			return (MAP_FAILED);
-		}
 		zone_size += (type == HEAP_LARGE) ? sizeof(t_heap) : 0;
 
 		if ((new_heap = (t_heap *)mmap(NULL, zone_size, PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET)) == MAP_FAILED) {
 			return (MAP_FAILED);
 		}
-		update_arena_heap_count(1);
 	}
 	new_heap->alloc_chunks   = 0;
 	new_heap->total_size     = zone_size - sizeof(t_heap);
@@ -60,7 +56,8 @@ t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size) {
 
 	if (has_perturb())
 		do_perturb((char*)new_inuse_chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), size);
-
+	if (has_zero())
+		do_perturb((char*)new_inuse_chunk + CHUNK_INUSE_SIZE, 0, size);
 
 	if (remaining > ((size + CHUNK_INUSE_SIZE) + (CHUNK_FREE_SIZE))) {
 

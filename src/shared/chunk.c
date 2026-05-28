@@ -135,6 +135,8 @@ t_chunk		*chunk_split_cis(t_heap *heap, t_chunk *chunk, size_t need, size_t size
 
 	if (has_perturb())
 		do_perturb((char*)new_inuse_split, get_perturb_alloc(), need + CHUNK_INUSE_SIZE);
+	if (has_zero())
+		do_perturb((char*)new_inuse_split, 0, need + CHUNK_INUSE_SIZE);
 
 	set_size(chunk, size);
 	return (chunk);

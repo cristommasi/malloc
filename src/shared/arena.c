@@ -10,10 +10,6 @@ int			arena_heap_munmap(t_heap *to_free) {
 	}
 	
 	int ret = munmap((void*)to_free, total);
-	if (ret != -1) {
-
-		update_arena_heap_count(-1);
-	}
 	return (ret);
 }
 
@@ -137,7 +133,8 @@ t_chunk     *arena_fastbin_get(size_t size) {
 
 	if (has_perturb())
 		do_perturb((char*)chunk + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(chunk));
-
+	if (has_zero())
+		do_perturb((char*)chunk + CHUNK_INUSE_SIZE, 0, get_size(chunk));
 	return (chunk);
 }
 
@@ -233,6 +230,8 @@ t_chunk		*arena_smallbin_get(size_t size) {
 		set_flags(head, IN_USE);
 		if (has_perturb())
 			do_perturb((char*)head + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(head));
+		if (has_zero())
+			do_perturb((char*)head + CHUNK_INUSE_SIZE, 0, get_size(head));
 		return (head);
 	}
 
@@ -245,6 +244,8 @@ t_chunk		*arena_smallbin_get(size_t size) {
 
 	if (has_perturb())
 		do_perturb((char*)tail + CHUNK_INUSE_SIZE, get_perturb_alloc(), get_size(tail));
+	if (has_zero())
+		do_perturb((char*)tail + CHUNK_INUSE_SIZE, 0, get_size(tail));
 	return (tail);
 }
 
@@ -390,14 +391,6 @@ int     	size_exceeds_rlimit(size_t aligned_size) {
     return ((rlim_t)aligned_size > rl.rlim_cur);
 }
 
-void		update_arena_heap_count(int count) {
-
-	if (count == -1)
-		g_arena.heap_count  = (g_arena.heap_count >= 1) ? g_arena.heap_count - 1 : 0;
-	else if (count == 1)
-		g_arena.heap_count += 1;
-}
-
 void    	arena_error_exit(int err) {
 
     char *msg;
@@ -424,11 +417,11 @@ void    	arena_error_exit(int err) {
     }
     uint8_t check = get_check();
     
-    if (check == M_CHECK_PRINT || check == M_CHECK_DEFAULT) {
+    if (check == M_CHECK_PRINT || check == M_CHECK_PRINT_ABORT) {
 
         write(STDERR_FILENO, msg, M_ERR_MSG_SIZE);
     }
-    if (check == M_CHECK_ABORT || check == M_CHECK_DEFAULT) {
+    if (check == M_CHECK_ABORT || check == M_CHECK_PRINT_ABORT) {
 
         pthread_mutex_unlock(&g_arena.lock);
         abort();

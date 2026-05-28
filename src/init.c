@@ -8,8 +8,8 @@ t_arena g_arena = {
 	{
 		.SHOW_INFO = M_SHOW_DEFAULT,
 		.PERTURB   = M_PERTURB_NONE,
-		.CHECK     = M_CHECK_DEFAULT,
-		.ARENA_MAX = M_ARENA_MAX_DEFAULT,
+		.CHECK     = M_CHECK_PRINT_ABORT,
+		.ZERO      = M_ZERO_DEFAULT,
 	},
 	.tiny          = NULL,
 	.small         = NULL,
@@ -18,7 +18,6 @@ t_arena g_arena = {
 	.smallbin      = {0},
 	.tiny_cache	   = NULL,
 	.small_cache   = NULL,
-	.heap_count    = 0
 };
 
 
@@ -29,21 +28,21 @@ CONSTRUCTOR static void malloc_ctor(void) {
 
     char *val = NULL;
 
-	if ((val = getenv("MALLOC_CHECK")) != NULL) {
+	if ((val = getenv("MALLOC_CHECK_")) != NULL) {
 
-		mallopt_internal(MALLOC_CHECK, asciitoint(val));
+		mallopt_internal(M_CHECK_ACTION, asciitoint(val));
 	}
-	if ((val = getenv("MALLOC_PERTURB")) != NULL) {
+	if ((val = getenv("MALLOC_PERTURB_")) != NULL) {
 
-		mallopt_internal(MALLOC_PERTURB, asciitoint(val));
+		mallopt_internal(M_PERTURB, asciitoint(val));
 	}
-	if ((val = getenv("MALLOC_ARENA_MAX")) != NULL) {
+	if ((val = getenv("MALLOC_ZERO_")) != NULL) {
 
-		mallopt_internal(MALLOC_ARENA_MAX, asciitoint(val));
+		mallopt_internal(M_ZERO, asciitoint(val));
 	}
-    if ((val = getenv("MALLOC_SHOW_INFO")) != NULL) {
+    if ((val = getenv("MALLOC_SHOW_")) != NULL) {
 
-		mallopt_internal(MALLOC_SHOW_INFO, asciitoint(val));
+		mallopt_internal(M_SHOW_INFO, asciitoint(val));
 	}
 }
 

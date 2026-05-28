@@ -25,9 +25,7 @@
  // MACRO FN TO ALIGN
 size_t		ALIGN(size_t size);
 
- // valgrind macros
-#include <valgrind/valgrind.h>
-#include <valgrind/memcheck.h>
+
 
 extern void abort(void) __attribute__((__noreturn__));
 
@@ -56,12 +54,15 @@ extern char *getenv(const char *name);
 
 typedef struct MALLOC_OPS
 {
-	uint8_t			SHOW_INFO; // free and alloc fill with bits
-	uint8_t			PERTURB; // free and alloc fill with bits
-	uint8_t			CHECK; // print msg or abort
-	uint32_t		ARENA_MAX; //max amount of arenas
+	uint8_t			SHOW_INFO;
+	uint8_t			PERTURB;
+	uint8_t			CHECK;
+	uint8_t			ZERO;
 
 } MALLOC_OPS;
+
+#define M_SHOW_DEFAULT      0
+
 
 uint8_t     get_show_info(void);
 uint8_t     get_check(void);
@@ -69,9 +70,8 @@ bool        has_perturb(void);
 int         get_perturb_alloc(void);
 int         get_perturb_free(void);
 void		*do_perturb(void *s, int c, size_t n);
-bool        has_check(void); 
-bool        has_arena_max(void); 
-uint32_t    get_arena_max(void);
+bool        has_check(void);
+bool		has_zero(void);
 int     	asciitoint(const char *str);
 
 
@@ -87,7 +87,7 @@ int     	asciitoint(const char *str);
  // error messages for free and realloc()
 #define M_ERR_MSG_SIZE			 38
 #define M_PARAM_ERR_MSG			 "free(): parameter out of bounds      \n"
-#define M_ARENA_MAX_EXCEEDED_MSG "free(): max number of arenas exceeded\n"
+#define M_HEAP_MAX_EXCEEDED_MSG  "free(): max number of arenas exceeded\n"
 #define F_DOUBLE_FREE_MSG		 "free(): double free detected         \n"
 #define F_INV_PTR_MSG			 "free(): invalid pointer              \n"
 #define R_INV_PTR_MSG			 "realloc(): invalid pointer           \n"
@@ -111,7 +111,6 @@ typedef struct s_arena {
 	t_chunk 			*smallbin[56];
 	t_heap				*tiny_cache;
 	t_heap				*small_cache;
-	uint32_t			heap_count;
 
 }               t_arena;
 
@@ -134,7 +133,6 @@ t_heap		*arena_heap_find_by_chunk(t_chunk *chunk);
 t_heap		**arena_heap_group_by_chunk(size_t size); 
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
 void		arena_heap_unlink(t_heap *heap, t_heap **head);
-void		update_arena_heap_count(int count);
 void    	arena_error_exit(int err);
 
  // MIN size to leave a chunk with 16 header + 16 data

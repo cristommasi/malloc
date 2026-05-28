@@ -31,14 +31,9 @@ bool    has_check(void) {
     return ((bool)g_arena.OPS.CHECK);
 }
 
-bool    has_arena_max(void) {
+bool    has_zero(void) {
 
-    return ((bool)g_arena.OPS.ARENA_MAX);
-}
-
-uint32_t    get_arena_max(void) {
-
-    return (g_arena.OPS.ARENA_MAX);
+    return ((bool)g_arena.OPS.ZERO);
 }
 
 int     asciitoint(const char *str) {

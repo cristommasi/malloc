@@ -6,10 +6,10 @@ t_arena g_arena = {
 	.lock          = PTHREAD_MUTEX_INITIALIZER,
 	.OPS           = 
 	{
-		.SHOW_INFO = M_SHOW_DEFAULT,
+		.SHOW_INFO = M_SHOW_INUSE,
 		.PERTURB   = M_PERTURB_NONE,
 		.CHECK     = M_CHECK_PRINT_ABORT,
-		.ZERO      = M_ZERO_DEFAULT,
+		.ZERO      = M_ZERO_NONE,
 	},
 	.tiny          = NULL,
 	.small         = NULL,

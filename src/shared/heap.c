@@ -12,8 +12,11 @@ t_heap		*heap_new(size_t size) {
 
 		zone_size += (type == HEAP_LARGE) ? sizeof(t_heap) : 0;
 
+		if (size_exceeds_rlimit(size)) {
+			return (NULL);
+		}
 		if ((new_heap = (t_heap *)mmap(NULL, zone_size, PROT_FLAGS, MAP_FLAGS, NO_FD, NO_OFFSET)) == MAP_FAILED) {
-			return (MAP_FAILED);
+			return (NULL);
 		}
 	}
 	new_heap->alloc_chunks   = 0;
@@ -107,13 +110,6 @@ size_t		heap_free_size(t_heap *heap) {
 	if ((char *)heap->free_cis_start > end)
         return (0);
 	return ((size_t)(end - (char *)heap->free_cis_start));
-}
-
-t_chunk 	*heap_to_chunk(t_heap *heap) {
-
-	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
-
-	return ((t_chunk *)addr);
 }
 
 bool		heap_is_different_type(size_t sizeA, size_t sizeB) {

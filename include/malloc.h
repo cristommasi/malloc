@@ -78,8 +78,10 @@ PUBLIC void      show_alloc_mem_ex(void);
  * 
  * - M_PERTURB, [ 0-255 | M_PERTURB_NONE]
  *
- * - M_ZERO, [M_ZERO_INIT | M_ZERO_DEFAULT]
+ * - M_ZERO, [M_ZERO_INIT | M_ZERO_NONE]
  * @endverbatim
+ * 
+ * @return On success, 1.  On error, 0.
  * 
  * @note ENV_VARS may be set during initalization.
  * 
@@ -153,12 +155,12 @@ PUBLIC int       mallopt(int param, int value);
  * \n
  * - M_ZERO_INIT      : Zero init
  * \n
- * - M_CALLOC_DEFAULT : No zero init (set default)
+ * - M_ZERO_NONE : No zero init (set default)
  * 
  * @note This action is performed after M_PERTURB if set.
  */
 #define M_ZERO         -10
 #define M_ZERO_INIT     1
-#define M_ZERO_DEFAULT  0
+#define M_ZERO_NONE     0
 
 #endif

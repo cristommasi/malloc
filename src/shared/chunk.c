@@ -15,8 +15,8 @@ t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags) {
 
 t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 
-	t_chunk *next 	  = get_next_chunk(heap, chunk);
-	t_chunk *prev     = get_prev_chunk(heap, chunk);
+	t_chunk *next 	  = chunk_next(heap, chunk);
+	t_chunk *prev     = chunk_prev(heap, chunk);
   	size_t   cur_size = get_size(chunk);
     size_t   need     = size - cur_size;
 
@@ -25,15 +25,15 @@ t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size) {
 		
         return (chunk_split_center(heap, chunk, cur_size, size));
     }
-	else if (next && next_chunk_suffices(next, need) && heap->free_cis_start && heap->free_cis_start == next) {
+	else if (next && chunk_next_suffices(next, need) && heap->free_cis_start && heap->free_cis_start == next) {
 
 		return (chunk_split_cis(heap, chunk, need, size));
 	}
-	else if (next && next_chunk_suffices(next, need)) {
+	else if (next && chunk_next_suffices(next, need)) {
 
 		return (chunk_split_right(heap, chunk, next, need));
 	}
-	else if (prev && prev_chunk_suffices(prev, need)) {
+	else if (prev && chunk_prev_suffices(prev, need)) {
 
 		return (chunk_split_left(heap, chunk, prev, need));
 	}
@@ -82,13 +82,13 @@ t_chunk		*chunk_split_right(t_heap *heap, t_chunk *chunk, t_chunk *next, size_t 
 		if (has_perturb())
 			do_perturb((char*)new_free + CHUNK_FREE_SIZE , get_perturb_free(), get_size(new_free) - 16);
 
-		if ((nnc = get_next_chunk(heap, next)) != NULL)
+		if ((nnc = chunk_next(heap, next)) != NULL)
 			set_prevsize(nnc, get_size(new_free));
 		
 		arena_smallbin_set(heap, new_free);
 		return (chunk);
 	}
-	if ((nnc = get_next_chunk(heap, next)) != NULL)
+	if ((nnc = chunk_next(heap, next)) != NULL)
 		set_prevsize(nnc, 0);
 	return (chunk);
 }
@@ -117,13 +117,13 @@ t_chunk		*chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t n
 		if (has_perturb())
 			do_perturb((char*)new_free + CHUNK_FREE_SIZE, get_perturb_free(), new_free_size - 16);
 		
-		if ((nnc = get_next_chunk(heap, new_free)) != NULL)
+		if ((nnc = chunk_next(heap, new_free)) != NULL)
 			set_prevsize(nnc, new_free_size);
 		
 		arena_smallbin_set(heap, new_free);
 		return (new_inuse_chunk);
 	}
-	if ((nnc = get_next_chunk(heap, chunk)) != NULL)
+	if ((nnc = chunk_next(heap, chunk)) != NULL)
 		set_prevsize(nnc, 0);
 	return (new_inuse_chunk);
 }
@@ -146,8 +146,8 @@ t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk) {
 
 	if (!heap || !freed_chunk) return (NULL);
 
-	t_chunk *next		 = get_next_chunk(heap, freed_chunk);
-	t_chunk *prev		 = get_prev_chunk(heap, freed_chunk);
+	t_chunk *next		 = chunk_next(heap, freed_chunk);
+	t_chunk *prev		 = chunk_prev(heap, freed_chunk);
 	size_t prev_size     = 0;
 	size_t new_size      = 0;
 
@@ -207,7 +207,7 @@ bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk) {
 	return ((char *)chunk >= start && (char *)chunk <= end);
 }
 
-t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
+t_chunk		*chunk_next(t_heap *heap, t_chunk *chunk) {
 
 	if (!chunk) return (NULL);
 	char *addr = ((char*)chunk + CHUNK_INUSE_SIZE + get_size(chunk));
@@ -220,7 +220,7 @@ t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk) {
 	return ( (t_chunk *)(addr) );
 }
 
-t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk) {
+t_chunk		*chunk_prev(t_heap *heap, t_chunk *chunk) {
 
 	if (!chunk) return (NULL);
 	size_t prev_size = get_prevsize(chunk);
@@ -233,7 +233,7 @@ t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk) {
 	return ( (t_chunk *)(addr) );
 }
 
-bool		next_chunk_suffices(t_chunk *next, size_t need) {
+bool		chunk_next_suffices(t_chunk *next, size_t need) {
 
 	size_t next_size = get_size(next) + CHUNK_INUSE_SIZE;
 
@@ -244,7 +244,7 @@ bool		next_chunk_suffices(t_chunk *next, size_t need) {
 	return (false);
 }
 
-bool		prev_chunk_suffices(t_chunk *prev, size_t need) {
+bool		chunk_prev_suffices(t_chunk *prev, size_t need) {
 
 	size_t prev_total = get_size(prev) + CHUNK_INUSE_SIZE;
 
@@ -256,14 +256,14 @@ bool		prev_chunk_suffices(t_chunk *prev, size_t need) {
 	return (false);
 }
 
-void		*chunk_to_data(t_chunk *chunk_addr) {
+bool		chunk_already_freed(t_chunk *chunk) {
 
-	return ((void *)((char*)chunk_addr + CHUNK_INUSE_SIZE));
+	return (!has_flags(chunk, IN_USE) && !has_flags(chunk, IS_CIS));
 }
 
-t_chunk    *data_to_chunk(void *data_addr) {
-
-	return ((t_chunk *)((char*)data_addr - CHUNK_INUSE_SIZE));
+bool		chunk_is_cis_mem(t_chunk *chunk) {
+	
+	return (!has_flags(chunk, IN_USE) && has_flags(chunk, IS_CIS));
 }
 
 

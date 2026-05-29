@@ -26,11 +26,9 @@ SRCS		=	src/init.c \
 				src/shared/arena.c \
 				src/shared/heap.c \
 				src/shared/chunk.c \
-				src/shared/chunk_utils.c \
-				src/shared/ops_utils.c \
-				src/shared/show_utils.c
+				src/shared/utils.c
 
-BINDIR		= bin
+BINDIR	= bin
 BIN		= $(SRCS:%.c=$(BINDIR)/%.o)
 
 

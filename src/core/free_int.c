@@ -15,11 +15,11 @@ int		free_internal(t_chunk *chunk) {
 
 			if (chunk_belongs_to_heap(heap, chunk)) {
 
-				if (already_freed(chunk)) {
+				if (chunk_already_freed(chunk)) {
 					
 					return (F_DOUBLE_FREE_ERROR);
 				}
-				else if (is_invalid_memory(chunk)) {
+				else if (chunk_is_cis_mem(chunk)) {
 
 					return (F_INV_PTR_ERROR);
 				}

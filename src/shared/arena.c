@@ -13,6 +13,24 @@ int			arena_heap_munmap(t_heap *to_free) {
 	return (ret);
 }
 
+void		arena_heap_unlink(t_heap *heap, t_heap **head) {
+
+	if (!heap || !head || !*head)
+		return ;
+
+
+	if (heap->prev)
+		heap->prev->next = heap->next;
+	else
+		*head = heap->next;
+
+	if (heap->next)
+		heap->next->prev = heap->prev;
+
+	heap->next = NULL;
+	heap->prev = NULL;
+}
+
 int			arena_heap_cache_or_munmap(t_heap *to_free, t_heap_type type) {
 
 	if (type == HEAP_TINY) {
@@ -35,24 +53,6 @@ int			arena_heap_cache_or_munmap(t_heap *to_free, t_heap_type type) {
 
 }
 
-void		arena_bin_set(t_heap *heap, t_chunk *chunk, t_heap_type type) {
-
-	if (type == HEAP_TINY) {
-
-        arena_fastbin_set(heap, chunk);
-		heap_update_alloc_chunks(heap, -1);
-	}
-    else if (type == HEAP_SMALL) {
-
-        arena_smallbin_set(heap, chunk);
-		heap_update_alloc_chunks(heap, -1);
-	}
-	else if (type == HEAP_LARGE) {
-
-		heap_update_alloc_chunks(heap, -1);
-	}
-}
-
 void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 
 	void *new_ptr = malloc_internal(p_new_size);
@@ -62,6 +62,42 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size) {
 	move_data(new_ptr, ptr, (p_new_size <= cur_size) ? p_new_size : cur_size);
 	free_internal(data_to_chunk(ptr));
 	return (new_ptr);
+}
+
+t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
+
+	if (!chunk)
+		return (NULL);
+
+   t_heap  **heap = arena_heap_group_by_chunk(get_size(chunk));
+
+   while (*heap != NULL) {
+
+		if (chunk_belongs_to_heap(*heap, chunk))
+			return (*heap);
+		heap = &(*heap)->next;
+   }
+   return (NULL);
+}
+
+t_heap      **arena_heap_group_by_chunk(size_t size) {
+
+	size_t zone_size = heap_page_size(size);
+
+
+	if (zone_size == TINY_HEAP_SIZE) {
+
+		return (&g_arena.tiny);
+	}
+	else if (zone_size == SMALL_HEAP_SIZE) {
+
+		return (&g_arena.small);
+	}
+	else {
+		
+		return (&g_arena.large);
+	}
+	return (NULL);
 }
 
 t_heap		*arena_find_cached_heap(size_t zone_size) {
@@ -81,41 +117,27 @@ t_heap		*arena_find_cached_heap(size_t zone_size) {
 	return (cached_heap);
 }
 
-t_heap		*arena_heap_find_by_chunk(t_chunk *chunk) {
+void		arena_bin_set(t_heap *heap, t_chunk *chunk, t_heap_type type) {
 
-	if (!chunk)
-		return (NULL);
+	if (type == HEAP_TINY) {
 
-   t_heap  **heap = arena_heap_group_by_chunk(get_size(chunk));
+        arena_fastbin_set(heap, chunk);
+		heap_update_alloc_chunks(heap, -1);
+	}
+    else if (type == HEAP_SMALL) {
 
-   while (*heap != NULL) {
+        arena_smallbin_set(heap, chunk);
+		heap_update_alloc_chunks(heap, -1);
+	}
+	else if (type == HEAP_LARGE) {
 
-		if (chunk_belongs_to_heap(*heap, chunk))
-			return (*heap);
-		heap = &(*heap)->next;
-   }
-   return (NULL);
-}
-
-int			FBIN_IDX(size_t size) {
-
-	if (size >= SMALLBIN_MIN_CHUNK) return (-1);
-	if (size == FASTBIN_MIN_CHUNK) return (0);
-	return (((int)size - FASTBIN_MIN_CHUNK) / ALIGNMENT);
-}
-
-int			SBIN_IDX(size_t size) {
-
-	if (size < SMALLBIN_MIN_CHUNK) return (-1);
-	if (size == SMALLBIN_MIN_CHUNK) return (0);
-	int index = ((int)size - SMALLBIN_MIN_CHUNK) / ALIGNMENT;
-	if (index >= 56) return (-1);
-	return (index);
+		heap_update_alloc_chunks(heap, -1);
+	}
 }
 
 t_chunk     *arena_fastbin_get(size_t size) {
 	
-	int  index= FBIN_IDX(size);
+	int  index = FBIN_IDX(size);
 	if (index == -1) {
 		return (NULL);
 	}
@@ -152,7 +174,7 @@ void		arena_fastbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	if (index == -1)
 		return ;
 	unset_flags(freed_chunk, IN_USE);
-	if ((next = get_next_chunk(heap, freed_chunk)) != NULL)
+	if ((next = chunk_next(heap, freed_chunk)) != NULL)
 		set_prevsize(next, size);
 		
 	freed_chunk->prev = NULL;
@@ -269,7 +291,7 @@ void		arena_smallbin_set(t_heap *heap, t_chunk *freed_chunk) {
 	if ((index = SBIN_IDX(size)) == -1)
 		return ;
 	unset_flags(freed_chunk, IN_USE);
-	next = get_next_chunk(heap, freed_chunk);
+	next = chunk_next(heap, freed_chunk);
 	if (next)
 		set_prevsize(next, size);
 	if (!g_arena.smallbin[index]) {
@@ -338,57 +360,6 @@ void		arena_smallbin_drain(t_heap *heap) {
 		}
 		cur += CHUNK_INUSE_SIZE + get_size(chunk);
 	}
-}
-
-void		arena_heap_unlink(t_heap *heap, t_heap **head) {
-
-	if (!heap || !head || !*head)
-		return ;
-
-
-	if (heap->prev)
-		heap->prev->next = heap->next;
-	else
-		*head = heap->next;
-
-	if (heap->next)
-		heap->next->prev = heap->prev;
-
-	heap->next = NULL;
-	heap->prev = NULL;
-}
-
-t_heap      **arena_heap_group_by_chunk(size_t size) {
-
-	size_t zone_size = heap_page_size(size);
-
-
-	if (zone_size == TINY_HEAP_SIZE) {
-
-		return (&g_arena.tiny);
-	}
-	else if (zone_size == SMALL_HEAP_SIZE) {
-
-		return (&g_arena.small);
-	}
-	else {
-		
-		return (&g_arena.large);
-	}
-	return (NULL);
-}
-
-int     	size_exceeds_rlimit(size_t aligned_size) {
-
-    struct rlimit   rl;
-
-    if (getrlimit(RLIMIT_AS, &rl) == -1)
-        return (0);
-
-    if (rl.rlim_cur == RLIM_INFINITY)
-        return (aligned_size > USERSPACE_MAX);
-
-    return ((rlim_t)aligned_size > rl.rlim_cur);
 }
 
 void    	arena_error_exit(int err) {

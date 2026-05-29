@@ -1,8 +1,83 @@
 #include "../malloc_internal.h"
 
-bool	printable_char(int c) {
+int		size_exceeds_rlimit(size_t aligned_size) {
 
-	return ((bool)(c >= 32 && c <= 126));
+    struct rlimit   rl;
+
+    if (getrlimit(RLIMIT_AS, &rl) == -1)
+        return (0);
+
+    if (rl.rlim_cur == RLIM_INFINITY)
+        return (aligned_size > USERSPACE_MAX);
+
+    return ((rlim_t)aligned_size > rl.rlim_cur);
+}
+
+void	*move_data(void *dest, const void *src, size_t n) {
+	
+	unsigned char		*dest_temp;
+	const unsigned char	*src_temp;
+	size_t				i;
+
+	if (!dest && !src)
+		return (NULL);
+	dest_temp = (unsigned char *)dest;
+	src_temp = (const unsigned char *)src;
+	if (dest_temp > src_temp)
+	{
+		i = n;
+		while (i > 0)
+		{
+			i--;
+			dest_temp[i] = src_temp[i];
+		}
+		return (dest);
+	}
+	i = 0;
+	while (i < n)
+	{
+		dest_temp[i] = src_temp[i];
+		i++;
+	}
+	return (dest);
+}
+
+void	*do_perturb(void *s, unsigned int c, size_t n) {
+    
+	size_t			i;
+	unsigned char	*temp;
+
+	temp = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		temp[i] = (unsigned char)c;
+		i++;
+	}
+	return (s);
+}
+
+int     asciitoint(const char *str) {
+
+	long	res;
+	int		minus;
+	int		i;
+
+	i = 0;
+	res = 0;
+	minus = 1;
+	while (str[i] == 32 || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-')
+		minus *= -1;
+	if (*str == '-' || *str == '+')
+		str++;
+	while (*str >= '0' && *str <= '9')
+	{
+		res = res * 10 + *str - '0';
+		str++;
+	}
+	return (res * minus);
 }
 
 void    print_hex_byte(unsigned char byte, int mode) {
@@ -88,7 +163,7 @@ size_t  print_data_in_chunk(char *cur_chunk, size_t chunk_size, int offset) {
 
 	while (data_addr < data_end) {
 
-		print_hex_addr((uintptr_t)data_addr, 0);
+		print_hex_addr((uintptr_t)data_addr, HEX_LOWER_CASE);
 		print_string(": ");
 		print_data_bytes(data_addr, 16);
 		data_addr = data_addr + 16;
@@ -116,7 +191,7 @@ void    print_data_bytes(char *data, size_t len) {
         if (i < (int)len) {
 
             unsigned char byte = (unsigned char)data[i];
-            if (printable_char(byte))
+            if (byte >= 32 && byte <= 126)
                 write(STDOUT_FILENO, &byte, 1);
             else
                 write(STDOUT_FILENO, ".", 1);

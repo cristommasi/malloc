@@ -1,41 +1,52 @@
 #ifndef MALLOC_INTERNAL_H
 #   define MALLOC_INTERNAL_H
 
+//---------------------------------------------------------------------------------------------INIT
 
 // MAP_ANON & MAP_ANONYMOUS FLAGS
 #define _GNU_SOURCE
 
+// public header
 #include "../include/malloc.h"
-
 
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR  __attribute__((destructor))
 
- // size_t
+ // size_t type
 #include <stddef.h>
 #include <stdint.h>
+ // uint(bits)_t types
+#include <stdint.h>
+ // bool type
+#include <stdbool.h>
+
+ // thread functions
+#include <pthread.h>
+
+ // used for err handling
+extern void	abort(void) __attribute__((__noreturn__));
+ // used in mallopts()
+extern char *getenv(const char *name);
 
 #if SIZE_MAX != 0xFFFFFFFFFFFFFFFFULL
 #	error "size_t must be 8 bytes (64-bit platform required)"
 #endif
 
- // BLOCK ALIGNMENT MULTIPLES OF 8
+ // BLOCK ALIGNMENT MULTIPLES OF 16
 #define ALIGNMENT (2 * sizeof(size_t))
 
  // MACRO FN TO ALIGN
-size_t		ALIGN(size_t size);
+static inline size_t	ALIGN(size_t size) {
 
+	return ( ( (size) + ALIGNMENT - 1 ) & ~( ALIGNMENT - 1 ) );
+}
 
-
-extern void abort(void) __attribute__((__noreturn__));
-
-
- // fw declaration
+ // fw declarations
 typedef struct s_heap t_heap;
 typedef struct s_chunk t_chunk;
 typedef enum e_heap_type t_heap_type;
 
-
+ // internal functions (actual implementation)
 void			*malloc_internal(size_t size);
 int				free_internal(t_chunk *chunk);
 void    		*realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t size);
@@ -43,14 +54,8 @@ void			show_alloc_mem_internal(void);
 void			show_alloc_mem_ex_internal(int show_type);
 int		        mallopt_internal(int param, int value);
 
-
-
- // uint(bits)_t types
-#include <stdint.h>
- // bool
-#include <stdbool.h>
-
-extern char *getenv(const char *name);
+//---------------------------------------------------------------------------------------------INIT
+//---------------------------------------------------------------------------------------------ARENA
 
 typedef struct MALLOC_OPS
 {
@@ -61,43 +66,6 @@ typedef struct MALLOC_OPS
 
 } MALLOC_OPS;
 
-#define M_SHOW_DEFAULT      0
-
-
-uint8_t     get_show_info(void);
-uint8_t     get_check(void);
-bool        has_perturb(void);
-int         get_perturb_alloc(void);
-int         get_perturb_free(void);
-void		*do_perturb(void *s, int c, size_t n);
-bool        has_check(void);
-bool		has_zero(void);
-int     	asciitoint(const char *str);
-
-
- // mallopt()
-#define M_PARAM_ERROR                   0
-#define M_PARAM_SUCCESS                 1
-#define F_MUMMAP_ERROR                 -1
-#define F_NO_ERROR                      0
-#define F_INV_PTR_ERROR                 1
-#define F_DOUBLE_FREE_ERROR             2
-#define R_INV_PTR_ERROR                 3
-
- // error messages for free and realloc()
-#define M_ERR_MSG_SIZE			 38
-#define M_PARAM_ERR_MSG			 "free(): parameter out of bounds      \n"
-#define M_HEAP_MAX_EXCEEDED_MSG  "free(): max number of arenas exceeded\n"
-#define F_DOUBLE_FREE_MSG		 "free(): double free detected         \n"
-#define F_INV_PTR_MSG			 "free(): invalid pointer              \n"
-#define R_INV_PTR_MSG			 "realloc(): invalid pointer           \n"
-#define F_MUNMAP_MSG			 "free(): munmap failed!               \n"
-#define M_UNKNOWN_MSG			 "Unknown error                        \n"
-
-
-
- // thread functions
-#include <pthread.h>
 
 typedef struct s_arena {
 
@@ -115,7 +83,8 @@ typedef struct s_arena {
 }               t_arena;
 
  // global var
-extern t_arena			g_arena;
+extern t_arena			g_arena; 
+
 
 t_heap		*arena_find_cached_heap(size_t zone_size);
 void		arena_fastbin_unlink(t_chunk *chunk); 
@@ -139,31 +108,99 @@ void    	arena_error_exit(int err);
 #define MIN_TRIM 32
 
  //  16, 32, 48, 64, 80, 96, 112
-#define FASTBIN_MIN_CHUNK 16
+#define FASTBIN_COUNT 7 
+#define FASTBIN_MIN_CHUNK 16  
+#define FASTBIN_MAX_CHUNK 112
 
- //  128, 144, 160, 176, ...
-#define SMALLBIN_MIN_CHUNK 128
-
- // 0, 1, 2, 3, 4, 5, 6, 7
-#define FASTBIN_COUNT 7
-
- // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...
-#define SMALLBIN_COUNT 56
+ //  128, 144, 160, 176, ..., 1008
+#define SMALLBIN_COUNT 56 
+#define SMALLBIN_MIN_CHUNK 128  
+#define SMALLBIN_MAX_CHUNK 1008
 
  // get index fastbin
-int		FBIN_IDX(size_t size);
+static inline int	FBIN_IDX(size_t data_size) {
+
+	if (data_size >= FASTBIN_MIN_CHUNK && data_size <= FASTBIN_MAX_CHUNK) {
+
+		return ( ((int)data_size - FASTBIN_MIN_CHUNK) / ALIGNMENT );
+	}
+	return (-1);
+}
 
  // get index smallbin
-int		SBIN_IDX(size_t size);
+static inline int	SBIN_IDX(size_t data_size) { 
+
+	if (data_size >= SMALLBIN_MIN_CHUNK && data_size <=  SMALLBIN_MAX_CHUNK) {
+
+		return ( ((int)data_size - SMALLBIN_MIN_CHUNK) / ALIGNMENT );
+	}
+	return (-1);
+}
+
+ // mallopt()
+#define M_PARAM_ERROR                   0
+#define M_PARAM_SUCCESS                 1
+#define F_MUMMAP_ERROR                 -1
+#define F_NO_ERROR                      0
+#define F_INV_PTR_ERROR                 1
+#define F_DOUBLE_FREE_ERROR             2
+#define R_INV_PTR_ERROR                 3
+
+ // error messages for free and realloc()
+#define M_ERR_MSG_SIZE			 38
+#define M_PARAM_ERR_MSG			 "free(): parameter out of bounds      \n"
+#define M_HEAP_MAX_EXCEEDED_MSG  "free(): max number of arenas exceeded\n"
+#define F_DOUBLE_FREE_MSG		 "free(): double free detected         \n"
+#define F_INV_PTR_MSG			 "free(): invalid pointer              \n"
+#define R_INV_PTR_MSG			 "realloc(): invalid pointer           \n"
+#define F_MUNMAP_MSG			 "free(): munmap failed!               \n"
+#define M_UNKNOWN_MSG			 "Unknown error                        \n"
 
 
+static inline uint8_t	get_show_info(void) {
+    
+    return (g_arena.OPS.SHOW_INFO);
+}
 
-// sizeof(t_heap) 64 for alignment
+static inline bool		has_perturb(void) {
+
+    return ((bool)g_arena.OPS.PERTURB);
+}
+
+static inline uint8_t	get_perturb_alloc(void) {
+
+    return ((uint8_t)g_arena.OPS.PERTURB);
+}
+
+static inline uint8_t	get_perturb_free(void) {
+
+    return (~((uint8_t)g_arena.OPS.PERTURB));
+}
+
+static inline uint8_t	get_check(void) {
+    
+    return (g_arena.OPS.CHECK);
+}
+
+static inline bool		has_check(void) {
+
+    return ((bool)g_arena.OPS.CHECK);
+}
+
+static inline bool		has_zero(void) {
+
+    return ((bool)g_arena.OPS.ZERO);
+}
+
+//---------------------------------------------------------------------------------------------ARENA
+//---------------------------------------------------------------------------------------------HEAP
+
+typedef enum e_heap_type { HEAP_TINY, HEAP_SMALL, HEAP_LARGE }	t_heap_type;
+
+// sizeof(t_heap) 64 (40 + paddding)
 typedef struct s_heap {
 
-	size_t        	p1;
-	size_t        	p2;
-	size_t        	p3;
+	size_t        	padding1, padding2, padding3;
 	
 	size_t        	alloc_chunks;
 	size_t          total_size;
@@ -173,20 +210,24 @@ typedef struct s_heap {
 
 }               t_heap;
 
-typedef enum e_heap_type { HEAP_TINY, HEAP_SMALL, HEAP_LARGE }	t_heap_type;
-
 size_t		heap_free_size(t_heap *heap);
 t_heap		*heap_new(size_t zone_size); 
 void		heap_append(t_heap **HEAP_TYPE, t_heap *new_heap);
 t_chunk		*heap_find_cis_mem_chunk(size_t size) ;
 t_chunk		*heap_split_cis_mem(t_heap *heap, size_t size);
-t_chunk		*heap_to_chunk(t_heap *heap_addr);
 size_t		heap_page_size(size_t size);
 t_heap_type heap_type(size_t size);
 bool		heap_is_different_type(size_t sizeA, size_t sizeB);
 void		heap_update_alloc_chunks(t_heap *heap, int block);
 
+static inline t_chunk		*heap_to_chunk(t_heap *heap) {
 
+	uintptr_t	addr = (uintptr_t)heap + sizeof(t_heap);
+
+	return ((t_chunk *)addr);
+}
+
+#define HEAP_TYPE_COUNT 3
 
  //getrlimit(2)
 #include <sys/resource.h>
@@ -230,16 +271,16 @@ int     size_exceeds_rlimit(size_t aligned_size);
  // 131072 - fits 128 small allocs
 #define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
 
-
-
-
+//---------------------------------------------------------------------------------------------HEAP
+//---------------------------------------------------------------------------------------------CHUNK
 
 typedef struct s_chunk {
 
 	size_t			prev_size;
 	size_t			size;
-	struct s_chunk	*next;
-	struct s_chunk	*prev;
+	struct s_chunk	*next; //only used if free otherwise used as client data
+	struct s_chunk	*prev; //only used if free otherwise used as client data
+
 }                   t_chunk;
 
 t_chunk		*chunk_split_center(t_heap *heap, t_chunk *chunk, size_t old_size, size_t new_size);
@@ -248,62 +289,100 @@ t_chunk		*chunk_split_left(t_heap *heap, t_chunk *chunk, t_chunk *prev, size_t n
 t_chunk		*chunk_split_cis(t_heap *heap, t_chunk *chunk, size_t need, size_t size);
 t_chunk		*chunk_realloc_in_place(t_heap *heap, t_chunk *chunk, size_t size);
 bool		chunk_belongs_to_heap(t_heap *heap, t_chunk *chunk);
-t_chunk		*get_next_chunk(t_heap *heap, t_chunk *chunk);
-t_chunk		*get_prev_chunk(t_heap *heap, t_chunk *chunk);
-bool		prev_chunk_suffices(t_chunk *prev, size_t need);
-bool		next_chunk_suffices(t_chunk *next, size_t need);
-void		*chunk_to_data(t_chunk *chunk_addr);
-t_chunk		*data_to_chunk(void *data_addr);
+t_chunk		*chunk_next(t_heap *heap, t_chunk *chunk);
+t_chunk		*chunk_prev(t_heap *heap, t_chunk *chunk);
+bool		chunk_prev_suffices(t_chunk *prev, size_t need);
+bool		chunk_next_suffices(t_chunk *next, size_t need);
 t_chunk		*chunk_new(char *start, size_t prev_s, size_t size, size_t flags);
 t_chunk		*chunk_coalesce(t_heap *heap, t_chunk *freed_chunk);
+bool	    chunk_already_freed(t_chunk *chunk);
+bool	    chunk_is_cis_mem(t_chunk *chunk);
 
 
- // min bytes for a tiny request
-#define TINY_CHUNK_MIN 16
+#define TINY_CHUNK_MIN		16  // min bytes for a tiny request
+#define TINY_CHUNK_MAX		112  // max bytes for a tiny request
+#define SMALL_CHUNK_MIN		128  // min bytes for a small request
+#define SMALL_CHUNK_MAX		1008  // max bytes for a small request
+#define LARGE_CHUNK_MIN		1009  // min default bytes for large request
+#define CHUNK_INUSE_SIZE	(size_t)16  // size of chunk header when in use (prev_size + size)
+#define CHUNK_FREE_SIZE		(size_t)32  // size of chunk header when free (prev_size + size + next + prev)
 
- // max bytes for a tiny request
-#define TINY_CHUNK_MAX 112
+static inline void		*chunk_to_data(t_chunk *chunk_addr) {
 
- // min bytes for a small request
-#define SMALL_CHUNK_MIN 128
+	return ( (void *)((char*)chunk_addr + CHUNK_INUSE_SIZE) );
+}
 
- // max bytes for a small request
-#define SMALL_CHUNK_MAX 1008
+static inline t_chunk    *data_to_chunk(void *data_addr) {
 
- // min default bytes for large request
-#define LARGE_CHUNK_MIN 1009
+	return ( (t_chunk *)((char*)data_addr - CHUNK_INUSE_SIZE) );
+}
 
- // size of chunk header when in use (prev_size + size)
-#define CHUNK_INUSE_SIZE (size_t)16
-
- // size of chunk header when free (prev_size + size + next + prev)
-#define CHUNK_FREE_SIZE (size_t)32
-
-
-
-
-void		set_size(t_chunk *chunk, size_t size);
-size_t		get_size(t_chunk *chunk);
-void		set_prevsize(t_chunk *chunk, size_t size);
-size_t		get_prevsize(t_chunk *chunk); 
-void		set_flags(t_chunk *chunk, size_t flag);
-void		unset_flags(t_chunk *chunk, size_t flag);
-bool		has_flags(t_chunk *chunk, size_t flag);
-void		*move_data(void *dest, const void *src, size_t n);
-bool	    is_invalid_memory(t_chunk *chunk);
-bool	    already_freed(t_chunk *chunk);
-
- // masks
+ // masks for chunk->size in LSBs
 #define NO_FLAGS     ((size_t)0)
 #define IN_USE       ((size_t)1)
 #define IS_CIS       ((size_t)2)
-#define L_FLAG_MASK  ((size_t)7)
-#define L_SIZE_MASK  ((size_t)18446744073709551608UL)
+#define FLAG_MASK	 ((size_t)3)
+#define SIZE_MASK    (~(size_t)3)
 
+static inline bool		has_flags(t_chunk *chunk, size_t flag) {
 
+	if (chunk) {
+		return (chunk->size & FLAG_MASK & flag) != 0;
+	}
+	return (false);
+}
 
+static inline void		set_flags(t_chunk *chunk, size_t flag) {
 
-bool		printable_char(int c);
+	if (chunk) {
+		chunk->size |= (flag & FLAG_MASK);
+	}
+}
+
+static inline void		unset_flags(t_chunk *chunk, size_t flag) {
+
+	if (chunk) {
+		chunk->size &= ~(flag & FLAG_MASK);
+	}
+}
+
+static inline size_t    get_prevsize(t_chunk *chunk) {
+
+	if (chunk) {
+		return (chunk->prev_size);
+	}
+	return (0);
+}
+
+static inline void		set_prevsize(t_chunk *chunk, size_t size) {
+
+	if (chunk) {
+		chunk->prev_size = (size & SIZE_MASK);
+	}
+}
+
+static inline size_t	get_size(t_chunk *chunk) {
+
+	if (chunk) {
+		return (chunk->size & SIZE_MASK);
+	}
+	return (0);
+}
+
+static inline void      set_size(t_chunk *chunk, size_t size) {
+
+	if (chunk) {
+		size_t flags = chunk->size & FLAG_MASK;
+		chunk->size = (size & SIZE_MASK) | flags;
+	}
+}
+
+//---------------------------------------------------------------------------------------------CHUNK
+//---------------------------------------------------------------------------------------------UTILS
+
+void		*move_data(void *dest, const void *src, size_t n);
+void		*do_perturb(void *s, unsigned int c, size_t n);
+int     	asciitoint(const char *str);
 void    	print_hex_byte(unsigned char byte, int mode);
 void    	print_hex_addr(uintptr_t n, int mode);
 void		print_long(unsigned long n);
@@ -313,11 +392,12 @@ void    	print_data_bytes(char *data, size_t len);
 void        print_heap_type(int index, t_heap *cur);
 void        print_chunk_addr(t_chunk *cur_chunk, size_t chunk_size);
 
-#define HEAP_TYPE_COUNT 3
+
 #define HEX_DUMP_HEADER_TXT "Address             Hex bytes                                ASCII\n"
 #define HEX_LOWER_CASE 0
 #define HEX_UPPER_CASE 1
 
+//---------------------------------------------------------------------------------------------UTILS
 
 #endif
 

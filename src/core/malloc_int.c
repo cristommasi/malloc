@@ -8,11 +8,6 @@ void    *malloc_internal(size_t size) {
 	t_chunk	*chunk = NULL;
 
 	
-	if (size_exceeds_rlimit(size)) {
-		
-		pthread_mutex_unlock(&g_arena.lock);
-		return (NULL);
-	}
 	size = (!size) ? 16 : ALIGN(size);
 	if ((chunk = arena_fastbin_get(size)) != NULL) {
 
@@ -34,7 +29,7 @@ void    *malloc_internal(size_t size) {
 	}
 	else if ((chunk = heap_find_cis_mem_chunk(size)) == NULL) {
 
-		if ((heap = heap_new(size)) == MAP_FAILED)
+		if ((heap = heap_new(size)) == NULL)
 			return (NULL);
 		
 		if ((chunk = heap_split_cis_mem(heap, size)) == NULL)

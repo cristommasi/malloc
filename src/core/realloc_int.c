@@ -14,10 +14,6 @@ void    *realloc_internal(void *ptr, t_chunk *chunk, size_t old_size, size_t siz
 		
         return (ptr);
 	}
-    if (size > old_size && size_exceeds_rlimit(size - old_size)) {
-
-		return (NULL);
-	}
     if (heap_is_different_type(size, old_size) || heap_type(size) == HEAP_TINY) {
 
         return (arena_get_new_chunk_type(ptr, size, old_size));

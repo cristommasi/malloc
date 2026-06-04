@@ -4,8 +4,7 @@
 t_arena g_arena = {
 
 	.lock          = PTHREAD_MUTEX_INITIALIZER,
-	.OPS           = 
-	{
+	.OPS           = {
 		.SHOW_INFO = M_SHOW_INUSE,
 		.PERTURB   = M_PERTURB_NONE,
 		.CHECK     = M_CHECK_PRINT_ABORT,

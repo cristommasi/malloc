@@ -1,20 +1,22 @@
 
-This is an implementation of malloc, realloc, free and few other functions.
+# malloc
 
+This is a simplified re-implementation of malloc, realloc, free, mallopt, and a couple others to view data in the heap. I based it off of malloc's source code but had to simplify a few things (actually many) because of time subject constraints.
 
-As required by the subject, the only permitted system calls are `mmap()`, `munmap()`, `getpagesize()`/`sysconf()`, and `getrlimit()`, along with libpthread functions and a single global variable. Memory zones must contain at least 100 allocations, with 3 different heap sizes: TINY: 1 to n bytes, stored in N-byte zones, SMALL: n+1 to m bytes, stored in M-byte zones  and LARGE: m+1 and above, handled directly with `mmap()`
+See malloc_internal.h in this lib for references.
 
 ## Zone Sizes
 
-`TINY`: 4 * PAGE_SIZE (16,384 bytes)
-Yields 127 blocks of 128 bytes each (112 bytes data + 16 bytes chunk header).
+As required by the subject, the only permitted system calls are `mmap()`, `munmap()`, `getpagesize()`/`sysconf()`, and `getrlimit()`, along with libpthread functions and a single global variable. Memory zones must contain at least 100 allocations, with 3 different heap sizes: TINY: 1 to n bytes, stored in N-byte zones, SMALL: n+1 to m bytes, stored in M-byte zones  and LARGE: m+1 and above, handled directly with `mmap()`
 
-`SMALL`: 32 * PAGE_SIZE (131,072 bytes)
-Yields 127 blocks of 1,024 bytes each (1,008 bytes data + 16 bytes chunk header), plus one remaining block of 960 bytes.
+`TINY`: 8 * PAGE_SIZE (32,768 bytes)
+Gices 146 chunks of 208 bytes of data.
 
-`LARGE`: size of request + sizeof(t_heap)
+`SMALL`: 64 * PAGE_SIZE (262,144 bytes)
+Gives 126 chunks of 2064 bytes of data.
 
-The header is included within these zone sizes for TINY and SMALL. Allocating `ZONE_SIZE + header` via `mmap()` would round up to the next page multiple, wasting an extra page so it is consumed from the zone size.
+`LARGE`: size of request + heap header + chunk header
+This is rounded up to a multiple of PAGE_SIZE.
 
 
 ## Memory Layout
@@ -59,7 +61,7 @@ After several allocations and frees:
 ```c
 typedef struct s_heap {
 
-    size_t        padding1, padding2, padding3; // explicit padding
+    size_t        padding1, padding2, padding3; // explicit padding for alignment
     size_t        alloc_chunks;     // total allocated chunks, used to detect when to release memory
     size_t        total_size;       // total bytes available from the start (unchanged)
     t_chunk       *free_cis_start;  // pointer to the top of untouched (CIS) memory
@@ -82,15 +84,15 @@ typedef struct s_chunk {
 
 ```c
 typedef struct s_arena {
-    pthread_mutex_t lock;         // mutex for thread-safe access
-    MALLOC_OPS      OPS;          // flags set via mallopt()
-    t_heap          *tiny;        // head of TINY heap l-list
-    t_heap          *small;       // head of SMALL heap l-list
-    t_heap          *large;       // head of LARGE heap l-list
-    t_chunk         *fastbin[7];  // LIFO linked lists for TINY freed chunks
-    t_chunk         *smallbin[56];// FIFO circular linked lists for SMALL freed chunks
-    t_heap          *tiny_cache;  // recently freed TINY heap, held before munmap()
-    t_heap          *small_cache; // recently freed SMALL heap, held before munmap()
+    pthread_mutex_t lock;          // mutex for thread-safe access
+    MALLOC_OPS      OPS;           // flags set via mallopt()
+    t_heap          *tiny;         // head of TINY heap lnkd-list
+    t_heap          *small;        // head of SMALL heap lnkd-list
+    t_heap          *large;        // head of LARGE heap lnkd-list
+    t_chunk         *fastbin[13];  // LIFO linked lists for TINY freed chunks
+    t_chunk         *smallbin[116];// FIFO circular linked lists for SMALL freed chunks
+    t_heap          *tiny_cache;   // recently freed TINY heap, held before munmap()
+    t_heap          *small_cache;  // recently freed SMALL heap, held before munmap()
 } t_arena;
 ```
 
@@ -98,18 +100,18 @@ typedef struct s_arena {
 typedef struct MALLOC_OPS
 {
 	uint8_t			SHOW_INFO;  // show all memory in heap
-	uint8_t			PERTURB;    // fill x and ~x bytes on alloc and free
-	uint8_t			CHECK;      // level of warning to throw (print/abort/silent)
-	uint8_t			ZERO;       // fill with 0s on alloc
+	uint8_t			PERTURB;    // fill x on alloc and ~x bytes on free
+	uint8_t			CHECK;      // level of warning to throw (print/abort/silent/all)
+	uint8_t			ZERO;       // fill with 0s on alloc (calloc lol)
 
 } MALLOC_OPS;
 ```
 
 ## Bins & Cache
 
-`Fastbins` (TINY): An array of 7 pointers to singly-linked lists. Freed TINY chunks are pushed in LIFO order. Sizes range from 16 to 112 bytes in 16-byte increments.
+`Fastbins` (TINY): An array of 13 ptrs to linked lists. Sizes range from 16 to 208 bytes.(LIFO)
 
-`Smallbins` (SMALL): An array of 56 pointers to circular doubly-linked lists. The tail is always popped to ensure the oldest freed chunk is reused first (FIFO).
+`Smallbins` (SMALL): An array of 116 ptrs to circular doubly-linked lists. Sizes range from 224 to 2064 bytes.(FIFO).
 
 `Tiny/Small Cache` Pointers to a previously completely freed heap. Used to give one last chance to heap before munmapping it.
 
@@ -187,7 +189,7 @@ Iterates through all heaps and prints the address ranges of all IN_USE chunks.
 show_alloc_mem_ex();
 ```
 
-Same as `show_alloc_mem`, but also dumps the raw bytes and ASCII representation of each chunk's data. If `MALLOC_CHECK_ACTION_` is set to 1, the full contents of every heap are displayed, and total allocated data size and total free size.
+Same as `show_alloc_mem`, but also dumps the raw bytes and ASCII representation of each chunk's data. If `M_CHECK_ACTION` or env eqv. `MALLOC_CHECK_` is set to 1, the full contents of every heap are displayed, total allocated data size and total free size.
 
 ```
 mallopt(MALLOC_PERTURB_, 0xFF); / ENV variables
@@ -230,5 +232,5 @@ LD_LIBRARY=libft_malloc.so LD_LIBRARY_PATH=/path/to/lib ./your_program
 Example using mallopt ENV variables:
 
 ```bash
-MALLOC_CHECK_=3 MALLOC_PERTURB_=0 MALLOC_ZERO=0 MALLOC_SHOW_INFO_=1 ./your_program
+MALLOC_CHECK_=3 MALLOC_PERTURB_=88 MALLOC_ZERO_=1 MALLOC_SHOW_=0 ./your_program
 ```

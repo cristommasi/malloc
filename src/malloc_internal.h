@@ -1,13 +1,15 @@
+// MAP_ANON & MAP_ANONYMOUS FLAGS
+#ifndef _GNU_SOURCE
+#   define _GNU_SOURCE
+#endif
+
 #ifndef MALLOC_INTERNAL_H
 #   define MALLOC_INTERNAL_H
 
 //---------------------------------------------------------------------------------------------INIT
 
-// MAP_ANON & MAP_ANONYMOUS FLAGS
-#define _GNU_SOURCE
-
 // public header
-#include "../include/malloc.h"
+#include "../malloc.h"
 
 #define CONSTRUCTOR __attribute__((constructor))
 #define DESTRUCTOR  __attribute__((destructor))
@@ -67,6 +69,9 @@ typedef struct MALLOC_OPS
 } MALLOC_OPS;
 
 
+#define FASTBIN_COUNT 13
+#define SMALLBIN_COUNT 116 
+
 typedef struct s_arena {
 
 	pthread_mutex_t		lock;
@@ -75,8 +80,8 @@ typedef struct s_arena {
 	t_heap  			*tiny;
 	t_heap  			*small;
 	t_heap  			*large;
-	t_chunk 			*fastbin[7];
-	t_chunk 			*smallbin[56];
+	t_chunk 			*fastbin[FASTBIN_COUNT];
+	t_chunk 			*smallbin[SMALLBIN_COUNT];
 	t_heap				*tiny_cache;
 	t_heap				*small_cache;
 
@@ -104,18 +109,15 @@ void		*arena_get_new_chunk_type(void *ptr, size_t p_new_size, size_t cur_size);
 void		arena_heap_unlink(t_heap *heap, t_heap **head);
 void    	arena_error_exit(int err);
 
+
  // MIN size to leave a chunk with 16 header + 16 data
 #define MIN_TRIM 32
 
- //  16, 32, 48, 64, 80, 96, 112
-#define FASTBIN_COUNT 7 
 #define FASTBIN_MIN_CHUNK 16  
-#define FASTBIN_MAX_CHUNK 112
+#define FASTBIN_MAX_CHUNK 208
 
- //  128, 144, 160, 176, ..., 1008
-#define SMALLBIN_COUNT 56 
-#define SMALLBIN_MIN_CHUNK 128  
-#define SMALLBIN_MAX_CHUNK 1008
+#define SMALLBIN_MIN_CHUNK 224  
+#define SMALLBIN_MAX_CHUNK 2064
 
  // get index fastbin
 static inline int	FBIN_IDX(size_t data_size) {
@@ -136,6 +138,7 @@ static inline int	SBIN_IDX(size_t data_size) {
 	}
 	return (-1);
 }
+
 
  // mallopt()
 #define M_PARAM_ERROR                   0
@@ -266,10 +269,15 @@ int     size_exceeds_rlimit(size_t aligned_size);
 #define NO_OFFSET 0
 
  // 16384 - fits 128 tiny allocs
-#define TINY_HEAP_SIZE (4 * PAGE_SIZE)
+#define TINY_HEAP_SIZE (8 * PAGE_SIZE)
 
  // 131072 - fits 128 small allocs
-#define SMALL_HEAP_SIZE (32 * PAGE_SIZE)
+#define SMALL_HEAP_SIZE (64 * PAGE_SIZE)
+
+static inline size_t	ALIGN_PAGE(size_t size) {
+
+	return ( ( (size) + PAGE_SIZE - 1 ) & ~( PAGE_SIZE - 1 ) );
+}
 
 //---------------------------------------------------------------------------------------------HEAP
 //---------------------------------------------------------------------------------------------CHUNK
@@ -300,10 +308,10 @@ bool	    chunk_is_cis_mem(t_chunk *chunk);
 
 
 #define TINY_CHUNK_MIN		16  // min bytes for a tiny request
-#define TINY_CHUNK_MAX		112  // max bytes for a tiny request
-#define SMALL_CHUNK_MIN		128  // min bytes for a small request
-#define SMALL_CHUNK_MAX		1008  // max bytes for a small request
-#define LARGE_CHUNK_MIN		1009  // min default bytes for large request
+#define TINY_CHUNK_MAX		208  // max bytes for a tiny request
+#define SMALL_CHUNK_MIN		224  // min bytes for a small request
+#define SMALL_CHUNK_MAX		2064  // max bytes for a small request
+#define LARGE_CHUNK_MIN		2065  // min default bytes for large request
 #define CHUNK_INUSE_SIZE	(size_t)16  // size of chunk header when in use (prev_size + size)
 #define CHUNK_FREE_SIZE		(size_t)32  // size of chunk header when free (prev_size + size + next + prev)
 
@@ -400,4 +408,3 @@ void        print_chunk_addr(t_chunk *cur_chunk, size_t chunk_size);
 //---------------------------------------------------------------------------------------------UTILS
 
 #endif
-

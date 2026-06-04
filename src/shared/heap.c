@@ -2,15 +2,11 @@
 
 t_heap		*heap_new(size_t size) {
 
-	t_heap_type  type  = heap_type(size);
-	size_t  zone_size  = heap_page_size(size);
+	size_t  zone_size  = ALIGN_PAGE(heap_page_size(size));
 	t_heap  *new_heap  = NULL;
-
 
 	new_heap = arena_find_cached_heap(zone_size);
 	if (!new_heap) {
-
-		zone_size += (type == HEAP_LARGE) ? sizeof(t_heap) : 0;
 
 		if (size_exceeds_rlimit(size)) {
 			return (NULL);
@@ -126,7 +122,7 @@ size_t		heap_page_size(size_t size) {
     if (size <= SMALL_CHUNK_MAX)
         return (SMALL_HEAP_SIZE);
 	
-    return (size + CHUNK_INUSE_SIZE);
+    return (size + CHUNK_INUSE_SIZE + sizeof(t_heap));
 }
 
 t_heap_type	heap_type(size_t size) {
